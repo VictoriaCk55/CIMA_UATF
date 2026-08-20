@@ -474,7 +474,11 @@ class InformeController extends Controller
                 'entregador',
             ]);
 
-            $pdf = Pdf::loadView('informes.pdf.informe', compact('informe'));
+            // Variable de zona corregida para evitar imprimir "ZONA_19K" si está vacía
+            $zona = $informe->proforma->zona_utm ?? null;
+            $coordenadas = $informe->proforma->coordenadas ?? null;
+
+            $pdf = Pdf::loadView('informes.pdf.informe', compact('informe', 'zona', 'coordenadas'));
 
             return $pdf->download('informe-'.$informe->codigo.'.pdf');
 

@@ -318,4 +318,61 @@ class ParametroController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    // ============================================================
+    // NUEVAS FUNCIONES PARA EL PANEL DE PRECIOS MASIVOS
+    // ============================================================
+
+    /**
+     * Muestra el panel de actualización masiva de precios
+     */
+    public function preciosMasivos()
+    {
+        if (! $this->esAdmin()) {
+            return redirect()->route('parametros.index')
+                ->with('error', '⛔ Acceso denegado. Solo el administrador puede acceder a esta herramienta.');
+        }
+
+        // Cargar todos los parámetros activos, ordenados por tipo y nombre
+        $parametros = Parametro::orderBy('tipo')
+            ->orderBy('nombre')
+            ->get();
+
+        return view('parametros.precios_masivos', compact('parametros'));
+    }
+
+    /**
+     * Actualiza los precios de forma masiva
+     */
+    public function actualizarPreciosMasivos(Request $request)
+    {
+        if (! $this->esAdmin()) {
+            return redirect()->route('parametros.index')
+                ->with('error', '⛔ Acceso denegado.');
+        }
+
+        // Validar que recibimos un array de precios
+        $request->validate([
+            'precios' => 'required|array',
+            'precios.*' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            // Recorrer el array de precios y actualizar cada parámetro
+            foreach ($request->precios as $id => $precio) {
+                $parametro = Parametro::find($id);
+                if ($parametro) {
+                    $parametro->precio_unitario = $precio;
+                    $parametro->save();
+                }
+            }
+
+            return redirect()->route('parametros.precios.masivos')
+                ->with('success', '✅ Precios actualizados exitosamente en masa.');
+
+        } catch (\Exception $e) {
+            return redirect()->route('parametros.precios.masivos')
+                ->with('error', '❌ Error al actualizar los precios: '.$e->getMessage());
+        }
+    }
 }

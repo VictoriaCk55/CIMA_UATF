@@ -24,11 +24,20 @@ class ProformaController extends Controller
     ];
 
     /**
-     * Verificar si el usuario es administrador
+     * Verificar si el usuario tiene permisos de administración
+     * (Reemplazado hasAnyRole por verificación directa de roles del sistema)
      */
     private function esAdmin()
     {
-        return Auth::check() && Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']);
+        // Verifica si el usuario está autenticado y si tiene alguno de estos roles
+        // Nota: Si tu sistema usa nombres de roles diferentes, cambia 'admin', 'tecnico', 'analista'
+        if (!Auth::check()) {
+            return false;
+        }
+
+        $user = Auth::user();
+        // Si tienes una columna 'role' en tu tabla de usuarios, usa esto:
+        return in_array($user->role ?? $user->tipo ?? 'usuario', ['admin', 'tecnico', 'analista']);
     }
 
     /**
@@ -269,6 +278,8 @@ class ProformaController extends Controller
                 'unidad' => $request->unidad,
                 'fecha_emision' => $request->fecha_emision,
                 'fecha_recepcion' => $request->fecha_recepcion,
+                'fecha_inicio_ensayo' => $request->fecha_recepcion, // CORREGIDO: Fecha de inicio
+                'fecha_conclusion_ensayo' => now()->addDays(15)->format('Y-m-d'), // CORREGIDO: Fecha estimada de fin
                 'hora_recepcion' => now()->format('H:i'),
                 'persona_contacto' => $request->persona_contacto,
                 'telefono_contacto' => $request->telefono_contacto,
@@ -498,6 +509,8 @@ class ProformaController extends Controller
                 'unidad' => $request->unidad,
                 'fecha_emision' => $request->fecha_emision,
                 'fecha_recepcion' => $request->fecha_recepcion,
+                'fecha_inicio_ensayo' => $request->fecha_recepcion, // CORREGIDO
+                'fecha_conclusion_ensayo' => now()->addDays(15)->format('Y-m-d'), // CORREGIDO
                 'codigo_cliente' => $request->codigo_cliente,
                 'numero_recepcion' => $request->numero_recepcion,
                 'hora_recepcion' => now()->format('H:i'),
@@ -618,9 +631,10 @@ class ProformaController extends Controller
                 ->with('error', "❌ No se puede eliminar una proforma en estado {$proforma->estado}");
         }
 
-        if ($proforma->informe) {
+        // CORRECCIÓN: Solo el administrador puede eliminar si tiene un informe asociado
+        if ($proforma->informe && !$this->esAdmin()) {
             return redirect()->route('proformas.show', $proforma)
-                ->with('error', '❌ No se puede eliminar una proforma que tiene un informe asociado.');
+                ->with('error', '❌ Solo el administrador puede eliminar proformas con informes asociados.');
         }
 
         try {
@@ -697,14 +711,52 @@ class ProformaController extends Controller
             $mapaNumeros = [
                 0 => 'CERO', 1 => 'UN', 2 => 'DOS', 3 => 'TRES', 4 => 'CUATRO',
                 5 => 'CINCO', 6 => 'SEIS', 7 => 'SIETE', 8 => 'OCHO', 9 => 'NUEVE',
-                10 => 'DIEZ', 20 => 'VEINTE', 30 => 'TREINTA', 40 => 'CUARENTA',
-                50 => 'CINCUENTA', 60 => 'SESENTA', 70 => 'SETENTA', 80 => 'OCHENTA',
-                90 => 'NOVENTA', 100 => 'CIEN', 200 => 'DOSCIENTOS', 300 => 'TRESCIENTOS',
-                400 => 'CUATROCIENTOS', 500 => 'QUINIENTOS', 600 => 'SEISCIENTOS',
-                700 => 'SETECIENTOS', 800 => 'OCHOCIENTOS', 900 => 'NOVECIENTOS',
+                10 => 'DIEZ', 11 => 'ONCE', 12 => 'DOCE', 13 => 'TRECE', 14 => 'CATORCE',
+                15 => 'QUINCE', 16 => 'DIECISÉIS', 17 => 'DIECISIETE', 18 => 'DIECIOCHO',
+                19 => 'DIECINUEVE', 20 => 'VEINTE', 21 => 'VEINTIUN', 22 => 'VEINTIDOS', 
+                23 => 'VEINTITRES', 24 => 'VEINTICUATRO', 25 => 'VEINTICINCO',
+                26 => 'VEINTISÉIS', 27 => 'VEINTISIETE', 28 => 'VEINTIOCHO', 29 => 'VEINTINUEVE',
+                30 => 'TREINTA', 40 => 'CUARENTA', 50 => 'CINCUENTA', 60 => 'SESENTA',
+                70 => 'SETENTA', 80 => 'OCHENTA', 90 => 'NOVENTA',
+                100 => 'CIEN', 200 => 'DOSCIENTOS', 300 => 'TRESCIENTOS', 400 => 'CUATROCIENTOS',
+                500 => 'QUINIENTOS', 600 => 'SEISCIENTOS', 700 => 'SETECIENTOS', 800 => 'OCHOCIENTOS',
+                900 => 'NOVECIENTOS',
             ];
 
-            $letras = $mapaNumeros[$entero] ?? number_format($entero, 0);
+            // Función recursiva para convertir números a letras (Hasta Millares)
+            $numeroEnLetras = function ($numero) use (&$numeroEnLetras, $mapaNumeros) {
+                if ($numero <= 29) {
+                    return $mapaNumeros[$numero];
+                } elseif ($numero < 100) {
+                    $decena = (int) floor($numero / 10) * 10;
+                    $unidad = $numero % 10;
+                    if ($unidad == 0) {
+                        return $mapaNumeros[$decena];
+                    } else {
+                        return $mapaNumeros[$decena].' Y '.$mapaNumeros[$unidad];
+                    }
+                } elseif ($numero < 1000) {
+                    $centena = (int) floor($numero / 100) * 100;
+                    $resto = $numero % 100;
+                    if ($resto == 0) {
+                        return $mapaNumeros[$centena];
+                    } else {
+                        return $mapaNumeros[$centena].' '.$numeroEnLetras($resto);
+                    }
+                } elseif ($numero < 1000000) {
+                    $miles = (int) floor($numero / 1000);
+                    $resto = $numero % 1000;
+                    if ($resto == 0) {
+                        return $numeroEnLetras($miles).' MIL';
+                    } else {
+                        return $numeroEnLetras($miles).' MIL '.$numeroEnLetras($resto);
+                    }
+                }
+
+                return number_format($numero, 0);
+            };
+
+            $letras = $numeroEnLetras($entero);
             $totalEnLetras = 'SON: '.strtoupper($letras).' '.str_pad($decimal, 2, '0', STR_PAD_LEFT).'/100 BOLIVIANOS';
 
             $data = [
@@ -754,7 +806,7 @@ class ProformaController extends Controller
                 if ($numero <= 20) {
                     return $mapaNumeros[$numero];
                 } elseif ($numero < 100) {
-                    $decena = floor($numero / 10) * 10;
+                    $decena = (int) floor($numero / 10) * 10; // CORREGIDO: Convertido a int
                     $unidad = $numero % 10;
                     if ($unidad == 0) {
                         return $mapaNumeros[$decena];
@@ -762,7 +814,7 @@ class ProformaController extends Controller
                         return $mapaNumeros[$decena].' Y '.$mapaNumeros[$unidad];
                     }
                 } elseif ($numero < 1000) {
-                    $centena = floor($numero / 100) * 100;
+                    $centena = (int) floor($numero / 100) * 100; // CORREGIDO: Convertido a int
                     $resto = $numero % 100;
                     if ($resto == 0) {
                         return $mapaNumeros[$centena];

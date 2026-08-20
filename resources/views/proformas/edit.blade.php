@@ -669,6 +669,9 @@
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- CAMPO OCULTO PARA GUARDAR EL ORDEN (Tarea 30) -->
+                            <input type="hidden" name="parametros[{{ $paramIndex }}][orden]" value="{{ $paramIndex }}">
                             
                             <!-- Método de ensayo -->
                             <div class="row mt-2 metodo-container" id="metodo-{{ $paramIndex }}" style="display: {{ $parametro->categoria === 'GASES' ? 'none' : 'block' }};">

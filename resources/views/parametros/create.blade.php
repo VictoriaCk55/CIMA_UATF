@@ -128,6 +128,24 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
+                        <label for="categoria" class="form-label">
+                            Categoría
+                        </label>
+                        <select class="form-select @error('categoria') is-invalid @enderror" 
+                                id="categoria" 
+                                name="categoria">
+                            <option value="">Seleccionar categoría...</option>
+                            @foreach(['AIRE', 'RUIDO', 'GASES', 'AGUA', 'SUELO'] as $cat)
+                                <option value="{{ $cat }}" {{ old('categoria') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                            @endforeach
+                        </select>
+                        @error('categoria')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted">Ej: AIRE, RUIDO, GASES, AGUA</small>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
                         <label for="tipo" class="form-label">
                             Tipo de Análisis *
                         </label>
@@ -144,24 +162,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         <small class="text-muted">Categoría del análisis según formato CIMA</small>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label for="categoria" class="form-label">
-                            Categoría
-                        </label>
-                        <select class="form-select @error('categoria') is-invalid @enderror" 
-                                id="categoria" 
-                                name="categoria">
-                            <option value="">Seleccionar categoría...</option>
-                            @foreach(['AIRE', 'RUIDO', 'GASES', 'AGUA', 'SUELO'] as $cat)
-                                <option value="{{ $cat }}" {{ old('categoria') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                            @endforeach
-                        </select>
-                        @error('categoria')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">Ej: AIRE, RUIDO, GASES, AGUA</small>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -215,18 +215,16 @@
                         <label for="tecnica" class="form-label">
                             Técnica
                         </label>
-                        <select class="form-select @error('tecnica') is-invalid @enderror" 
-                                id="tecnica" 
-                                name="tecnica">
-                            <option value="">Seleccionar técnica...</option>
-                            @foreach(['POTENCIOMETRIA', 'ABSORCION ATOMICA', 'FOTOMETRIA', 'UV-VISIBLE', 'IONOMETRIA', 'VOLUMETRIA', 'GRAVIMETRIA', 'NEFELOMÉTRICO', 'BACTEREOLOGIA', 'OTROS'] as $tec)
-                                <option value="{{ $tec }}" {{ old('tecnica') == $tec ? 'selected' : '' }}>{{ $tec }}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" 
+                               class="form-control @error('tecnica') is-invalid @enderror" 
+                               id="tecnica" 
+                               name="tecnica" 
+                               value="{{ old('tecnica') }}" 
+                               placeholder="Ej: Potenciometría, Absorción Atómica, Volumetría...">
                         @error('tecnica')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Técnica analítica utilizada</small>
+                        <small class="text-muted">Técnica analítica utilizada (texto libre)</small>
                     </div>
 
                     <div class="col-md-6 mb-4">

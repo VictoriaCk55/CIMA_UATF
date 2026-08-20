@@ -8,12 +8,12 @@
     <style>
         /* ========== CONFIGURACIÓN BASE ========== */
         @page {
-            margin: 15mm 10mm 15mm 10mm;
+            margin: 12mm 10mm 15mm 10mm;
         }
         
         body {
             font-family: "Times New Roman", Times, serif;
-            font-size: 11px;
+            font-size: 12pt; /* Tamaño letra Times 14 (12pt) */
             line-height: 1.3;
             color: #000;
             margin: 0;
@@ -25,7 +25,7 @@
         .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .header-table td {
@@ -125,7 +125,7 @@
         /* ========== LÍNEA SEPARADORA ========== */
         .separator {
             border-top: 2px solid #1c3d6e;
-            margin: 8px 0 15px 0;
+            margin: 8px 0 12px 0;
             width: 100%;
         }
         
@@ -145,12 +145,12 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
         .data-table th, .data-table td {
             border: 1px solid #999;
-            padding: 5px 8px;
+            padding: 4px 6px; /* Reducido para compactar */
             vertical-align: top;
         }
         
@@ -160,26 +160,26 @@
             font-weight: bold;
         }
         
-        /* ========== TABLA DE PARÁMETROS ========== */
+        /* ========== TABLA DE PARÁMETROS (REESTRUCTURADA) ========== */
         .params-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .params-table thead th {
             background-color: #2c5282;
             color: white;
             text-align: center;
-            padding: 6px;
+            padding: 4px;
             border: 1px solid #999;
             font-weight: bold;
         }
         
         .params-table tbody td {
             border: 1px solid #999;
-            padding: 5px 6px;
+            padding: 4px 6px;
         }
         
         /* ========== TABLA DE CRONOGRAMA ========== */
@@ -192,7 +192,7 @@
         
         .cronograma-table td {
             border: 1px solid #999;
-            padding: 6px 8px;
+            padding: 4px 6px;
             vertical-align: top;
         }
         
@@ -280,7 +280,7 @@
         
         .responsables-table td {
             border: 1px solid #999;
-            padding: 6px 8px;
+            padding: 4px 6px;
         }
         
         .responsables-table td:first-child {
@@ -292,7 +292,7 @@
         /* ========== FIRMAS CON TABLA TRADICIONAL ========== */
         .signatures-table {
             width: 100%;
-            margin-top: 60px;
+            margin-top: 40px;
             border-collapse: collapse;
         }
         
@@ -306,7 +306,7 @@
         .signature-line {
             border-top: 1px solid #000;
             width: 80%;
-            margin: 50px auto 0 auto;
+            margin: 40px auto 0 auto;
             display: block;
         }
         
@@ -328,11 +328,11 @@
         
         /* ========== FOOTER ========== */
         .footer {
-            margin-top: 40px;
+            margin-top: 30px;
             font-size: 9px;
             color: #666;
             text-align: center;
-            padding-top: 8px;
+            padding-top: 6px;
             border-top: 1px solid #ccc;
         }
         
@@ -465,7 +465,7 @@
         </table>
     </div>
 
-    <!-- ========== SECCIÓN 2: PARÁMETROS SOLICITADOS - SIN EMOTICONS ========== -->
+    <!-- ========== SECCIÓN 2: PARÁMETROS SOLICITADOS ========== -->
     @if($informe->proforma->parametros && $informe->proforma->parametros->count() > 0)
     <div class="mb-10">
         <div class="section-title">2.- PARÁMETROS SOLICITADOS</div>
@@ -474,8 +474,9 @@
             <thead>
                 <tr>
                     <th style="width: 5%;" class="align-center">#</th>
-                    <th style="width: 55%;" class="align-left">Parámetro</th>
+                    <th style="width: 40%;" class="align-left">Parámetro</th>
                     <th style="width: 15%;" class="align-center">Método</th>
+                    <th style="width: 15%;" class="align-center">Código POE</th>
                     <th style="width: 10%;" class="align-center">N° Muestras</th>
                     <th style="width: 15%;" class="align-right">Precio Unit. (Bs)</th>
                 </tr>
@@ -486,6 +487,7 @@
                     <td class="align-center">{{ $index + 1 }}</td>
                     <td class="align-left">{{ $parametro->nombre }}</td>
                     <td class="align-center">{{ $parametro->metodo ?? 'N/A' }}</td>
+                    <td class="align-center">{{ $parametro->codigo_poe ?? 'N/A' }}</td>
                     <td class="align-center">{{ $parametro->pivot->cantidad_muestras }}</td>
                     <td class="align-right">Bs. {{ number_format($parametro->pivot->precio_unitario, 2) }}</td>
                 </tr>
@@ -496,7 +498,7 @@
     @endif
     @endif
 
-    <!-- ========== SECCIÓN 3: CRONOGRAMA DEL INFORME - SIN EMOTICONS ========== -->
+    <!-- ========== SECCIÓN 3: CRONOGRAMA DEL INFORME ========== -->
     <div class="mb-10">
         <div class="section-title">3.- CRONOGRAMA DEL INFORME</div>
         
@@ -568,7 +570,7 @@
     </div>
     @endif
 
-    <!-- ========== SECCIÓN 8: RESPONSABLES - SIN EMOTICONS, SIN LÍNEAS ========== -->
+    <!-- ========== SECCIÓN 8: RESPONSABLES ========== -->
     <div class="mb-10">
         <div class="section-title">8.- RESPONSABLES</div>
         
@@ -598,7 +600,7 @@
         </table>
     </div>
 
-    <!-- ========== FIRMAS - SIN EMOTICONS, ESPACIOS EN BLANCO ========== -->
+    <!-- ========== FIRMAS ========== -->
     <table class="signatures-table">
         <tr>
             <td>
@@ -626,6 +628,13 @@
         <p><strong>Nota 2:</strong> {{ $cfg->config('nota2', 'Los resultados reportados corresponden exclusivamente a las muestras analizadas.') }}</p>
         <p><strong>Nota 3:</strong> {{ $cfg->config('nota3', 'Prohibida la reproducción parcial de este informe sin autorización del CIMA.') }}</p>
     </div>
+
+    <!-- ========== FIN DEL INFORME (Solo en la última página) ========== -->
+    @if(isset($loop) && $loop->last)
+    <div style="margin-top: 50px; text-align: center; font-size: 14pt; font-weight: bold; color: #2c5282; border-top: 2px solid #2c5282; padding-top: 20px;">
+        <i class="fas fa-flag-checkered" style="margin-right: 8px;"></i> FIN DEL INFORME
+    </div>
+    @endif
 
     <!-- ========== FOOTER ========== -->
     <div class="footer">

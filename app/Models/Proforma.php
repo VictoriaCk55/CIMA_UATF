@@ -255,8 +255,9 @@ class Proforma extends Model
     public function parametros()
     {
         return $this->belongsToMany(Parametro::class, 'proforma_parametro')
-            ->withPivot('cantidad_muestras', 'precio_unitario', 'metodo')
-            ->withTimestamps();
+            ->withPivot('cantidad_muestras', 'precio_unitario', 'metodo', 'orden') // <-- AGREGADO 'orden'
+            ->withTimestamps()
+            ->orderBy('pivot_orden', 'asc'); // <-- AGREGADO PARA RESPETAR EL ORDEN (Tarea 30)
     }
 
     public function informe()

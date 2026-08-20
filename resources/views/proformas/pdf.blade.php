@@ -8,7 +8,7 @@
     <style>
         /* CONFIGURACIÓN BASE */
         @page {
-            margin: 15mm 10mm 15mm 10mm;
+            margin: 10mm 10mm 25mm 10mm; /* Reduje el margen inferior para que las firmas queden más arriba */
         }
 
         @page horizontal {
@@ -19,11 +19,10 @@
             page: horizontal;
         }
 
-        
         body {
             font-family: "Times New Roman", Times, serif;
-            font-size: 11px;
-            line-height: 1.3;
+            font-size: 10px;
+            line-height: 1.2;
             color: #000;
             margin: 0;
             padding: 0;
@@ -34,7 +33,7 @@
         .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         
         .header-table td {
@@ -43,12 +42,12 @@
         }
         
         .logo-cell {
-            width: 100px;
+            width: 80px;
         }
         
         .logo-container {
-            width: 90px;
-            height: 90px;
+            width: 70px;
+            height: 70px;
             border: 1px solid #ccc;
             display: block;
             background-color: #f9f9f9;
@@ -57,108 +56,91 @@
         }
         
         .logo-container img {
-            max-width: 85px;
-            max-height: 85px;
+            max-width: 65px;
+            max-height: 65px;
             margin-top: 2px;
         }
         
         .center-cell {
             text-align: center;
-            padding: 0 10px;
+            padding: 0 8px;
         }
         
         .center-cell h1 {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            margin: 0 0 3px 0;
+            margin: 0 0 2px 0;
             text-transform: uppercase;
             color: #1c3d6e;
         }
         
         .center-cell h2 {
-            font-size: 13px;
+            font-size: 11px;
             margin: 0 0 2px 0;
             color: #2c5282;
             font-weight: 600;
         }
         
         .center-cell h3 {
-            font-size: 11px;
-            margin: 0 0 4px 0;
+            font-size: 9px;
+            margin: 0 0 3px 0;
             color: #4a5568;
             font-style: italic;
         }
         
-        /* Unidad de la proforma */
+        /* Unidad de la proforma (Verde si es AMBIENTAL) */
         .unidad-badge {
-            background-color: #2c5282;
-            color: white;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 15px;
-            font-size: 9px;
+            font-size: 8px;
             font-weight: bold;
             display: inline-block;
-            margin-top: 5px;
+            margin-top: 3px;
+        }
+        .unidad-badge.ambiental {
+            background-color: #B0E68E !important;
+            color: #000000 !important;
+        }
+        .unidad-badge.agua {
+            background-color: #2c5282 !important;
+            color: white !important;
         }
         
         .document-subtitle {
-            font-size: 10px;
+            font-size: 8px;
             font-weight: bold;
             color: #333;
-            margin: 5px 0;
+            margin: 2px 0;
         }
         
         .document-options {
-            margin: 8px 0 0 0;
-            font-size: 10px;
+            margin: 5px 0 0 0;
+            font-size: 8px;
         }
         
         .doc-option {
             display: inline-block;
-            margin: 0 4px;
-            padding: 2px 6px;
+            margin: 0 2px;
+            padding: 1px 4px;
             border: 1px solid #666;
             border-radius: 2px;
             background-color: #f8f9fa;
         }
         
-        .doc-option.selected.proforma {
-            background-color: #2c5282;
-            color: white;
-            border-color: #2c5282;
-            font-weight: bold;
-        }
-        
-        .doc-option.selected.cotizacion {
-            background-color: #28a745;
-            color: white;
-            border-color: #28a745;
-            font-weight: bold;
-        }
-        
-        .doc-option.selected.contrato {
-            background-color: #fd7e14;
-            color: white;
-            border-color: #fd7e14;
-            font-weight: bold;
-        }
-        
-        .doc-option.selected.contrato-modificado {
-            background-color: #dc3545;
-            color: white;
-            border-color: #dc3545;
-            font-weight: bold;
-        }
+        .doc-option.selected.proforma { background-color: #2c5282; color: white; border-color: #2c5282; font-weight: bold; }
+        .doc-option.selected.cotizacion { background-color: #28a745; color: white; border-color: #28a745; font-weight: bold; }
+        .doc-option.selected.contrato { background-color: #fd7e14; color: white; border-color: #fd7e14; font-weight: bold; }
+        .doc-option.selected.contrato-modificado { background-color: #dc3545; color: white; border-color: #dc3545; font-weight: bold; }
         
         .codigo-cell {
-            width: 120px;
+            width: 100px;
             text-align: right;
         }
         
         .codigo-box {
             border: 1px solid #000;
-            padding: 5px;
-            font-size: 9px;
+            padding: 3px;
+            font-size: 8px;
             background-color: #f8f9fa;
             text-align: center;
             display: inline-block;
@@ -167,32 +149,36 @@
         /* LÍNEA SEPARADORA */
         .separator {
             border-top: 2px solid #1c3d6e;
-            margin: 8px 0 15px 0;
+            margin: 5px 0 8px 0;
             width: 100%;
         }
         
-        /* SECCIONES */
+        /* SECCIONES - Verdes si es AMBIENTAL */
         .section-title {
             background-color: #2c5282;
             color: white;
             font-weight: bold;
-            padding: 5px 10px;
-            margin-bottom: 8px;
-            font-size: 11px;
+            padding: 3px 6px;
+            margin-bottom: 5px;
+            font-size: 9px;
             border-radius: 3px;
+        }
+        .section-title.ambiental {
+            background-color: #B0E68E !important;
+            color: #000000 !important;
         }
         
         /* TABLAS DE DATOS */
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10px;
-            margin-bottom: 10px;
+            font-size: 9px;
+            margin-bottom: 5px;
         }
         
         .data-table th, .data-table td {
             border: 1px solid #999;
-            padding: 5px 8px;
+            padding: 2px 5px;
             vertical-align: top;
         }
         
@@ -206,177 +192,133 @@
         .params-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10px;
-            margin-bottom: 15px;
+            font-size: 9px;
+            margin-bottom: 8px;
         }
         
         .params-table thead th {
             background-color: #2c5282;
             color: white;
             text-align: center;
-            padding: 6px;
+            padding: 3px;
             border: 1px solid #999;
             font-weight: bold;
+        }
+        .params-table.ambiental thead th {
+            background-color: #B0E68E !important;
+            color: #000000 !important;
         }
         
         .params-table tbody td {
             border: 1px solid #999;
-            padding: 5px 6px;
+            padding: 3px 4px;
+            background-color: #ffffff;
         }
         
-        .align-right {
-            text-align: right;
-        }
+        .align-right { text-align: right; }
+        .align-center { text-align: center; }
+        .align-left { text-align: left; }
+        .bold { font-weight: bold; }
         
-        .align-center {
-            text-align: center;
-        }
-        
-        .align-left {
-            text-align: left;
-        }
-        
-        .bold {
-            font-weight: bold;
-        }
-        
-        /* ALERTA DE MODIFICACIÓN DE PARÁMETROS */
+        /* ALERTA DE MODIFICACIÓN */
         .alert-modification {
             background-color: #fff3cd;
             border: 1px solid #ffc107;
             border-left: 5px solid #ffc107;
-            padding: 12px;
-            margin: 15px 0;
+            padding: 6px;
+            margin: 8px 0;
             border-radius: 5px;
-            font-size: 10px;
+            font-size: 9px;
         }
-        
-        .alert-modification-title {
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 8px;
-            font-size: 11px;
-        }
-        
-        .alert-modification-text {
-            color: #856404;
-            margin-bottom: 5px;
-        }
-        
-        .alert-modification-detail {
-            font-style: italic;
-            margin-top: 5px;
-            padding-top: 5px;
-            border-top: 1px dashed #ffc107;
-            color: #6c757d;
-        }
+        .alert-modification-title { font-weight: bold; color: #856404; margin-bottom: 3px; font-size: 10px; }
+        .alert-modification-text { color: #856404; margin-bottom: 3px; }
+        .alert-modification-detail { font-style: italic; margin-top: 3px; padding-top: 3px; border-top: 1px dashed #ffc107; color: #6c757d; }
         
         /* RESUMEN FINANCIERO */
         .financial-summary {
             border: 2px solid #2c5282;
-            padding: 12px;
-            margin: 20px 0;
+            padding: 6px;
+            margin: 10px 0;
             background-color: #f8f9fa;
             border-radius: 4px;
         }
         
         .summary-title {
-            font-size: 12px;
+            font-size: 10px;
             font-weight: bold;
             color: #2c5282;
-            margin-bottom: 10px;
+            margin-bottom: 3px;
             text-align: center;
             text-transform: uppercase;
         }
         
-        .summary-line {
-            margin: 6px 0;
-            font-size: 11px;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .summary-line.total {
-            font-size: 13px;
-            font-weight: bold;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 2px solid #2c5282;
-        }
-        
-        .summary-label {
-            font-weight: bold;
-        }
-        
-        .summary-value {
-            font-weight: bold;
-        }
-        
-        .summary-value.text-success {
-            color: #28a745;
-        }
-        
-        .summary-value.text-danger {
-            color: #dc3545;
-        }
+        .summary-line { margin: 2px 0; font-size: 10px; display: flex; justify-content: space-between; }
+        .summary-line.total { font-size: 11px; font-weight: bold; margin-top: 3px; padding-top: 3px; border-top: 2px solid #2c5282; }
+        .summary-label { font-weight: bold; }
+        .summary-value { font-weight: bold; }
+        .summary-value.text-success { color: #28a745; }
+        .summary-value.text-danger { color: #dc3545; }
         
         .total-in-words {
             font-style: italic;
-            margin: 15px 0;
+            margin: 8px 0;
             text-align: center;
-            font-size: 11px;
-            padding: 10px;
+            font-size: 10px;
+            padding: 6px;
             background-color: #f0f7ff;
             border: 1px solid #cce5ff;
             border-radius: 4px;
             color: #004085;
         }
         
-        /* FIRMAS */
+        /* FIRMAS - CENTRADAS Y MÁS ARRIBA */
+        .signatures-wrapper {
+            width: 100%;
+            position: fixed;
+            bottom: 5mm; /* Subido para que quede más al centro de la hoja */
+            left: 0;
+            padding: 0; /* Sin padding lateral para que ocupe todo el ancho */
+            page-break-inside: avoid;
+        }
+
         .signatures-table {
             width: 100%;
-            margin-top: 60px;
             border-collapse: collapse;
         }
-        
-        .signatures-table td {
-            width: 50%;
-            text-align: center;
-            vertical-align: top;
-            padding: 0 20px;
-        }
-        
-        .signature-line {
-            border-top: 1px solid #000;
-            width: 80%;
-            margin: 50px auto 0 auto;
-            display: block;
-        }
-        
+
         .signature-text {
-            margin-top: 5px;
-            font-size: 10px;
+            margin-top: 3px;
+            font-size: 9px;
             color: #333;
-            line-height: 1.4;
+            line-height: 1.2;
+            text-align: center;
         }
+        
+        /* NOTAS */
+        .notes-section {
+            font-size: 9px;
+            margin-top: 8px;
+            padding: 4px;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+            border-left: 3px solid #2c5282;
+        }
+        .notes-section.ambiental {
+            border-left: 3px solid #B0E68E !important;
+        }
+        .notes-section p { margin: 1px 0; }
         
         /* FOOTER */
         .footer {
-            margin-top: 30px;
-            font-size: 9px;
+            margin-top: 10px;
+            font-size: 8px;
             color: #666;
             text-align: center;
-            padding-top: 8px;
+            padding-top: 3px;
         }
         
-        /* ESPACIOS */
-        .mb-10 {
-            margin-bottom: 10px;
-        }
-        
-        .mt-10 {
-            margin-top: 10px;
-        }
+        .mb-8 { margin-bottom: 6px; }
+        .mt-8 { margin-top: 6px; }
     </style>
 </head>
 <body>
@@ -423,25 +365,14 @@
                 
                 <div class="document-options">
                     @php $td = $proforma->tipo_documento ?? []; @endphp
-                    <span class="doc-option{{ in_array('PROFORMA', $td) ? ' selected proforma' : '' }}">
-                        PROFORMA
-                    </span>
-
-                    <span class="doc-option{{ in_array('COTIZACION', $td) ? ' selected cotizacion' : '' }}">
-                        COTIZACIÓN
-                    </span>
-
-                    <span class="doc-option{{ in_array('CONTRATO', $td) ? ' selected contrato' : '' }}">
-                        CONTRATO
-                    </span>
-
-                    <span class="doc-option{{ in_array('CONTRATO MODIFICADO', $td) ? ' selected contrato-modificado' : '' }}">
-                        CONTRATO MODIFICADO
-                    </span>
+                    <span class="doc-option{{ in_array('PROFORMA', $td) ? ' selected proforma' : '' }}">PROFORMA</span>
+                    <span class="doc-option{{ in_array('COTIZACION', $td) ? ' selected cotizacion' : '' }}">COTIZACIÓN</span>
+                    <span class="doc-option{{ in_array('CONTRATO', $td) ? ' selected contrato' : '' }}">CONTRATO</span>
+                    <span class="doc-option{{ in_array('CONTRATO MODIFICADO', $td) ? ' selected contrato-modificado' : '' }}">CONTRATO MODIFICADO</span>
                 </div>
                 
                 @if($proforma->unidad)
-                <div class="unidad-badge">
+                <div class="unidad-badge {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : 'agua' }}">
                     <i class="fas fa-building"></i> {{ $proforma->unidad == 'UIA' ? 'Unidad de Investigación Ambiental' : 'Unidad de Análisis Químico' }}
                 </div>
                 @endif
@@ -464,7 +395,7 @@
 
     <!-- DATOS DE RECEPCIÓN -->
     @php $numRecepcion = explode('-', $proforma->codigo)[2] ?? $proforma->numero_recepcion; @endphp
-    <table class="data-table" style="margin-bottom: 5px;">
+    <table class="data-table" style="margin-bottom: 3px;">
         <tr>
             <td style="width: 50%; text-align: left;"><strong>Fecha de recepción:</strong> {{ $proforma->fecha_recepcion->format('d/m/Y') }}</td>
             <td style="width: 50%; text-align: right;"><strong>Nro. Recepción:</strong> {{ $numRecepcion }}</td>
@@ -472,8 +403,8 @@
     </table>
 
     <!-- SECCIÓN 1: DATOS DEL CLIENTE -->
-    <div class="mb-10">
-        <div class="section-title">1.- DATOS DEL CLIENTE</div>
+    <div class="mb-8">
+        <div class="section-title {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">1.- DATOS DEL CLIENTE</div>
         
         <table class="data-table">
                <tr>
@@ -496,8 +427,8 @@
     </div>
 
     <!-- SECCIÓN 2: DATOS DE LA MUESTRA -->
-    <div class="mb-10">
-        <div class="section-title">2.- DATOS DE LA MUESTRA</div>
+    <div class="mb-8">
+        <div class="section-title {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">2.- DATOS DE LA MUESTRA</div>
         
         <table class="data-table">
               <tr>
@@ -537,10 +468,10 @@
     </div>
 
     <!-- SECCIÓN 3: PARÁMETROS A ANALIZAR -->
-    <div class="mb-10">
-        <div class="section-title">3.- PARÁMETROS A ANALIZAR - MUESTRAS DE {{ strtoupper($proforma->tipo_muestra) }}</div>
+    <div class="mb-8">
+        <div class="section-title {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">3.- PARÁMETROS A ANALIZAR - MUESTRAS DE {{ strtoupper($proforma->tipo_muestra) }}</div>
         
-        <table class="params-table">
+        <table class="params-table {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">
             <thead>
                  <tr>
                     <th style="width: 5%;">#</th>
@@ -582,8 +513,8 @@
                         <td class="align-center">{{ $proforma->parametros->count() + 1 }}</td>
                         <td>{{ $descripcionUsuario }}</td>
                         <td class="align-center" style="text-align: center; vertical-align: middle;">
-                            <strong style="font-size: 8px;">NÚMERO DE PUNTOS TOTALES</strong><br>
-                            <span style="font-size: 14px; font-weight: bold;">{{ $totalPuntos }}</span>
+                            <strong style="font-size: 7px;">NÚMERO DE PUNTOS TOTALES</strong><br>
+                            <span style="font-size: 12px; font-weight: bold;">{{ $totalPuntos }}</span>
                         </td>
                         <td class="align-center">{{ $totalPuntos }}</td>
                         <td class="align-right">Bs. {{ number_format($totalCosto, 2) }}</td>
@@ -654,12 +585,12 @@
         </div>
         
         @if($proforma->adelanto > 0)
-        <div class="summary-line" style="margin-top: 8px;">
+        <div class="summary-line" style="margin-top: 4px;">
             <span class="summary-label">Adelanto recibido:</span>
             <span class="summary-value">Bs. {{ number_format($proforma->adelanto, 2) }}</span>
         </div>
         
-        <div class="summary-line" style="border-top: 1px dashed #999; padding-top: 5px;">
+        <div class="summary-line" style="border-top: 1px dashed #999; padding-top: 3px;">
             <span class="summary-label">Saldo pendiente:</span>
             <span class="summary-value {{ $proforma->saldo > 0 ? 'text-danger' : 'text-success' }}">
                 Bs. {{ number_format($proforma->saldo, 2) }}
@@ -670,42 +601,45 @@
 
     <!-- OBSERVACIONES -->
     @if($proforma->observaciones)
-    <div class="mb-10">
-        <div class="section-title">OBSERVACIONES</div>
-        <div style="padding: 8px; border: 1px solid #e2e8f0; border-radius: 3px; font-size: 10px; background-color: #fffde7; line-height: 1.4;">
+    <div class="mb-8">
+        <div class="section-title {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">OBSERVACIONES</div>
+        <div style="padding: 4px; border: 1px solid #e2e8f0; border-radius: 3px; font-size: 9px; background-color: #fffde7; line-height: 1.2;">
             {!! nl2br(e($proforma->observaciones)) !!}
         </div>
     </div>
     @endif
 
     <!-- NOTAS -->
-    <div style="font-size: 10px; margin-top: 15px; padding: 8px; background-color: #f8f9fa; border-radius: 3px; border-left: 3px solid #2c5282;">
+    <div class="notes-section {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">
         <p><strong>Nota 1:</strong> {{ $cfg->config('nota1', 'Para realizar el análisis se debe dejar cancelado el 100% del monto total.') }}</p>
         <p><strong>Nota 2:</strong> {{ $cfg->config('nota2', 'El laboratorio no realiza declaraciones de conformidad sobre los resultados que se reportan.') }}</p>
         <p><strong>Nota 3:</strong> {{ $cfg->config('nota3', 'Los resultados estarán disponibles dentro de los plazos establecidos según el tipo de análisis.') }}</p>
     </div>
-
-    <!-- FIRMAS -->
-    <table class="signatures-table">
-         <tr>
-             <td>
-                <div class="signature-line"></div>
-                <div class="signature-text">
-                    <strong>{{ $cfg->config('responsable_nombre') }}</strong><br>
-                    {{ $cfg->config('responsable_cargo') }}<br>
-                    {{ $cfg->config('institucion_nombre') }}
-                </div>
-             </td>
-             <td>
-                <div class="signature-line"></div>
-                <div class="signature-text">
-                    <strong>{{ $cfg->config('director_nombre') }}</strong><br>
-                    {{ $cfg->config('director_cargo') }}<br>
-                    {{ $proforma->cliente->razon_social }}
-                </div>
-             </td>
-         </tr>
-     </table>
+    
+    <!-- FIRMAS CENTRADAS Y SUBIDAS -->
+    <div class="signatures-wrapper">
+        <table class="signatures-table">
+             <tr>
+                 <td style="width: 50%; text-align: center; vertical-align: top; padding: 0 10px;">
+                    <div style="border-top: 1px solid #000; width: 85%; margin: 30px auto 0 auto; display: block;"></div>
+                    <div class="signature-text">
+                        <strong>{{ $cfg->config('responsable_nombre') }}</strong><br>
+                        {{ $cfg->config('responsable_cargo') }}<br>
+                        {{ $cfg->config('institucion_nombre') }}
+                    </div>
+                 </td>
+                 
+                 <td style="width: 50%; text-align: center; vertical-align: top; padding: 0 10px;">
+                    <div style="border-top: 1px solid #000; width: 85%; margin: 30px auto 0 auto; display: block;"></div>
+                    <div class="signature-text">
+                        <strong>{{ $cfg->config('director_nombre') }}</strong><br>
+                        {{ $cfg->config('director_cargo') }}<br>
+                        {{ $proforma->cliente->razon_social }}
+                    </div>
+                 </td>
+             </tr>
+         </table>
+     </div>
 
     <!-- FOOTER -->
     <div class="footer">

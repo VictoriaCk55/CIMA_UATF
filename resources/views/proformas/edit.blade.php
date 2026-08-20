@@ -313,7 +313,7 @@
                                     id="tipo" name="tipo" required 
                                     onchange="calcularTotalesEstimados()">
                                 <option value="AMBIENTAL" {{ old('tipo', $proforma->tipo) == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
-                                <option value="AGUA" {{ old('tipo', $proforma->tipo) == 'AGUA' ? 'selected' : '' }}>AGUA</option>
+                                <option value="ANALISIS QUIMICO" {{ old('tipo', $proforma->tipo) == 'ANALISIS QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
                                 <option value="INVESTIGACION" {{ old('tipo', $proforma->tipo) == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN (20% descuento)</option>
                             </select>
                             @error('tipo')
@@ -722,7 +722,7 @@
                                         @foreach($logisticasMuestreo as $opt)
                                             <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}"
                                                 {{ $log->id == $opt->id ? 'selected' : '' }}>
-                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }})
+                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }}) 
                                             </option>
                                         @endforeach
                                     </select>
@@ -766,7 +766,7 @@
                                         <option value="">Seleccionar concepto...</option>
                                         @foreach($logisticasMuestreo as $opt)
                                             <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}">
-                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }})
+                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }}) 
                                             </option>
                                         @endforeach
                                     </select>

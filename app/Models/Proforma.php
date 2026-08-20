@@ -77,7 +77,7 @@ class Proforma extends Model
     // ========== TIPOS DE PROFORMA ==========
     public const TIPOS = [
         'AMBIENTAL' => 'AMB',
-        'AGUA' => 'AGUA',
+        'ANALISIS QUIMICO' => 'AQUIM',
         'INVESTIGACION' => 'INV',
     ];
 
@@ -114,7 +114,7 @@ class Proforma extends Model
 
     /**
      * Generar código de proforma en formato: {unidad}-{tipo}-{numero}
-     * Ejemplos: UIA-INV-001, UAQ-AMB-002, UAQ-AGUA-003
+     * Ejemplos: UIA-INV-001, UAQ-AMB-002, UAQ-AQUIM-003
      */
     public static function generarCodigo($unidad, $tipo)
     {
@@ -255,9 +255,9 @@ class Proforma extends Model
     public function parametros()
     {
         return $this->belongsToMany(Parametro::class, 'proforma_parametro')
-            ->withPivot('cantidad_muestras', 'precio_unitario', 'metodo', 'orden') // <-- AGREGADO 'orden'
+            ->withPivot('cantidad_muestras', 'precio_unitario', 'metodo', 'orden')
             ->withTimestamps()
-            ->orderBy('pivot_orden', 'asc'); // <-- AGREGADO PARA RESPETAR EL ORDEN (Tarea 30)
+            ->orderBy('orden', 'asc'); // <-- CORREGIDO: cambiado 'pivot_orden' por 'orden'
     }
 
     public function informe()

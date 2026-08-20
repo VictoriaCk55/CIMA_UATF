@@ -474,18 +474,31 @@ class InformeController extends Controller
                 'entregador',
             ]);
 
-            // Variable de zona corregida para evitar imprimir "ZONA_19K" si está vacía
-            $zona = $informe->proforma->zona_utm ?? null;
-            $coordenadas = $informe->proforma->coordenadas ?? null;
+            $pdf = Pdf::loadView('informes.pdf.informe', compact('informe'));
 
-            $pdf = Pdf::loadView('informes.pdf.informe', compact('informe', 'zona', 'coordenadas'));
+            // ===== CONFIGURACIÓN DE PÁGINA A4, ENCABEZADOS Y PIES DE PÁGINA =====
+            $pdf->setPaper('A4', 'portrait'); // Forzar tamaño A4
+            $pdf->output(); // Forzar la generación para poder inyectar encabezados
 
-            return $pdf->download('informe-'.$informe->codigo.'.pdf');
+            // Inyectar encabezado y pie de página con numeración
+            $font = $pdf->getDomPDF()->getFontMetrics()->getFont("Times New Roman", "normal");
+            $canvas = $pdf->getDomPDF()->getCanvas();
+
+            // Pie de página: Número de página y código del informe
+            $canvas->page_text(270, 820, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, 9, array(100,100,100));
+            $canvas->page_text(30, 820, "INFORME: " . $informe->codigo, $font, 9, array(100,100,100));
+            
+            // Encabezado: Título o nombre de la institución en la parte superior
+            $cfg = \App\Models\Documento::whereSlug('informe-final')->first() ?? new \App\Models\Documento;
+            $canvas->page_text(30, 30, $cfg->config('laboratorio_nombre', 'CENTRO DE INVESTIGACIÓN MINERO AMBIENTAL'), $font, 10, array(100,100,100));
+
+            // IMPORTANTE: Usar stream() en lugar de download() para abrir en el navegador
+            return $pdf->stream('informe-'.$informe->codigo.'.pdf');
 
         } catch (\Exception $e) {
             Log::error('Error al generar PDF de informe: '.$e->getMessage());
 
-            return back()->with('error', '❌ Error al generar PDF: '.$e->getMessage());
+            return back()->with('error', '❌ Error al generar PDF: ' . $e->getMessage());
         }
     }
 

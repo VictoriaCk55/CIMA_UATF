@@ -8,15 +8,7 @@
     <style>
         /* CONFIGURACIÓN BASE */
         @page {
-            margin: 10mm 10mm 25mm 10mm; /* Reduje el margen inferior para que las firmas queden más arriba */
-        }
-
-        @page horizontal {
-            size: letter landscape;
-        }
-
-        .horizontal-page {
-            page: horizontal;
+            margin: 12mm 10mm 20mm 10mm; /* Margen inferior para pie de página */
         }
 
         body {
@@ -146,7 +138,6 @@
             display: inline-block;
         }
         
-        /* LÍNEA SEPARADORA */
         .separator {
             border-top: 2px solid #1c3d6e;
             margin: 5px 0 8px 0;
@@ -275,9 +266,9 @@
         .signatures-wrapper {
             width: 100%;
             position: fixed;
-            bottom: 5mm; /* Subido para que quede más al centro de la hoja */
+            bottom: 5mm;
             left: 0;
-            padding: 0; /* Sin padding lateral para que ocupe todo el ancho */
+            padding: 0;
             page-break-inside: avoid;
         }
 
@@ -354,7 +345,7 @@
                 </h3>
                 
                 <div class="document-subtitle">
-                    @if($proforma->tipo === 'AGUA')
+                    @if($proforma->tipo === 'ANALISIS QUIMICO' || $proforma->tipo === 'AGUA')
                         ANÁLISIS QUÍMICO - BACTERIOLÓGICO: AGUAS, SUELOS, SEDIMENTOS Y MINERALES
                     @elseif($proforma->tipo === 'AMBIENTAL')
                         MUESTREO DE MATERIAL PARTICULADO, RUIDO, GASES, AGUAS, SEDIMIENTOS Y VEGETACIÓN
@@ -648,12 +639,5 @@
         <p>{{ $cfg->config('footer_telefono') }} | {{ $cfg->config('footer_email') }}</p>
         <p><em>{{ $cfg->config('footer_texto') }}</em></p>
     </div>
-
-    <script type="text/php">
-        if (isset($pdf)) {
-            $font = $fontMetrics->getFont("times", "normal");
-            $pdf->getCanvas()->page_text(260, 50, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, 9, array(100,100,100));
-        }
-    </script>
 </body>
 </html>

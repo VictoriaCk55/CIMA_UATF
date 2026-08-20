@@ -64,7 +64,7 @@
                     </div>
                     <small class="text-muted mt-1 d-block">
                         <i class="fas fa-info-circle me-1"></i>
-                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, AGUA, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
+                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, ANÁLISIS QUÍMICO, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
                     </small>
                 </div>
                 
@@ -231,12 +231,12 @@
                                     <td>
                                         <span class="badge rounded-pill 
                                             @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
-                                            @elseif($proforma->tipo == 'AGUA') bg-info
+                                            @elseif($proforma->tipo == 'ANALISIS QUIMICO') bg-info
                                             @else bg-secondary
                                             @endif">
                                             <i class="fas 
                                                 @if($proforma->tipo == 'AMBIENTAL') fa-leaf
-                                                @elseif($proforma->tipo == 'AGUA') fa-tint
+                                                @elseif($proforma->tipo == 'ANALISIS QUIMICO') fa-tint
                                                 @else fa-flask
                                                 @endif me-1"></i>
                                             {{ $proforma->tipo }}

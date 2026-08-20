@@ -345,7 +345,7 @@
                                     id="tipo" name="tipo" required onchange="calcularTotalesEstimados()">
                                 <option value="">Seleccionar tipo...</option>
                                 <option value="AMBIENTAL" {{ old('tipo') == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
-                                <option value="AGUA" {{ old('tipo') == 'AGUA' ? 'selected' : '' }}>AGUA</option>
+                                <option value="ANALISIS QUIMICO" {{ old('tipo') == 'ANALISIS QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
                                 <option value="INVESTIGACION" {{ old('tipo') == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN (20% descuento)</option>
                             </select>
                             @error('tipo')
@@ -729,7 +729,7 @@
                                         <option value="">Seleccionar concepto...</option>
                                         @foreach($logisticasMuestreo as $log)
                                             <option value="{{ $log->id }}" data-costo="{{ $log->costo }}" data-categoria="{{ $log->categoria }}">
-                                                {{ $log->categoria }} - {{ $log->descripcion }} (Bs. {{ number_format($log->costo, 2) }})
+                                                {{ $log->categoria }} - {{ $log->descripcion }} (Bs. {{ number_format($log->costo, 2) }}) 
                                             </option>
                                         @endforeach
                                     </select>

@@ -461,6 +461,25 @@ class InformeController extends Controller
 
     /**
      * Generar PDF del informe
+     *
+     * NOTA: El pie de página ya NO se dibuja con getCanvas() después de
+     * $pdf->output(), ni con un <script type="text/php"> embebido, ni
+     * envolviendo todo en $canvas->page_script(), ni con
+     * $canvas->page_text() y tokens {PAGE_NUM}/{PAGE_COUNT}. Ninguno de
+     * esos mecanismos calculaba/repetía el total de páginas de forma
+     * confiable en este entorno.
+     *
+     * Enfoque actual (determinístico, no depende de mecanismos internos
+     * de DomPDF para el total de páginas):
+     *  - La dirección/línea (contenido fijo) se dibuja con CSS
+     *    "position: fixed" en la vista "informes.pdf.informe" — repite
+     *    correctamente en todas las páginas.
+     *  - El número de página ACTUAL se obtiene con CSS "counter(page)"
+     *    (esto sí funciona bien en este entorno).
+     *  - El TOTAL de páginas se calcula aquí, en PHP, renderizando el
+     *    documento una primera vez solo para contarlas, y luego se
+     *    renderiza una segunda vez pasándole ese total ya conocido como
+     *    variable normal de la vista ($totalPaginas).
      */
     public function pdf(Informe $informe)
     {
@@ -474,31 +493,26 @@ class InformeController extends Controller
                 'entregador',
             ]);
 
-            $pdf = Pdf::loadView('informes.pdf.informe', compact('informe'));
+            $data = compact('informe');
 
-            // ===== CONFIGURACIÓN DE PÁGINA A4, ENCABEZADOS Y PIES DE PÁGINA =====
-            $pdf->setPaper('A4', 'portrait'); // Forzar tamaño A4
-            $pdf->output(); // Forzar la generación para poder inyectar encabezados
+            // 1) Renderizado de conteo (no se muestra al usuario)
+            $pdfConteo = Pdf::loadView('informes.pdf.informe', $data + ['totalPaginas' => 1]);
+            $pdfConteo->setPaper('A4', 'portrait');
+            $dompdfConteo = $pdfConteo->getDomPDF();
+            $dompdfConteo->render();
+            $totalPaginas = $dompdfConteo->getCanvas()->get_page_count();
 
-            // Inyectar encabezado y pie de página con numeración
-            $font = $pdf->getDomPDF()->getFontMetrics()->getFont("Times New Roman", "normal");
-            $canvas = $pdf->getDomPDF()->getCanvas();
+            // 2) Renderizado definitivo, ya con el total real
+            $pdf = Pdf::loadView('informes.pdf.informe', $data + ['totalPaginas' => $totalPaginas]);
+            $pdf->setPaper('A4', 'portrait');
 
-            // Pie de página: Número de página y código del informe
-            $canvas->page_text(270, 820, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, 9, array(100,100,100));
-            $canvas->page_text(30, 820, "INFORME: " . $informe->codigo, $font, 9, array(100,100,100));
-            
-            // Encabezado: Título o nombre de la institución en la parte superior
-            $cfg = \App\Models\Documento::whereSlug('informe-final')->first() ?? new \App\Models\Documento;
-            $canvas->page_text(30, 30, $cfg->config('laboratorio_nombre', 'CENTRO DE INVESTIGACIÓN MINERO AMBIENTAL'), $font, 10, array(100,100,100));
-
-            // IMPORTANTE: Usar stream() en lugar de download() para abrir en el navegador
+            // IMPORTANTE: usar stream() para abrir en el navegador
             return $pdf->stream('informe-'.$informe->codigo.'.pdf');
 
         } catch (\Exception $e) {
             Log::error('Error al generar PDF de informe: '.$e->getMessage());
 
-            return back()->with('error', '❌ Error al generar PDF: ' . $e->getMessage());
+            return back()->with('error', '❌ Error al generar PDF: '.$e->getMessage());
         }
     }
 

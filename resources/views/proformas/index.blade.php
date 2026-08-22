@@ -647,6 +647,15 @@ button[type="submit"]:focus {
         margin-bottom: 10px !important;
     }
 }
+
+/* ========== CORRECCIÓN DE ESPACIADO PARA MÓVIL Y TABLETS ========== */
+@media (max-width: 992px) {
+    /* Separación entre los botones de Filtrar y Limpiar */
+    .col-md-4.d-flex.align-items-end {
+        margin-top: 20px !important;
+        gap: 12px !important; /* Espacio horizontal entre ellos */
+    }
+}
 </style>
 
 @push('scripts')

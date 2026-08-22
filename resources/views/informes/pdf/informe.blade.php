@@ -8,7 +8,7 @@
     <style>
         /* ========== CONFIGURACIÓN BASE ========== */
         @page {
-            margin: 12mm 10mm 15mm 10mm;
+            margin: 12mm 10mm 30mm 10mm;
         }
         
         body {
@@ -326,7 +326,7 @@
         .mt-10 { margin-top: 10px; }
         .mt-30 { margin-top: 30px; }
         
-        /* ========== FOOTER ========== */
+        /* ========== FOOTER (colofón, solo aparece donde termina el contenido) ========== */
         .footer {
             margin-top: 30px;
             font-size: 9px;
@@ -334,6 +334,48 @@
             text-align: center;
             padding-top: 6px;
             border-top: 1px solid #ccc;
+        }
+
+        /* ========== PIE DE PÁGINA (se repite en TODAS las páginas) ==========
+           Distinto del ".footer" de arriba: ese es un colofón que sale una
+           sola vez al final del contenido; este ".pie-pagina" es fijo y se
+           repite en cada página. El número de página ACTUAL se obtiene
+           con CSS "counter(page)"; el TOTAL llega ya calculado desde
+           InformeController::pdf() como $totalPaginas. */
+        .pie-pagina {
+            position: fixed;
+            left: 10mm;
+            right: 10mm;
+            bottom: -22mm;
+            padding-top: 4px;
+            border-top: 0.75pt solid #999;
+            font-size: 7px;
+            line-height: 1.3;
+            color: #555;
+        }
+        .pie-pagina table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .pie-pagina td {
+            border: none;
+            padding: 0;
+            font-size: 7px;
+            line-height: 1.3;
+            color: #555;
+            vertical-align: top;
+        }
+        .pie-izquierda {
+            width: 80%;
+            text-align: left;
+        }
+        .pie-derecha {
+            width: 20%;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .num-pagina-actual::after {
+            content: counter(page);
         }
         
         /* ========== ESPACIO EN BLANCO PARA FIRMAS ========== */
@@ -344,6 +386,26 @@
     </style>
 </head>
 <body>
+
+    <!-- ===== PIE DE PÁGINA (fixed: se repite en cada página) ===== -->
+    <!-- El número de página ("Página X de Y") se dibuja aparte, desde
+         InformeController::pdf(), con $canvas->page_text(), alineado
+         para que quede a la altura de la primera línea de este bloque. -->
+    <div class="pie-pagina">
+        <table>
+            <tr>
+                <td class="pie-izquierda">
+                    Centro de Investigación Minero Ambiental (CIMA)<br>
+                    Av. Arce esq. Villazón s/n; Edificio Facultad de Ingeniería Minera Subsuelo · Tel/Fax: 6229711 | cima@cima.edu.bo<br>
+                    * Por favor llame al CIMA antes de venir a recoger su informe, gracias.
+                </td>
+                <td class="pie-derecha">
+                    Página <span class="num-pagina-actual"></span> de {{ $totalPaginas ?? 1 }}
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <!-- ========== ENCABEZADO CON TABLA TRADICIONAL ========== -->
     <table class="header-table">
         <tr>
@@ -636,7 +698,7 @@
     </div>
     @endif
 
-    <!-- ========== FOOTER ========== -->
+    <!-- ========== FOOTER (colofón: sale una sola vez, al final del contenido) ========== -->
     <div class="footer">
         <p><strong>{{ $cfg->config('institucion_nombre') }}</strong></p>
         <p>{{ $cfg->config('footer_direccion') }}</p>

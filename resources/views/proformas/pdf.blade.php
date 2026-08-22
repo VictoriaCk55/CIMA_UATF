@@ -8,7 +8,8 @@
     <style>
         /* CONFIGURACIÓN BASE */
         @page {
-            margin: 12mm 10mm 20mm 10mm; /* Margen inferior para pie de página */
+            margin: 12mm 10mm 30mm 10mm;
+            size: A4 portrait;
         }
 
         body {
@@ -20,7 +21,50 @@
             padding: 0;
             background-color: white;
         }
-        
+
+        /* ===== PIE DE PÁGINA (se repite en TODAS las páginas) ===== */
+        /* El número de página ("Página X de Y") se dibuja aparte, desde
+           ProformaController::pdf(), con $canvas->page_text(). Aquí solo
+           va el contenido fijo (dirección/línea), que sí se repite bien
+           en todas las páginas usando "position: fixed". */
+        .pie-pagina {
+            position: fixed;
+            left: 10mm;
+            right: 10mm;
+            bottom: -22mm;
+            padding-top: 4px;
+            border-top: 0.75pt solid #999;
+            font-size: 7px;
+            line-height: 1.3;
+            color: #555;
+        }
+        .pie-pagina table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .pie-pagina td {
+            border: none;
+            padding: 0;
+            font-size: 7px;
+            line-height: 1.3;
+            color: #555;
+            vertical-align: top;
+        }
+        .pie-izquierda {
+            width: 80%;
+            text-align: left;
+        }
+        .pie-derecha {
+            width: 20%;
+            text-align: right;
+            white-space: nowrap;
+        }
+        /* Número de página ACTUAL: esto sí funciona bien en este entorno.
+           El TOTAL ($totalPaginas) llega calculado desde el controlador. */
+        .num-pagina-actual::after {
+            content: counter(page);
+        }
+
         /* ENCABEZADO */
         .header-table {
             width: 100%;
@@ -80,7 +124,6 @@
             font-style: italic;
         }
         
-        /* Unidad de la proforma (Verde si es AMBIENTAL) */
         .unidad-badge {
             padding: 2px 6px;
             border-radius: 15px;
@@ -144,7 +187,6 @@
             width: 100%;
         }
         
-        /* SECCIONES - Verdes si es AMBIENTAL */
         .section-title {
             background-color: #2c5282;
             color: white;
@@ -159,7 +201,6 @@
             color: #000000 !important;
         }
         
-        /* TABLAS DE DATOS */
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -179,7 +220,6 @@
             font-weight: bold;
         }
         
-        /* TABLA DE PARÁMETROS */
         .params-table {
             width: 100%;
             border-collapse: collapse;
@@ -211,7 +251,6 @@
         .align-left { text-align: left; }
         .bold { font-weight: bold; }
         
-        /* ALERTA DE MODIFICACIÓN */
         .alert-modification {
             background-color: #fff3cd;
             border: 1px solid #ffc107;
@@ -225,7 +264,6 @@
         .alert-modification-text { color: #856404; margin-bottom: 3px; }
         .alert-modification-detail { font-style: italic; margin-top: 3px; padding-top: 3px; border-top: 1px dashed #ffc107; color: #6c757d; }
         
-        /* RESUMEN FINANCIERO */
         .financial-summary {
             border: 2px solid #2c5282;
             padding: 6px;
@@ -262,13 +300,10 @@
             color: #004085;
         }
         
-        /* FIRMAS - CENTRADAS Y MÁS ARRIBA */
+        /* FIRMAS */
         .signatures-wrapper {
             width: 100%;
-            position: fixed;
-            bottom: 5mm;
-            left: 0;
-            padding: 0;
+            margin-top: 30px;
             page-break-inside: avoid;
         }
 
@@ -276,16 +311,29 @@
             width: 100%;
             border-collapse: collapse;
         }
-
-        .signature-text {
-            margin-top: 3px;
-            font-size: 9px;
-            color: #333;
-            line-height: 1.2;
+        
+        .signatures-table td {
+            width: 50%;
             text-align: center;
+            vertical-align: top;
+            padding: 0 20px;
         }
         
-        /* NOTAS */
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 80%;
+            margin: 30px auto 0 auto;
+            display: block;
+        }
+        
+        .signature-text {
+            margin-top: 5px;
+            font-size: 10px;
+            color: #333;
+            line-height: 1.4;
+            text-align: center;
+        }
+
         .notes-section {
             font-size: 9px;
             margin-top: 8px;
@@ -298,21 +346,32 @@
             border-left: 3px solid #B0E68E !important;
         }
         .notes-section p { margin: 1px 0; }
-        
-        /* FOOTER */
-        .footer {
-            margin-top: 10px;
-            font-size: 8px;
-            color: #666;
-            text-align: center;
-            padding-top: 3px;
-        }
-        
+
         .mb-8 { margin-bottom: 6px; }
         .mt-8 { margin-top: 6px; }
     </style>
 </head>
 <body>
+
+    <!-- ===== PIE DE PÁGINA (fixed: se repite en cada página) ===== -->
+    <!-- El número de página ("Página X de Y") se dibuja aparte, desde
+         ProformaController::pdf(), con $canvas->page_text(), alineado
+         para que quede a la altura de la primera línea de este bloque. -->
+    <div class="pie-pagina">
+        <table>
+            <tr>
+                <td class="pie-izquierda">
+                    Centro de Investigación Minero Ambiental (CIMA)<br>
+                    Av. Arce esq. Villazón s/n; Edificio Facultad de Ingeniería Minera Subsuelo · Tel/Fax: 6229711 | cima@cima.edu.bo<br>
+                    * Por favor llame al CIMA antes de venir a recoger su informe, gracias.
+                </td>
+                <td class="pie-derecha">
+                    Página <span class="num-pagina-actual"></span> de {{ $totalPaginas ?? 1 }}
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <!-- ENCABEZADO -->
     <table class="header-table">
          <tr>
@@ -364,7 +423,7 @@
                 
                 @if($proforma->unidad)
                 <div class="unidad-badge {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : 'agua' }}">
-                    <i class="fas fa-building"></i> {{ $proforma->unidad == 'UIA' ? 'Unidad de Investigación Ambiental' : 'Unidad de Análisis Químico' }}
+                    {{ $proforma->unidad == 'UIA' ? 'Unidad de Investigación Ambiental' : 'Unidad de Análisis Químico' }}
                 </div>
                 @endif
             </td>
@@ -606,22 +665,21 @@
         <p><strong>Nota 2:</strong> {{ $cfg->config('nota2', 'El laboratorio no realiza declaraciones de conformidad sobre los resultados que se reportan.') }}</p>
         <p><strong>Nota 3:</strong> {{ $cfg->config('nota3', 'Los resultados estarán disponibles dentro de los plazos establecidos según el tipo de análisis.') }}</p>
     </div>
-    
-    <!-- FIRMAS CENTRADAS Y SUBIDAS -->
+
+    <!-- ===== FIRMAS ===== -->
     <div class="signatures-wrapper">
         <table class="signatures-table">
              <tr>
-                 <td style="width: 50%; text-align: center; vertical-align: top; padding: 0 10px;">
-                    <div style="border-top: 1px solid #000; width: 85%; margin: 30px auto 0 auto; display: block;"></div>
+                 <td>
+                    <div class="signature-line"></div>
                     <div class="signature-text">
-                        <strong>{{ $cfg->config('responsable_nombre') }}</strong><br>
+                        <strong>Ing. {{ $cfg->config('responsable_nombre') }}</strong><br>
                         {{ $cfg->config('responsable_cargo') }}<br>
                         {{ $cfg->config('institucion_nombre') }}
                     </div>
                  </td>
-                 
-                 <td style="width: 50%; text-align: center; vertical-align: top; padding: 0 10px;">
-                    <div style="border-top: 1px solid #000; width: 85%; margin: 30px auto 0 auto; display: block;"></div>
+                 <td>
+                    <div class="signature-line"></div>
                     <div class="signature-text">
                         <strong>{{ $cfg->config('director_nombre') }}</strong><br>
                         {{ $cfg->config('director_cargo') }}<br>
@@ -632,12 +690,5 @@
          </table>
      </div>
 
-    <!-- FOOTER -->
-    <div class="footer">
-        <p><strong>{{ $cfg->config('institucion_nombre') }}</strong></p>
-        <p>{{ $cfg->config('footer_direccion') }}</p>
-        <p>{{ $cfg->config('footer_telefono') }} | {{ $cfg->config('footer_email') }}</p>
-        <p><em>{{ $cfg->config('footer_texto') }}</em></p>
-    </div>
 </body>
 </html>

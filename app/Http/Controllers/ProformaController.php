@@ -677,7 +677,14 @@ class ProformaController extends Controller
     }
 
     /**
-     * Genera PDF de la proforma (CORREGIDO)
+     * Genera PDF de la proforma
+     *
+     * NOTA: El pie de página (dirección, teléfono y numeración) ya NO se dibuja
+     * aquí con page_script/canvas. Se maneja íntegramente por CSS dentro de la
+     * vista "proformas.pdf" usando "position: fixed" y los contadores
+     * counter(page)/counter(pages), que DomPDF soporta de forma nativa y
+     * repite automáticamente en cada página, sin depender del orden de
+     * ejecución de loadView/setPaper/getCanvas.
      */
     public function pdf(Proforma $proforma)
     {
@@ -692,7 +699,7 @@ class ProformaController extends Controller
                 5 => 'CINCO', 6 => 'SEIS', 7 => 'SIETE', 8 => 'OCHO', 9 => 'NUEVE',
                 10 => 'DIEZ', 11 => 'ONCE', 12 => 'DOCE', 13 => 'TRECE', 14 => 'CATORCE',
                 15 => 'QUINCE', 16 => 'DIECISÉIS', 17 => 'DIECISIETE', 18 => 'DIECIOCHO',
-                19 => 'DIECINUEVE', 20 => 'VEINTE', 21 => 'VEINTIUN', 22 => 'VEINTIDOS', 
+                19 => 'DIECINUEVE', 20 => 'VEINTE', 21 => 'VEINTIUN', 22 => 'VEINTIDOS',
                 23 => 'VEINTITRES', 24 => 'VEINTICUATRO', 25 => 'VEINTICINCO',
                 26 => 'VEINTISÉIS', 27 => 'VEINTISIETE', 28 => 'VEINTIOCHO', 29 => 'VEINTINUEVE',
                 30 => 'TREINTA', 40 => 'CUARENTA', 50 => 'CINCUENTA', 60 => 'SESENTA',
@@ -702,7 +709,6 @@ class ProformaController extends Controller
                 900 => 'NOVECIENTOS',
             ];
 
-            // Función recursiva para convertir números a letras (Hasta Millares)
             $numeroEnLetras = function ($numero) use (&$numeroEnLetras, $mapaNumeros) {
                 if ($numero <= 29) {
                     return $mapaNumeros[$numero];
@@ -738,7 +744,6 @@ class ProformaController extends Controller
             $letras = $numeroEnLetras($entero);
             $totalEnLetras = 'SON: '.strtoupper($letras).' '.str_pad($decimal, 2, '0', STR_PAD_LEFT).'/100 BOLIVIANOS';
 
-            // Cargar configuración de manera segura
             $cfg = \App\Models\Documento::whereSlug($proforma->tipo === 'AMBIENTAL' ? 'solicitud-ensayo-ambiental' : 'solicitud-ensayo')->first() ?? new \App\Models\Documento;
 
             $data = [
@@ -747,34 +752,46 @@ class ProformaController extends Controller
                 'cfg' => $cfg,
             ];
 
-            $pdf = Pdf::loadView('proformas.pdf', $data);
+            // ===== NUMERACIÓN "Página X de Y" (enfoque de doble renderizado) =====
+            // Tanto counter(pages) en CSS, como $canvas->page_script(), como
+            // $canvas->page_text() con tokens {PAGE_NUM}/{PAGE_COUNT}
+            // demostraron ser poco confiables en este entorno (total
+            // incorrecto y/o no se repiten en todas las páginas).
+            //
+            // Este enfoque es determinístico y no depende de ningún
+            // mecanismo especial de DomPDF para el TOTAL:
+            //   1) Se renderiza el documento una vez, sin mostrarlo, solo
+            //      para contar cuántas páginas tiene realmente.
+            //   2) Se renderiza una segunda vez pasándole ese total ya
+            //      conocido como un dato normal de la vista ($totalPaginas).
+            // El número de página ACTUAL sí se obtiene con CSS
+            // "counter(page)", que en este entorno funciona correctamente
+            // (fue "counter(pages)", el total, el que fallaba).
+            $pdfConteo = Pdf::loadView('proformas.pdf', $data + ['totalPaginas' => 1]);
+            $pdfConteo->setPaper('A4', 'portrait');
+            $dompdfConteo = $pdfConteo->getDomPDF();
+            $dompdfConteo->render();
+            $totalPaginas = $dompdfConteo->getCanvas()->get_page_count();
 
-            // ===== CONFIGURACIÓN DE PÁGINA A4, ENCABEZADOS Y PIES DE PÁGINA =====
-            $pdf->setPaper('A4', 'portrait'); // Forzar tamaño A4
-            $pdf->output(); // Forzar la generación para poder inyectar encabezados
-
-            // Inyectar encabezado y pie de página con numeración
-            $font = $pdf->getDomPDF()->getFontMetrics()->getFont("Times New Roman", "normal");
-            $canvas = $pdf->getDomPDF()->getCanvas();
-
-            // Pie de página: Número de página y nombre del sistema
-            $canvas->page_text(270, 820, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, 9, array(100,100,100));
-            $canvas->page_text(30, 820, "PROFORMA: " . $proforma->codigo, $font, 9, array(100,100,100));
-            
-            // Encabezado: Título o nombre de la institución en la parte superior
-            $canvas->page_text(30, 30, $cfg->config('laboratorio_nombre', 'CENTRO DE INVESTIGACIÓN MINERO AMBIENTAL'), $font, 10, array(100,100,100));
+            $pdf = Pdf::loadView('proformas.pdf', $data + ['totalPaginas' => $totalPaginas]);
+            $pdf->setPaper('A4', 'portrait');
 
             return $pdf->stream("proforma-{$proforma->codigo}.pdf");
 
         } catch (\Exception $e) {
             Log::error('Error al generar PDF: '.$e->getMessage());
 
-            return back()->with('error', '❌ Error al generar PDF: ' . $e->getMessage());
+            return back()->with('error', '❌ Error al generar PDF: '.$e->getMessage());
         }
     }
 
     /**
      * GENERAR PDF2- CADENA DE CUSTODIA
+     *
+     * NOTA: igual que en pdf(), el pie de página se maneja por CSS
+     * (position: fixed + counter(page)/counter(pages)) dentro de la vista
+     * "proformas.cadena_custodia". Si aún no lo tiene, agrega el mismo
+     * bloque .pie-pagina que se usó en "proformas.pdf".
      */
     public function pdfCadenaCustodia(Proforma $proforma)
     {
@@ -855,7 +872,14 @@ class ProformaController extends Controller
                 'muestreadoPorOpciones' => $this->muestreadoPorOpciones,
             ];
 
-            $pdf = Pdf::loadView('proformas.cadena_custodia', $data);
+            // ===== NUMERACIÓN "Página X de Y" (mismo mecanismo que en pdf()) =====
+            $pdfConteo = Pdf::loadView('proformas.cadena_custodia', $data + ['totalPaginas' => 1]);
+            $pdfConteo->setPaper('letter', 'landscape');
+            $dompdfConteo = $pdfConteo->getDomPDF();
+            $dompdfConteo->render();
+            $totalPaginas = $dompdfConteo->getCanvas()->get_page_count();
+
+            $pdf = Pdf::loadView('proformas.cadena_custodia', $data + ['totalPaginas' => $totalPaginas]);
             $pdf->setPaper('letter', 'landscape');
 
             return $pdf->stream("cadena-custodia-{$proforma->codigo}.pdf");

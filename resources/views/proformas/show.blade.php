@@ -76,12 +76,20 @@
                             <p class="h5">
                                 <span class="badge 
                                     @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
+<<<<<<< HEAD
                                     @elseif($proforma->tipo == 'ANALISIS QUIMICO') bg-info
+=======
+                                    @elseif($proforma->tipo == 'AGUA') bg-info
+>>>>>>> origin/main
                                     @else bg-secondary
                                     @endif">
                                     <i class="fas 
                                         @if($proforma->tipo == 'AMBIENTAL') fa-leaf
+<<<<<<< HEAD
                                         @elseif($proforma->tipo == 'ANALISIS QUIMICO') fa-tint
+=======
+                                        @elseif($proforma->tipo == 'AGUA') fa-tint
+>>>>>>> origin/main
                                         @else fa-flask
                                         @endif me-1"></i>
                                     {{ $proforma->tipo }}
@@ -868,7 +876,11 @@
             // Preview de saldo en modal de adelanto
             const adelantoInput = document.getElementById('nuevo_adelanto');
             const saldoPreview = document.getElementById('saldoPreview');
+<<<<<<< HEAD
             const totalProforma = {{ $proforma->total }}';
+=======
+            const totalProforma = {{ $proforma->total }};
+>>>>>>> origin/main
             
             if (adelantoInput && saldoPreview) {
                 adelantoInput.addEventListener('input', function() {

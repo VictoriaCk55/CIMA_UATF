@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-main">
     <!-- Encabezado de página -->
     <div class="page-header">
@@ -15,7 +13,7 @@
                 </p>
             </div>
             
-            <a href="{{ route('parametros.index') }}" class="btn btn-outline-secondary btn-volver" style="border-radius: 30px; padding: 8px 20px;">
+            <a href="<?php echo e(route('parametros.index')); ?>" class="btn btn-outline-secondary btn-volver" style="border-radius: 30px; padding: 8px 20px;">
                     <i class="fas fa-arrow-left me-2"></i>
                     Volver al listado
             </a>
@@ -31,8 +29,8 @@
             </h5>
         </div>
         <div class="card-body">
-            <form action="{{ route('parametros.store') }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('parametros.store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 
                 <div class="row">
                     <div class="col-md-12 mb-3">
@@ -40,16 +38,30 @@
                             Nombre del Parámetro *
                         </label>
                         <input type="text" 
-                               class="form-control @error('nombre') is-invalid @enderror" 
+                               class="form-control <?php $__errorArgs = ['nombre'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                id="nombre" 
                                name="nombre" 
-                               value="{{ old('nombre') }}" 
+                               value="<?php echo e(old('nombre')); ?>" 
                                required 
                                autofocus
                                placeholder="Ej: PST, pH, Ruido, DBO5, Coliformes Fecales">
-                        @error('nombre')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['nombre'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Nombre técnico del parámetro de análisis</small>
                     </div>
 
@@ -58,14 +70,28 @@
                             Nombre Completo
                         </label>
                         <input type="text" 
-                               class="form-control @error('nombre_completo') is-invalid @enderror" 
+                               class="form-control <?php $__errorArgs = ['nombre_completo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                id="nombre_completo" 
                                name="nombre_completo" 
-                               value="{{ old('nombre_completo') }}" 
+                               value="<?php echo e(old('nombre_completo')); ?>" 
                                placeholder="Ej: Partículas Totales Suspendidas">
-                        @error('nombre_completo')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['nombre_completo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Nombre completo o descriptivo del parámetro</small>
                     </div>
 
@@ -74,15 +100,29 @@
                             Método de Análisis *
                         </label>
                         <input type="text" 
-                               class="form-control @error('metodo') is-invalid @enderror" 
+                               class="form-control <?php $__errorArgs = ['metodo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                id="metodo" 
                                name="metodo" 
-                               value="{{ old('metodo') }}" 
+                               value="<?php echo e(old('metodo')); ?>" 
                                required
                                placeholder="Ej: TAS 080-2, Potenciometría, Gravimetría">
-                        @error('metodo')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['metodo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Método estandarizado de análisis según normas CIMA</small>
                     </div>
 
@@ -91,14 +131,28 @@
                             Descripción
                         </label>
                         <input type="text" 
-                               class="form-control @error('descripcion') is-invalid @enderror" 
+                               class="form-control <?php $__errorArgs = ['descripcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                id="descripcion" 
                                name="descripcion" 
-                               value="{{ old('descripcion') }}" 
+                               value="<?php echo e(old('descripcion')); ?>" 
                                placeholder="Ej: Partículas Totales Suspendidas - método TAS USA">
-                        @error('descripcion')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['descripcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Descripción breve del parámetro y su método</small>
                     </div>
 
@@ -113,94 +167,126 @@
                             <input type="number" 
                                    step="0.01" 
                                    min="0" 
-                                   class="form-control @error('precio_unitario') is-invalid @enderror" 
+                                   class="form-control <?php $__errorArgs = ['precio_unitario'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                    id="precio_unitario" 
                                    name="precio_unitario" 
-                                   value="{{ old('precio_unitario') }}" 
+                                   value="<?php echo e(old('precio_unitario')); ?>" 
                                    required
                                    placeholder="0.00">
                             <span class="input-group-text bg-light">Bs.</span>
                         </div>
-                        @error('precio_unitario')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['precio_unitario'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Precio por muestra en Bolivianos</small>
                     </div>
 
                     <div class="col-md-4 mb-3">
-<<<<<<< HEAD
-                        <label for="categoria" class="form-label">
-                            Categoría
-                        </label>
-                        <select class="form-select @error('categoria') is-invalid @enderror" 
-                                id="categoria" 
-                                name="categoria">
-                            <option value="">Seleccionar categoría...</option>
-                            @foreach(['AIRE', 'RUIDO', 'GASES', 'AGUA', 'SUELO'] as $cat)
-                                <option value="{{ $cat }}" {{ old('categoria') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                            @endforeach
-                        </select>
-                        @error('categoria')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">Ej: AIRE, RUIDO, GASES, AGUA</small>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-=======
->>>>>>> origin/main
                         <label for="tipo" class="form-label">
                             Tipo de Análisis *
                         </label>
-                        <select class="form-select @error('tipo') is-invalid @enderror" 
+                        <select class="form-select <?php $__errorArgs = ['tipo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                 id="tipo" 
                                 name="tipo" 
                                 required>
                             <option value="">Seleccionar tipo...</option>
-                            <option value="AMBIENTAL" {{ old('tipo') == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
-                            <option value="AGUA" {{ old('tipo') == 'AGUA' ? 'selected' : '' }}>AGUA</option>
-                            <option value="INVESTIGACION" {{ old('tipo') == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN</option>
+                            <option value="AMBIENTAL" <?php echo e(old('tipo') == 'AMBIENTAL' ? 'selected' : ''); ?>>AMBIENTAL</option>
+                            <option value="AGUA" <?php echo e(old('tipo') == 'AGUA' ? 'selected' : ''); ?>>AGUA</option>
+                            <option value="INVESTIGACION" <?php echo e(old('tipo') == 'INVESTIGACION' ? 'selected' : ''); ?>>INVESTIGACIÓN</option>
                         </select>
-                        @error('tipo')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['tipo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Categoría del análisis según formato CIMA</small>
                     </div>
 
-<<<<<<< HEAD
-=======
                     <div class="col-md-4 mb-3">
                         <label for="categoria" class="form-label">
                             Categoría
                         </label>
-                        <select class="form-select @error('categoria') is-invalid @enderror" 
+                        <select class="form-select <?php $__errorArgs = ['categoria'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                 id="categoria" 
                                 name="categoria">
                             <option value="">Seleccionar categoría...</option>
-                            @foreach(['AIRE', 'RUIDO', 'GASES', 'AGUA', 'SUELO'] as $cat)
-                                <option value="{{ $cat }}" {{ old('categoria') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = ['AIRE', 'RUIDO', 'GASES', 'AGUA', 'SUELO']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($cat); ?>" <?php echo e(old('categoria') == $cat ? 'selected' : ''); ?>><?php echo e($cat); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
-                        @error('categoria')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['categoria'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Ej: AIRE, RUIDO, GASES, AGUA</small>
                     </div>
 
->>>>>>> origin/main
                     <div class="col-md-6 mb-3">
                         <label for="unidad" class="form-label">
                             Unidad
                         </label>
                         <input type="text" 
-                               class="form-control @error('unidad') is-invalid @enderror" 
+                               class="form-control <?php $__errorArgs = ['unidad'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                id="unidad" 
                                name="unidad" 
-                               value="{{ old('unidad') }}" 
+                               value="<?php echo e(old('unidad')); ?>" 
                                placeholder="Ej: µg/m³, mg/l, dB(A), unid pH">
-                        @error('unidad')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['unidad'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Unidad de medición del parámetro</small>
                     </div>
 
@@ -209,14 +295,28 @@
                             Límite de Cuantificación
                         </label>
                         <input type="text" 
-                               class="form-control @error('limite_cuantificacion') is-invalid @enderror" 
+                               class="form-control <?php $__errorArgs = ['limite_cuantificacion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                id="limite_cuantificacion" 
                                name="limite_cuantificacion" 
-                               value="{{ old('limite_cuantificacion') }}" 
+                               value="<?php echo e(old('limite_cuantificacion')); ?>" 
                                placeholder="Ej: 4,00 a 10,00">
-                        @error('limite_cuantificacion')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['limite_cuantificacion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -224,14 +324,28 @@
                             Código POE
                         </label>
                         <input type="text" 
-                               class="form-control @error('codigo_poe') is-invalid @enderror" 
+                               class="form-control <?php $__errorArgs = ['codigo_poe'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                id="codigo_poe" 
                                name="codigo_poe" 
-                               value="{{ old('codigo_poe') }}" 
+                               value="<?php echo e(old('codigo_poe')); ?>" 
                                placeholder="Ej: POE 1-014">
-                        @error('codigo_poe')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['codigo_poe'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Código del procedimiento operativo estandarizado</small>
                     </div>
 
@@ -239,48 +353,63 @@
                         <label for="tecnica" class="form-label">
                             Técnica
                         </label>
-<<<<<<< HEAD
-                        <input type="text" 
-                               class="form-control @error('tecnica') is-invalid @enderror" 
-                               id="tecnica" 
-                               name="tecnica" 
-                               value="{{ old('tecnica') }}" 
-                               placeholder="Ej: Potenciometría, Absorción Atómica, Volumetría...">
-                        @error('tecnica')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">Técnica analítica utilizada (texto libre)</small>
-=======
-                        <select class="form-select @error('tecnica') is-invalid @enderror" 
+                        <select class="form-select <?php $__errorArgs = ['tecnica'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                 id="tecnica" 
                                 name="tecnica">
                             <option value="">Seleccionar técnica...</option>
-                            @foreach(['POTENCIOMETRIA', 'ABSORCION ATOMICA', 'FOTOMETRIA', 'UV-VISIBLE', 'IONOMETRIA', 'VOLUMETRIA', 'GRAVIMETRIA', 'NEFELOMÉTRICO', 'BACTEREOLOGIA', 'OTROS'] as $tec)
-                                <option value="{{ $tec }}" {{ old('tecnica') == $tec ? 'selected' : '' }}>{{ $tec }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = ['POTENCIOMETRIA', 'ABSORCION ATOMICA', 'FOTOMETRIA', 'UV-VISIBLE', 'IONOMETRIA', 'VOLUMETRIA', 'GRAVIMETRIA', 'NEFELOMÉTRICO', 'BACTEREOLOGIA', 'OTROS']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tec): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($tec); ?>" <?php echo e(old('tecnica') == $tec ? 'selected' : ''); ?>><?php echo e($tec); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
-                        @error('tecnica')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['tecnica'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Técnica analítica utilizada</small>
->>>>>>> origin/main
                     </div>
 
                     <div class="col-md-6 mb-4">
                         <label for="matriz" class="form-label">
                             Matriz
                         </label>
-                        <select class="form-select @error('matriz') is-invalid @enderror" 
+                        <select class="form-select <?php $__errorArgs = ['matriz'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                 id="matriz" 
                                 name="matriz">
                             <option value="">Seleccionar matriz...</option>
-                            @foreach(['AGUA', 'AIRE', 'SUELO', 'OTROS'] as $mat)
-                                <option value="{{ $mat }}" {{ old('matriz') == $mat ? 'selected' : '' }}>{{ $mat }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = ['AGUA', 'AIRE', 'SUELO', 'OTROS']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($mat); ?>" <?php echo e(old('matriz') == $mat ? 'selected' : ''); ?>><?php echo e($mat); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
-                        @error('matriz')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['matriz'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Matriz de análisis: AGUA, AIRE, SUELO</small>
                     </div>
 
@@ -288,23 +417,37 @@
                         <label for="tipo_medicion" class="form-label">
                             Tipo de Medición
                         </label>
-                        <select class="form-select @error('tipo_medicion') is-invalid @enderror" 
+                        <select class="form-select <?php $__errorArgs = ['tipo_medicion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                 id="tipo_medicion" 
                                 name="tipo_medicion">
                             <option value="">Seleccionar tipo de medición...</option>
-                            @foreach(['Ambiental', 'Industrial'] as $tm)
-                                <option value="{{ $tm }}" {{ old('tipo_medicion') == $tm ? 'selected' : '' }}>{{ $tm }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = ['Ambiental', 'Industrial']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tm): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($tm); ?>" <?php echo e(old('tipo_medicion') == $tm ? 'selected' : ''); ?>><?php echo e($tm); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
-                        @error('tipo_medicion')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['tipo_medicion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         <small class="text-muted">Ej: Ambiental, Industrial</small>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-between pt-3 border-top">
-                    <a href="{{ route('parametros.index') }}" class="btn btn-secondary" style="border-radius: 30px; padding: 10px 25px;">
+                    <a href="<?php echo e(route('parametros.index')); ?>" class="btn btn-secondary" style="border-radius: 30px; padding: 10px 25px;">
                         <i class="fas fa-times me-2"></i>
                         Cancelar
                     </a>
@@ -563,4 +706,5 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
     }
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\CIMA_UATF-main\resources\views/parametros/create.blade.php ENDPATH**/ ?>

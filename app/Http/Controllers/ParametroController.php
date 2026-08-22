@@ -318,6 +318,7 @@ class ParametroController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+<<<<<<< HEAD
 
     // ============================================================
     // NUEVAS FUNCIONES PARA EL PANEL DE PRECIOS MASIVOS
@@ -376,3 +377,6 @@ class ParametroController extends Controller
         }
     }
 }
+=======
+}
+>>>>>>> origin/main

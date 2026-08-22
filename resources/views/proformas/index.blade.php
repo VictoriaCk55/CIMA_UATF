@@ -64,7 +64,11 @@
                     </div>
                     <small class="text-muted mt-1 d-block">
                         <i class="fas fa-info-circle me-1"></i>
+<<<<<<< HEAD
                         Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, ANÁLISIS QUÍMICO, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
+=======
+                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, AGUA, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
+>>>>>>> origin/main
                     </small>
                 </div>
                 
@@ -231,12 +235,20 @@
                                     <td>
                                         <span class="badge rounded-pill 
                                             @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
+<<<<<<< HEAD
                                             @elseif($proforma->tipo == 'ANALISIS QUIMICO') bg-info
+=======
+                                            @elseif($proforma->tipo == 'AGUA') bg-info
+>>>>>>> origin/main
                                             @else bg-secondary
                                             @endif">
                                             <i class="fas 
                                                 @if($proforma->tipo == 'AMBIENTAL') fa-leaf
+<<<<<<< HEAD
                                                 @elseif($proforma->tipo == 'ANALISIS QUIMICO') fa-tint
+=======
+                                                @elseif($proforma->tipo == 'AGUA') fa-tint
+>>>>>>> origin/main
                                                 @else fa-flask
                                                 @endif me-1"></i>
                                             {{ $proforma->tipo }}
@@ -647,6 +659,7 @@ button[type="submit"]:focus {
         margin-bottom: 10px !important;
     }
 }
+<<<<<<< HEAD
 
 /* ========== CORRECCIÓN DE ESPACIADO PARA MÓVIL Y TABLETS ========== */
 @media (max-width: 992px) {
@@ -656,6 +669,8 @@ button[type="submit"]:focus {
         gap: 12px !important; /* Espacio horizontal entre ellos */
     }
 }
+=======
+>>>>>>> origin/main
 </style>
 
 @push('scripts')

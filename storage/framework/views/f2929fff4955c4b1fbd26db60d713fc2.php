@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    @php
+    <?php
         $cfg = \App\Models\Documento::whereSlug('solicitud-ensayo')->first() ?? new \App\Models\Documento;
         $logo = $cfg->config('logo_path');
-    @endphp
-    <title>REPORTE {{ $reporte->codigoRuido() }}</title>
+    ?>
+    <title>REPORTE <?php echo e($reporte->codigoRuido()); ?></title>
     <style>
         @page { margin: 10mm 15mm 10mm 15mm; }
         body {
@@ -51,7 +51,7 @@
     </style>
 </head>
 <body>
-    @php
+    <?php
         $p = $reporte->proforma;
         $c = $p->cliente;
         $rr = $reporte->resultados_ruido ?? [];
@@ -62,20 +62,20 @@
         $puntosCount = max(count($rr), count($pm));
         $info = $reporte->info('RUIDO');
         $tipoMedicion = $info['subtipo_ruido'] ?? 'Ruido Ambiental';
-    @endphp
+    ?>
 
     <!-- ENCABEZADO INSTITUCIONAL -->
     <div style="position: fixed; top: -12pt; left: 0; right: 0; background: #fff; z-index: 1000; padding-bottom: 3pt; border-bottom: 1.5pt solid #B0E68E;">
     <table style="border-collapse: collapse; width: auto; margin: 0 auto;">
         <tr>
             <td style="text-align: center; vertical-align: bottom; white-space: nowrap; padding: 0;">
-                @if($logo && file_exists(storage_path('app/public/' . $logo)))
-                    <img src="{{ storage_path('app/public/' . $logo) }}" style="width: 65px; height: auto; max-height: 65px;" alt="Logo">
-                @elseif(file_exists(public_path('images/logo-cima.jpg')))
-                    <img src="{{ public_path('images/logo-cima.jpg') }}" style="width: 65px; height: auto; max-height: 65px;" alt="Logo CIMA">
-                @elseif(file_exists(public_path('images/logo-cima.png')))
-                    <img src="{{ public_path('images/logo-cima.png') }}" style="width: 65px; height: auto; max-height: 65px;" alt="Logo CIMA">
-                @endif
+                <?php if($logo && file_exists(storage_path('app/public/' . $logo))): ?>
+                    <img src="<?php echo e(storage_path('app/public/' . $logo)); ?>" style="width: 65px; height: auto; max-height: 65px;" alt="Logo">
+                <?php elseif(file_exists(public_path('images/logo-cima.jpg'))): ?>
+                    <img src="<?php echo e(public_path('images/logo-cima.jpg')); ?>" style="width: 65px; height: auto; max-height: 65px;" alt="Logo CIMA">
+                <?php elseif(file_exists(public_path('images/logo-cima.png'))): ?>
+                    <img src="<?php echo e(public_path('images/logo-cima.png')); ?>" style="width: 65px; height: auto; max-height: 65px;" alt="Logo CIMA">
+                <?php endif; ?>
             </td>
             <td style="text-align: center; vertical-align: bottom; padding: 0 3cm;">
                 <div class="header-line1">CENTRO DE INVESTIGACIÓN MINERO AMBIENTAL</div>
@@ -83,10 +83,10 @@
                 <div class="header-line3">"CIMA - UATF"</div>
             </td>
             <td style="text-align: center; vertical-align: bottom; white-space: nowrap; padding: 0;">
-                @php $logoUatf = public_path('images/uatf.png'); @endphp
-                @if(file_exists($logoUatf))
-                    <img src="{{ $logoUatf }}" style="width: 55px; height: auto; max-height: 55px;" alt="Logo UATF">
-                @endif
+                <?php $logoUatf = public_path('images/uatf.png'); ?>
+                <?php if(file_exists($logoUatf)): ?>
+                    <img src="<?php echo e($logoUatf); ?>" style="width: 55px; height: auto; max-height: 55px;" alt="Logo UATF">
+                <?php endif; ?>
             </td>
         </tr>
     </table>
@@ -98,14 +98,14 @@
 
     <!-- INFORMACIÓN GENERAL -->
     <table class="info-grid">
-        <tr><td class="label">NOMBRE CLIENTE:</td><td class="value" colspan="3">{{ strtoupper($c->razon_social) }}</td></tr>
-        <tr><td class="label">CÓDIGO REPORTE:</td><td class="value" colspan="3">{{ $reporte->codigoRuido() }}</td></tr>
-        <tr><td class="label">FECHA EMISIÓN DE REPORTE:</td><td class="value" colspan="3">{{ !empty($info['fecha_emision']) ? \Carbon\Carbon::parse($info['fecha_emision'])->format('Y/m/d') : '' }}</td></tr>
-        <tr><td class="label">FECHA DE MEDICIÓN:</td><td class="value" colspan="3">{{ !empty($info['fecha_medicion']) ? \Carbon\Carbon::parse($info['fecha_medicion'])->format('Y/m/d') : '' }}</td></tr>
-        <tr><td class="label">TIPO DE MEDICIÓN:</td><td class="value" colspan="3">{{ $tipoMedicion }}</td></tr>
-        <tr><td class="label">PERIODO DE MEDICIÓN:</td><td class="value" colspan="3">{{ strtolower($info['periodo_medicion'] ?? '') }}</td></tr>
-        <tr><td class="label">MEDICIÓN EFECTUADA POR:</td><td class="value" colspan="3">{{ strtolower($info['medicion_efectuada_por'] ?? '') }}</td></tr>
-        <tr><td class="label">EQUIPO USADO PARA MEDICIÓN:</td><td class="value" colspan="3">{{ strtolower($info['equipo_usado'] ?? '') }}</td></tr>
+        <tr><td class="label">NOMBRE CLIENTE:</td><td class="value" colspan="3"><?php echo e(strtoupper($c->razon_social)); ?></td></tr>
+        <tr><td class="label">CÓDIGO REPORTE:</td><td class="value" colspan="3"><?php echo e($reporte->codigoRuido()); ?></td></tr>
+        <tr><td class="label">FECHA EMISIÓN DE REPORTE:</td><td class="value" colspan="3"><?php echo e(!empty($info['fecha_emision']) ? \Carbon\Carbon::parse($info['fecha_emision'])->format('Y/m/d') : ''); ?></td></tr>
+        <tr><td class="label">FECHA DE MEDICIÓN:</td><td class="value" colspan="3"><?php echo e(!empty($info['fecha_medicion']) ? \Carbon\Carbon::parse($info['fecha_medicion'])->format('Y/m/d') : ''); ?></td></tr>
+        <tr><td class="label">TIPO DE MEDICIÓN:</td><td class="value" colspan="3"><?php echo e($tipoMedicion); ?></td></tr>
+        <tr><td class="label">PERIODO DE MEDICIÓN:</td><td class="value" colspan="3"><?php echo e(strtolower($info['periodo_medicion'] ?? '')); ?></td></tr>
+        <tr><td class="label">MEDICIÓN EFECTUADA POR:</td><td class="value" colspan="3"><?php echo e(strtolower($info['medicion_efectuada_por'] ?? '')); ?></td></tr>
+        <tr><td class="label">EQUIPO USADO PARA MEDICIÓN:</td><td class="value" colspan="3"><?php echo e(strtolower($info['equipo_usado'] ?? '')); ?></td></tr>
     </table>
 
     <!-- TABLA DE RESULTADOS NPS -->
@@ -126,17 +126,17 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($rr as $r)
+            <?php $__currentLoopData = $rr; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $r): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <tr>
-                <td>{{ $r['codigo'] ?? '' }}</td>
-                <td>{{ $r['hora_inicial'] ?? '' }}</td>
-                <td>{{ $r['hora_final'] ?? '' }}</td>
-                <td>{{ $r['tipo_ruido'] ?? $subtipo }}</td>
-                <td class="num">{{ $r['lmax'] ?? '' }}</td>
-                <td class="num">{{ $r['lmin'] ?? '' }}</td>
-                <td class="num">{{ $r['leq'] ?? '' }}</td>
+                <td><?php echo e($r['codigo'] ?? ''); ?></td>
+                <td><?php echo e($r['hora_inicial'] ?? ''); ?></td>
+                <td><?php echo e($r['hora_final'] ?? ''); ?></td>
+                <td><?php echo e($r['tipo_ruido'] ?? $subtipo); ?></td>
+                <td class="num"><?php echo e($r['lmax'] ?? ''); ?></td>
+                <td class="num"><?php echo e($r['lmin'] ?? ''); ?></td>
+                <td class="num"><?php echo e($r['leq'] ?? ''); ?></td>
             </tr>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
     </table>
 
@@ -147,30 +147,30 @@
             <tr>
                 <th style="width: 18%;">CÓDIGO</th>
                 <th style="width: 42%;">DESCRIPCIÓN DEL PUNTO</th>
-                <th colspan="4" style="width: 40%;">UBICACIÓN<br><span style="font-size: 8pt; font-weight: normal;">ZONA {{ $pm[0]['zona'] ?? '' }}</span></th>
+                <th colspan="4" style="width: 40%;">UBICACIÓN<br><span style="font-size: 8pt; font-weight: normal;">ZONA <?php echo e($pm[0]['zona'] ?? ''); ?></span></th>
             </tr>
         </thead>
         <tbody>
-            @for($i = 0; $i < $puntosCount; $i++)
-            @php $r = $rr[$i] ?? []; $pt = $pm[$i] ?? []; @endphp
+            <?php for($i = 0; $i < $puntosCount; $i++): ?>
+            <?php $r = $rr[$i] ?? []; $pt = $pm[$i] ?? []; ?>
             <tr>
-                <td style="text-align: center;">{{ $r['codigo'] ?? $pt['codigo'] ?? '' }}</td>
-                <td class="left">{{ $pt['descripcion'] ?? '' }}</td>
-                <td style="text-align: center;">{{ $pt['direccion1'] ?? 'N' }}</td>
-                <td style="text-align: center;">{{ $pt['valor1'] ?? $pt['norte'] ?? '' }}</td>
-                <td style="text-align: center;">{{ $pt['direccion2'] ?? 'E' }}</td>
-                <td style="text-align: center;">{{ $pt['valor2'] ?? $pt['este'] ?? '' }}</td>
+                <td style="text-align: center;"><?php echo e($r['codigo'] ?? $pt['codigo'] ?? ''); ?></td>
+                <td class="left"><?php echo e($pt['descripcion'] ?? ''); ?></td>
+                <td style="text-align: center;"><?php echo e($pt['direccion1'] ?? 'N'); ?></td>
+                <td style="text-align: center;"><?php echo e($pt['valor1'] ?? $pt['norte'] ?? ''); ?></td>
+                <td style="text-align: center;"><?php echo e($pt['direccion2'] ?? 'E'); ?></td>
+                <td style="text-align: center;"><?php echo e($pt['valor2'] ?? $pt['este'] ?? ''); ?></td>
             </tr>
-            @endfor
+            <?php endfor; ?>
         </tbody>
     </table>
 
     <!-- COMENTARIOS -->
     <div class="comentario-box">
         <strong style="font-size: 10pt;">COMENTARIO:</strong>
-        @if($reporte->observaciones_ruido)
-        <div class="comentarios">{{ $reporte->observaciones_ruido }}</div>
-        @endif
+        <?php if($reporte->observaciones_ruido): ?>
+        <div class="comentarios"><?php echo e($reporte->observaciones_ruido); ?></div>
+        <?php endif; ?>
         <div class="comentarios" style="margin-top: 8pt;">De acuerdo al Reglamento en Materia de Contaminación Atmosférica de la Ley 1333, en su Anexo 6 - Limites permisibles de emisión de ruido, el limite maximo permisible de emisión de ruido en fuentes fijas es de 68 dB(A) de las seis a las veintidós horas y de 65 dB(A) de las veintidós a las seis horas.</div>
         <div class="comentarios">Este documento pierde validez si no cuenta con las firmas y sellos autorizados.</div>
     </div>
@@ -180,25 +180,25 @@
         <tr>
             <td>
                 <div class="firma-line">
-                    <strong>{{ $reporte->responsable_uia ?? '_________________________' }}</strong>
+                    <strong><?php echo e($reporte->responsable_uia ?? '_________________________'); ?></strong>
                 </div>
-                <div style="margin-top: 2pt;">{{ $reporte->cargo_responsable ?? 'RESPONSABLE - UIA' }}</div>
+                <div style="margin-top: 2pt;"><?php echo e($reporte->cargo_responsable ?? 'RESPONSABLE - UIA'); ?></div>
             </td>
             <td class="sello-cell">
-                @if($cfg->config('sello'))
-                <img src="{{ public_path($cfg->config('sello')) }}" class="sello-img" alt="Sello">
-                @endif
+                <?php if($cfg->config('sello')): ?>
+                <img src="<?php echo e(public_path($cfg->config('sello'))); ?>" class="sello-img" alt="Sello">
+                <?php endif; ?>
             </td>
             <td>
                 <div class="firma-line" style="margin-top: 40pt;">
-                    <strong>{{ $reporte->directora_cima ?? '_________________________' }}</strong>
+                    <strong><?php echo e($reporte->directora_cima ?? '_________________________'); ?></strong>
                 </div>
-                <div style="margin-top: 2pt;">{{ $reporte->cargo_directora ?? 'DIRECTORA CIMA - UATF' }}</div>
-                @if($cfg->config('sello_ovalado'))
+                <div style="margin-top: 2pt;"><?php echo e($reporte->cargo_directora ?? 'DIRECTORA CIMA - UATF'); ?></div>
+                <?php if($cfg->config('sello_ovalado')): ?>
                 <div style="text-align: right; margin-top: 4pt;">
-                    <img src="{{ public_path($cfg->config('sello_ovalado')) }}" class="sello-ovalado" alt="Sello Ovalado">
+                    <img src="<?php echo e(public_path($cfg->config('sello_ovalado'))); ?>" class="sello-ovalado" alt="Sello Ovalado">
                 </div>
-                @endif
+                <?php endif; ?>
             </td>
         </tr>
     </table>
@@ -228,3 +228,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH D:\CIMA_UATF-main\resources\views/reportes/ruido-pdf.blade.php ENDPATH**/ ?>

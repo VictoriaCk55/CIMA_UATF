@@ -333,7 +333,7 @@ class ReporteAmbientalController extends Controller
         $html = $this->renderPdfHtml($reporte);
 
         $pdf = Pdf::loadHTML($html);
-        $pdf->setPaper('letter', 'portrait');
+        $pdf->setPaper('a4', 'portrait');
         $pdf->setOption('isPhpEnabled', true);
 
         return $pdf->stream("reporte-ambiental-{$reporte->proforma_id}.pdf");
@@ -350,10 +350,10 @@ class ReporteAmbientalController extends Controller
         $html = view($vista, ['reporte' => $reporte])->render();
 
         $pdf = Pdf::loadHTML($html);
-        $pdf->setPaper('letter', 'portrait');
+        $pdf->setPaper('a4', 'portrait');
         $pdf->setOption('isPhpEnabled', true);
 
-        return $pdf->stream("reporte-{$categoria}-{$reporte->proforma_id}.pdf");
+        return $pdf->download("reporte-{$categoria}-{$reporte->proforma_id}.pdf");
     }
 
     public function pdfAire(ReporteAmbiental $reporte)
@@ -376,7 +376,7 @@ class ReporteAmbientalController extends Controller
         $html = $this->renderPdfHtml($reporte);
 
         $pdf = Pdf::loadHTML($html);
-        $pdf->setPaper('letter', 'portrait');
+        $pdf->setPaper('a4', 'portrait');
         $pdf->setOption('isPhpEnabled', true);
 
         return $pdf->download("reporte-ambiental-{$reporte->proforma_id}.pdf");

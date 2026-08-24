@@ -128,6 +128,27 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
+<<<<<<< HEAD
+=======
+                        <label for="categoria" class="form-label">
+                            Categoría
+                        </label>
+                        <select class="form-select @error('categoria') is-invalid @enderror" 
+                                id="categoria" 
+                                name="categoria">
+                            <option value="">Seleccionar categoría...</option>
+                            @foreach(['AIRE', 'RUIDO', 'GASES', 'AGUA', 'SUELO'] as $cat)
+                                <option value="{{ $cat }}" {{ old('categoria') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                            @endforeach
+                        </select>
+                        @error('categoria')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted">Ej: AIRE, RUIDO, GASES, AGUA</small>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+>>>>>>> actualizacion
                         <label for="tipo" class="form-label">
                             Tipo de Análisis *
                         </label>
@@ -146,6 +167,7 @@
                         <small class="text-muted">Categoría del análisis según formato CIMA</small>
                     </div>
 
+<<<<<<< HEAD
                     <div class="col-md-4 mb-3">
                         <label for="categoria" class="form-label">
                             Categoría
@@ -164,6 +186,8 @@
                         <small class="text-muted">Ej: AIRE, RUIDO, GASES, AGUA</small>
                     </div>
 
+=======
+>>>>>>> actualizacion
                     <div class="col-md-6 mb-3">
                         <label for="unidad" class="form-label">
                             Unidad
@@ -215,6 +239,7 @@
                         <label for="tecnica" class="form-label">
                             Técnica
                         </label>
+<<<<<<< HEAD
                         <select class="form-select @error('tecnica') is-invalid @enderror" 
                                 id="tecnica" 
                                 name="tecnica">
@@ -227,6 +252,18 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         <small class="text-muted">Técnica analítica utilizada</small>
+=======
+                        <input type="text" 
+                               class="form-control @error('tecnica') is-invalid @enderror" 
+                               id="tecnica" 
+                               name="tecnica" 
+                               value="{{ old('tecnica') }}" 
+                               placeholder="Ej: Potenciometría, Absorción Atómica, Volumetría...">
+                        @error('tecnica')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted">Técnica analítica utilizada (texto libre)</small>
+>>>>>>> actualizacion
                     </div>
 
                     <div class="col-md-6 mb-4">

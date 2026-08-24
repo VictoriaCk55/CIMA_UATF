@@ -6,7 +6,17 @@
 
     <style>
         @page{
+<<<<<<< HEAD
             margin: 1cm;
+=======
+            /* margin: 20px 12px; */
+            /* size: letter portrait; */
+            /* margin: 20mm; */
+            margin-top: 4cm;
+            margin-bottom: 6cm;
+            margin-left: 2.5cm;
+            margin-right: 2.5cm;
+>>>>>>> actualizacion
         }
 
         body{
@@ -24,19 +34,35 @@
         header{
             padding:0.5cm;
             position: fixed;
+<<<<<<< HEAD
             top: -1cm;
             left: 0;
             right:0;
+=======
+            top: -4cm;
+            left: 0;
+            right:0;
+            /* height: 3.5cm; */
+>>>>>>> actualizacion
             margin-bottom: 0.3cm;
         }
 
         footer{
             position: fixed;
+<<<<<<< HEAD
             bottom: -1cm;
             left: 0;
             right: 0;
             margin-bottom: 0;
             padding: 0;
+=======
+            bottom: -6cm;
+            left: 0;
+            right: 0;
+            margin-bottom: 0.3cm;
+            padding:0.5cm;
+            /* height: 3cm; */ */
+>>>>>>> actualizacion
         }
 
         .header-table{
@@ -180,6 +206,7 @@
                 </td>
 
                 <!-- TITULO -->
+<<<<<<< HEAD
                 <td width="64%" class="header-title" style="border: none; color: #0070C0;">
                     <div style="font-size: 12pt; font-weight: bold; line-height: 1.2; font-family: 'Times New Roman', Times, serif;">
                         {{ strtoupper($cfg->config('laboratorio_nombre')) }}
@@ -194,6 +221,22 @@
                     </div>
 
                     <div style="display: inline-block; padding: 2px 6px; margin-top: 2px; font-size: 7pt; font-family: 'Times New Roman', Times, serif; font-weight: bold; font-style: italic;">
+=======
+                <td width="64%" class="header-title" style="border: none; color: #003366;">
+                    <div style="font-size: 13px; font-weight: bold; line-height: 1.2;">
+                        {{ strtoupper($cfg->config('laboratorio_nombre')) }}
+                    </div>
+
+                    <div style="font-size: 13px; font-weight: bold; line-height: 1.2;">
+                        {{ strtoupper($cfg->config('universidad_nombre')) }}
+                    </div>
+
+                    <div style="font-size: 18px; font-weight: bold; margin-top: 2px;">
+                        {{ strtoupper($cfg->config('institucion_sigla')) }}
+                    </div>
+
+                    <div style="display: inline-block; padding: 2px 6px; margin-top: 2px; font-size: 8px;">
+>>>>>>> actualizacion
                         {{ $cfg->codigo_documento }}/Ver. {{ $cfg->version }}/{{ $cfg->fecha_documento }}
                     </div>
                 </td>
@@ -225,7 +268,11 @@
         $m2 = $bloque * 2 + 2;
         $tieneM2 = $m2 <= $maxMuestras;
     @endphp
+<<<<<<< HEAD
     <div style="margin-top: 2.3cm;@if($bloque > 0) page-break-before: always; @endif">
+=======
+    <div @if($bloque > 0) style="page-break-before: always;" @endif>
+>>>>>>> actualizacion
 
     <!-- TÍTULO -->
     <table>
@@ -235,7 +282,11 @@
             </td>
         </tr>
         <tr>
+<<<<<<< HEAD
             <td style="text-align: right; color: #ef1111; font-size: 16pt; font-family: 'Times New Roman', Times, serif;">
+=======
+            <td style="text-align: right; color: #ef1111; font-size: 16px;">
+>>>>>>> actualizacion
                 <strong>Nº:</strong> {{ $proforma->numero_recepcion ?? $proforma->codigo }}
             </td>
         </tr>
@@ -247,6 +298,7 @@
 
     <br>
 
+<<<<<<< HEAD
     <table style="width: 100%; border-collapse: collapse; color: #0070C0; font-size: 10pt; font-family: "Times New Roman", Times, serif;">
 
     <!-- RAZÓN SOCIAL -->
@@ -255,10 +307,22 @@
             RAZÓN SOCIAL/CLIENTE:
             <span style="font-weight: normal; text-transform: uppercase;">
                 {{ strtoupper($proforma->cliente->razon_social ?? '---') }}
+=======
+    <table style="width: 100%; border-collapse: collapse; color: #003366; font-size: 11px; font-family: "Times New Roman", Times, serif; table-layout: fixed;">
+
+    <!-- RAZÓN SOCIAL -->
+    <tr>
+        <td colspan="2" style="padding: 6px; font-weight: bold; text-align: left;">
+            
+            RAZÓN SOCIAL/CLIENTE:
+            <span style="font-weight: normal; ">
+                {{ $proforma->cliente->razon_social ?? '---' }}
+>>>>>>> actualizacion
             </span>
         </td>
     </tr>
 
+<<<<<<< HEAD
     <!-- FILA 1 -->
     <tr style="height: 0.4cm;">
         <td style="width: 5.3cm; font-weight: bold; padding: 1px 3px; text-align: left; font-style: italic; line-height: 1;">CONTACTO CLIENTE:</td>
@@ -289,11 +353,77 @@
         <td style="padding: 1px 3px; text-align: left; text-transform: uppercase; font-style: italic; line-height: 1;">{{ strtoupper($proforma->procedencia ?? '---') }}</td>
         <td style="font-weight: bold; padding: 1px 3px; text-align: left; font-style: italic; line-height: 1;">FECHA EMISIÓN:</td>
         <td style="width: 2.2cm; padding: 1px 3px; text-align: left; font-style: italic; line-height: 1;">{{ now()->format('Y-m-d') }}</td>
+=======
+    <!-- CUERPO PRINCIPAL -->
+    <tr>
+
+        <!-- IZQUIERDA -->
+        <td style="width: 60%; vertical-align: top; padding: 3px; text-align: left;">
+
+            <table style="width: 100%; border-collapse: collapse; table-layout: fixed; text-align: left;">
+
+                <tr>
+                    <td style="width: 60%; font-weight: bold; padding: 3px; text-align: left;">CONTACTO CLIENTE:</td>
+                    <td style="width: 60%; padding: 3px; text-align: left;">{{ $proforma->cliente->persona_contacto ?? '---' }}</td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight: bold; padding: 3px; text-align: left;">TIPO DE MUESTRA:</td>
+                    <td style="padding: 3px; text-align: left;">{{ $proforma->tipo_muestra ?? '---' }}</td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight: bold; padding: 3px; text-align: left;">MUESTREADO POR:</td>
+                    <td style="padding: 3px; text-align: left;">{{ $proforma->muestreado_por ?? 'CLIENTE' }}</td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight: bold; padding: 3px; text-align: left;">PROCEDENCIA:</td>
+                    <td style="padding: 3px; text-align: left;">{{ $proforma->procedencia ?? '---' }}</td>
+                </tr>
+
+            </table>
+
+        </td>
+
+        <!-- DERECHA -->
+        <td style="width: 40%; vertical-align: top; padding: 3px; text-align: left;">
+
+            <table style="width: 100%; border-collapse: collapse; table-layout: fixed; text-align: left;">
+
+                <tr>
+                    <td style="width: 40%; font-weight: bold; padding: 3px; text-align: left;">FECHA RECEPCIÓN:</td>
+                    <td style="width: 40%; padding: 3px; text-align: left;">
+                        {{ optional($proforma->fecha_recepcion)->format('Y-m-d') ?? '---' }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight: bold; padding: 3px; text-align: left;">INICIO ENSAYO:</td>
+                    <td style="padding: 3px; text-align: left;">{{ $proforma->fecha_recepcion->format('d/m/Y') }}</td>  //{{ optional($proforma->fecha_inicio_ensayo)->format('Y-m-d') ?? '---' }}
+                </tr>
+
+                <tr>
+                    <td style="font-weight: bold; padding: 3px; text-align: left;">CONCLUSIÓN ENSAYO:</td> 
+                    <td style="padding: 3px; text-align: left;">{{ optional($proforma->fecha_conclusion_ensayo)->format('Y-m-d') ?? '---' }}</td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight: bold; padding: 3px; text-align: left;">FECHA EMISIÓN:</td>
+                    <td style="padding: 3px; text-align: left;">{{ now()->format('Y-m-d') }}</td>
+                </tr>
+
+            </table>
+
+        </td>
+
+>>>>>>> actualizacion
     </tr>
 
 </table>
 
     <br>
+<<<<<<< HEAD
     <table style="width: 75%; margin: 0 auto; border-collapse: collapse; table-layout: fixed; border: 2px solid #000; font-size: 10px;">
         <!-- FILA SUPERIOR -->
         <tr>
@@ -304,6 +434,19 @@
 
             <!-- TITULO -->
             <td colspan="3" style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 26px; font-size: 9pt; font-family: 'Times New Roman', Times, serif; font-style: italic;">
+=======
+    <table style="width: 96%; margin: 0 auto; border-collapse: collapse; table-layout: fixed; border: 2px solid #000; font-size: 10px;">
+        <!-- FILA SUPERIOR -->
+        <tr>
+            <!-- DATOS DE LA MUESTRA -->
+            <td rowspan="5" style="width: 15%; border: 1px solid #000; text-align: center; vertical-align: middle; font-weight: bold; background: #f5f5f5;">
+                DATOS DE<br>LA MUESTRA<br>
+                <span style="font-size: 10px;">(M{{ $m1 }}@if($tieneM2)-M{{ $m2 }}@endif)</span>
+            </td>
+
+            <!-- TITULO -->
+            <td colspan="3" style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 26px;">
+>>>>>>> actualizacion
                 CÓDIGO DE LABORATORIO:
             </td>
 
@@ -319,7 +462,11 @@
         <!-- FILA -->
         <tr>
 
+<<<<<<< HEAD
             <td colspan="3" style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 18px; font-size: 9pt; font-family: 'Times New Roman', Times, serif; font-style: italic;">
+=======
+            <td colspan="3" style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 18px;">
+>>>>>>> actualizacion
                 CÓDIGO CLIENTE:
             </td>
 
@@ -334,13 +481,21 @@
         <!-- FILA -->
         <tr>
 
+<<<<<<< HEAD
             <td colspan="3" style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 18px; font-size: 9pt; font-family: 'Times New Roman', Times, serif; font-style: italic;">
+=======
+            <td colspan="3" style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 18px;">
+>>>>>>> actualizacion
                 FECHA DE MUESTREO:
             </td>
 
             @for($n = $m1; $n <= ($tieneM2 ? $m2 : $m1); $n++)
             <td style="border: 1px solid #000; background: #9bd9e6;">
+<<<<<<< HEAD
                 {{ optional($proforma->fecha_emision)->format('Y-m-d') ?? '---' }}
+=======
+                {{ optional($proforma->fecha_emision)->format('d/m/Y') ?? '---' }}
+>>>>>>> actualizacion
             </td>
             @endfor
 
@@ -349,11 +504,19 @@
         <!-- COORDENADAS -->
         <tr>
 
+<<<<<<< HEAD
             <td rowspan="2" colspan="2" style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 34px; font-size: 9pt; font-family: 'Times New Roman', Times, serif; font-style: italic;">
                 COORDENADAS DE PUNTO DE MUESTREO: {{ $muestreo->zona_utm ?: '' }}
             </td>
 
             <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 18px; font-size: 9pt; font-family: 'Times New Roman', Times, serif; font-style: italic;">
+=======
+            <td rowspan="2" colspan="2" style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 34px;">
+                COORDENADAS DE PUNTO DE MUESTREO: {{ $muestreo->zona_utm ?? 'ZONA 19K' }}
+            </td>
+
+            <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 18px;">
+>>>>>>> actualizacion
                 {{ $muestreo->punto_cardinal_1 ?? 'E' }}
             </td>
 
@@ -367,7 +530,11 @@
 
         <!-- N -->
         <tr>
+<<<<<<< HEAD
             <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 18px; font-size: 9pt; font-family: 'Times New Roman', Times, serif; font-style: italic;">
+=======
+            <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 18px;">
+>>>>>>> actualizacion
                 {{ $muestreo->punto_cardinal_2 ?? 'N' }}
             </td>
 
@@ -380,6 +547,7 @@
 
         <!-- CABECERA -->
         <tr>
+<<<<<<< HEAD
             <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 32px; font-size: 9pt; font-family: 'Times New Roman', Times, serif; font-style: italic;">
                 PARÁMETRO
             </td>
@@ -403,6 +571,31 @@
             @if($tieneM2)
             <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; font-size: 9pt; font-family: 'Times New Roman', Times, serif; font-style: italic;">
                 RESULTADOS DE ENSAYO
+=======
+            <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold; height: 32px;">
+                PARAMETRO
+            </td>
+
+            <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold;">
+                POE / TÉCNICA
+            </td>
+
+            <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold;">
+                LIMITES DE CUANTIFICACIÓN
+            </td>
+
+            <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold;">
+                UNIDAD
+            </td>
+
+            <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold;">
+                RESULTADOS M{{ $m1 }}
+            </td>
+
+            @if($tieneM2)
+            <td style="border: 1px solid #000; background: #9bd9e6; font-weight: bold;">
+                RESULTADOS M{{ $m2 }}
+>>>>>>> actualizacion
             </td>
             @endif
         </tr>
@@ -411,6 +604,7 @@
         @foreach($proforma->parametros as $p)
 
         <tr>
+<<<<<<< HEAD
             <td style="border: 1px solid #000; height: 28px; text-align: center; vertical-align: middle; font-size: 10pt; font-family: 'Times New Roman', Times, serif;">
                 {{ $p->nombre }}
             </td>
@@ -428,11 +622,34 @@
             </td>
 
             <td style="border: 1px solid #000; text-align: center; vertical-align: middle; font-size: 10pt; font-family: 'Times New Roman', Times, serif;">
+=======
+            <td style="border: 1px solid #000; height: 28px; text-align: center; vertical-align: middle;">
+                {{ $p->nombre }}
+            </td>
+
+            <td style="border: 1px solid #000; text-align: center; vertical-align: middle; font-size: 9px;">
+                {{ $p->codigo_poe ?? '---' }} - {{ $p->tecnica ?? '---' }}
+            </td>
+
+            <td style="border: 1px solid #000; text-align: center; vertical-align: middle;">
+                {{ $p->limite_cuantificacion ?? '---' }}
+            </td>
+
+            <td style="border: 1px solid #000; text-align: center; vertical-align: middle;">
+                {{ $p->unidad ?? '---' }}
+            </td>
+
+            <td style="border: 1px solid #000; text-align: center; vertical-align: middle;">
+>>>>>>> actualizacion
                 {{ $resultados[$m1][$p->id] ?? '---' }}
             </td>
 
             @if($tieneM2)
+<<<<<<< HEAD
             <td style="border: 1px solid #000; text-align: center; vertical-align: middle; font-size: 10pt; font-family: 'Times New Roman', Times, serif;">
+=======
+            <td style="border: 1px solid #000; text-align: center; vertical-align: middle;">
+>>>>>>> actualizacion
                 {{ $resultados[$m2][$p->id] ?? '---' }}
             </td>
             @endif
@@ -451,10 +668,17 @@
             </td>
         </tr>
     </table>
+<<<<<<< HEAD
     <div style="font-size: 8pt; margin-top: 8px; padding: 4px 8px; background-color: #f8f9fa; border-radius: 3px; border-left: 3px solid #2c5282; font-family: 'Times New Roman', Times, serif;">
         <p style="text-align: left; margin: 0; padding: 0; line-height: 1.2;"> {{ $cfg->config('nota1', 'La información del presente informe corresponde a los resultados de ensayos en la muestra recepcionada.') }}</p>
         <p style="text-align: left; margin: 0; padding: 0; line-height: 1.2;"> {{ $cfg->config('nota2', '"CIMA-UATF", NO asume ninguna responsabilidad sobre la información proporcionada por el cliente, que pueda afectar la validez de los resultados.') }}</p>
         <p style="text-align: left; margin: 0; padding: 0; line-height: 1.2;"> {{ $cfg->config('nota3', '"CIMA-UATF", solo reconoce como válidos, informes de ensayo emitidos en soporte físico, con las firmas y sellos autorizados.') }}</p>
+=======
+    <div style="font-size: 10px; margin-top: 15px; padding: 8px; background-color: #f8f9fa; border-radius: 3px; border-left: 3px solid #2c5282;">
+        <p style="text-align: left;"> {{ $cfg->config('nota1', 'La información del presente informe corresponde a los resultados de ensayos en la muestra recepcionada.') }}</p>
+        <p style="text-align: left;"> {{ $cfg->config('nota2', '"CIMA-UATF", NO asume ninguna responsabilidad sobre la información proporcionada por el cliente, que pueda afectar la validez de los resultados.') }}</p>
+        <p style="text-align: left;"> {{ $cfg->config('nota3', '"CIMA-UATF", solo reconoce como válidos, informes de ensayo emitidos en soporte físico, con las firmas y sellos autorizados.') }}</p>
+>>>>>>> actualizacion
     </div>
     </div>
     @endfor
@@ -463,7 +687,11 @@
         <table class="sin-borde">
             <tr class="sin-borde">
                 <td class="sin-borde center">
+<<<<<<< HEAD
                     <br><br><br><br>
+=======
+                    <br><br><br>
+>>>>>>> actualizacion
                     _________________________
                     <br>
                     {{ $cfg->config('responsable_nombre') }}
@@ -471,7 +699,11 @@
                     <strong>{{ $cfg->config('responsable_cargo') }}</strong>
                 </td>
                 <td class="sin-borde center">
+<<<<<<< HEAD
                     <br><br><br><br>
+=======
+                    <br><br><br>
+>>>>>>> actualizacion
                     _________________________
                     <br>
                     {{ $cfg->config('director_nombre') }}
@@ -480,6 +712,7 @@
                 </td>
             </tr>
         </table>
+<<<<<<< HEAD
         <br>
         <br>
         <br>
@@ -491,6 +724,9 @@
                 <td style="text-align: left; font-size: 8pt; font-family: 'Times New Roman', Times, serif; font-style: italic; padding: 0; border: none; white-space: nowrap;">--------------------</td>
             </tr>
         </table>
+=======
+        <br><br>
+>>>>>>> actualizacion
 
         <div style="border-top: 2px solid #2d5ea8; margin-bottom: 4px;">
         </div>
@@ -499,7 +735,11 @@
 
             <tr>
 
+<<<<<<< HEAD
                 <td class="footer-text" style="border: none; text-align: center; font-size: 7pt; font-style: italic; font-weight: bold; font-family: 'Times New Roman', Times, serif; line-height: 1.1;">
+=======
+                <td class="footer-text" style="border: none; text-align: center; font-size: 8px; line-height: 1.1;">
+>>>>>>> actualizacion
                     {{ $cfg->config('footer_direccion') }} Edificio facultad de Ingenieria Minera bloque 1. segundo piso; Telefono/Fax:62-29711
 
                     <br>
@@ -508,11 +748,19 @@
 
                     <br>
 
+<<<<<<< HEAD
+=======
+                    <strong>
+>>>>>>> actualizacion
                         Página
                         <span class="pagenum"></span>
                         de
                         <span class="pagenum"></span>
+<<<<<<< HEAD
                     
+=======
+                    </strong>
+>>>>>>> actualizacion
                     <br><br>
 
                 </td>

@@ -101,6 +101,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/parametros/{id}/restore', [ParametroController::class, 'restore'])->name('parametros.restore')->middleware('permission:restaurar parametros');
         Route::delete('/parametros/{id}/force-delete', [ParametroController::class, 'forceDelete'])->name('parametros.force-delete')->middleware('permission:forzar eliminar parametros');
 
+<<<<<<< HEAD
+=======
+        // ===== NUEVA RUTA: PANEL DE PRECIOS MASIVOS (AGREGADA AQUÍ) =====
+        Route::get('/parametros/precios/masivos', [ParametroController::class, 'preciosMasivos'])->name('parametros.precios.masivos')->middleware('permission:editar parametros');
+        Route::post('/parametros/precios/masivos', [ParametroController::class, 'actualizarPreciosMasivos'])->name('parametros.precios.actualizar')->middleware('permission:editar parametros');
+
+>>>>>>> actualizacion
         // ===== PROFORMAS =====
         Route::get('/proformas/create', [ProformaController::class, 'create'])->name('proformas.create')->middleware('permission:crear proformas');
         Route::post('/proformas', [ProformaController::class, 'store'])->name('proformas.store')->middleware('permission:crear proformas');
@@ -203,4 +210,8 @@ Route::get('/reportes-ambientales/{reporte}/pdf', [App\Http\Controllers\ReporteA
 Route::get('/reportes-ambientales/{reporte}/pdf/aire', [App\Http\Controllers\ReporteAmbientalController::class, 'pdfAire'])->name('reportes.ambiental.pdf.aire')->middleware('role:admin|tecnico|analista');
 Route::get('/reportes-ambientales/{reporte}/pdf/ruido', [App\Http\Controllers\ReporteAmbientalController::class, 'pdfRuido'])->name('reportes.ambiental.pdf.ruido')->middleware('role:admin|tecnico|analista');
 Route::get('/reportes-ambientales/{reporte}/pdf/gases', [App\Http\Controllers\ReporteAmbientalController::class, 'pdfGases'])->name('reportes.ambiental.pdf.gases')->middleware('role:admin|tecnico|analista');
+<<<<<<< HEAD
 Route::get('/reportes-ambientales/{reporte}/descargar', [App\Http\Controllers\ReporteAmbientalController::class, 'downloadPdf'])->name('reportes.ambiental.download')->middleware('role:admin|tecnico|analista');
+=======
+Route::get('/reportes-ambientales/{reporte}/descargar', [App\Http\Controllers\ReporteAmbientalController::class, 'downloadPdf'])->name('reportes.ambiental.download')->middleware('role:admin|tecnico|analista');
+>>>>>>> actualizacion

@@ -601,12 +601,19 @@ class ResultadosController extends Controller
         );
 
         // Configuración PDF
+<<<<<<< HEAD
         $pdf->setPaper('a4', 'landscape');
 
         $pdf->render();
 
         return $pdf->download(
             'resultados-de-ensayo-'.$proforma->codigo.'.pdf'
+=======
+        $pdf->setPaper('letter', 'landscape');
+
+        return $pdf->stream(
+            'resultados-ensayo-'.$proforma->codigo.'.pdf'
+>>>>>>> actualizacion
         );
     }
 
@@ -650,10 +657,17 @@ class ResultadosController extends Controller
             ) + ['muestreo' => $proforma]
         );
 
+<<<<<<< HEAD
         $pdf->setPaper('a4', 'portrait');
 
         return $pdf->download(
             'informe-de-resultados-'.$proforma->numero_recepcion.'-'.$proforma->codigo.'.pdf'
+=======
+        $pdf->setPaper('letter', 'portrait');
+
+        return $pdf->stream(
+            'imprimir-'.$proforma->codigo.'.pdf'
+>>>>>>> actualizacion
         );
     }
 
@@ -700,10 +714,17 @@ class ResultadosController extends Controller
             ) + ['muestreo' => $proforma]
         );
 
+<<<<<<< HEAD
         $pdf->setPaper('a4', 'portrait');
 
         return $pdf->download(
             'informe-resultados-permisibles-'.$proforma->numero_recepcion.'-'.$proforma->codigo.'.pdf'
+=======
+        $pdf->setPaper('letter', 'portrait');
+
+        return $pdf->stream(
+            'informe-permisibles-'.$proforma->codigo.'.pdf'
+>>>>>>> actualizacion
         );
     }
 }

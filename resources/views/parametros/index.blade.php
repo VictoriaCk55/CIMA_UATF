@@ -15,10 +15,19 @@
                 </p>
             </div>
             
+<<<<<<< HEAD
             <div class="d-flex gap-2">
                 @auth
                      @can('crear parametros')
                         <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;">
+=======
+            <div class="d-flex gap-2 flex-wrap">
+                @auth
+                     @can('crear parametros')
+                        <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                           onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
+                           onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
+>>>>>>> actualizacion
                             <i class="fas fa-plus-circle"></i>
                             Nuevo Parámetro
                         </a>
@@ -28,6 +37,21 @@
                         </div>
                     @endcan
                 @endauth
+<<<<<<< HEAD
+=======
+
+                <!-- BOTÓN NUEVO PARA ACTUALIZAR PRECIOS CON ANIMACIÓN -->
+                @can('editar parametros')
+                    <a href="{{ route('parametros.precios.masivos') }}" 
+                       class="btn" 
+                       style="background-color: #28a745; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                       onmouseover="this.style.backgroundColor='#218838'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(40, 167, 69, 0.3)';"
+                       onmouseout="this.style.backgroundColor='#28a745'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
+                        <i class="fas fa-dollar-sign me-1"></i>
+                        Actualizar Precios
+                    </a>
+                @endcan
+>>>>>>> actualizacion
             </div>
         </div>
     </div>
@@ -259,7 +283,13 @@
                                     Limpiar búsqueda
                                 </a>
                             @else
+<<<<<<< HEAD
                                 <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;">
+=======
+                                <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                                   onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
+                                   onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
+>>>>>>> actualizacion
                                     <i class="fas fa-plus-circle me-2"></i>
                                     Crear primer parámetro
                                 </a>

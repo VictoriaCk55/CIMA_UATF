@@ -7,7 +7,11 @@
     <style>
 
         @page{
+<<<<<<< HEAD
             size: A4 landscape;
+=======
+            size: letter landscape;
+>>>>>>> actualizacion
             margin: 10mm;
         }
 
@@ -46,7 +50,11 @@
         }
         .text-center{
             text-align: center;
+<<<<<<< HEAD
             font-size: 12pt;
+=======
+            font-size: 12px;
+>>>>>>> actualizacion
         }
 
         /* =====================================================
@@ -54,8 +62,13 @@
         ====================================================== */
 
         .logo-container{
+<<<<<<< HEAD
             width: 60px;
             height: 60px;
+=======
+            width: 40px;
+            height: 40px;
+>>>>>>> actualizacion
             border: 1px solid #aaa;
             margin: auto;
             text-align: center;
@@ -63,17 +76,27 @@
         }
 
         .logo-container img{
+<<<<<<< HEAD
             max-width: 55px;
             max-height: 55px;
+=======
+            max-width: 35px;
+            max-height: 35px;
+>>>>>>> actualizacion
             margin-top: 3px;
         }
 
         .titulo-principal{
+<<<<<<< HEAD
             font-size: 14pt;
+=======
+            font-size: 16px;
+>>>>>>> actualizacion
             font-weight: bold;
             letter-spacing: 1px;
             color: #1c3d6e;
             margin: 0;
+<<<<<<< HEAD
             font-family: 'Times New Roman', Times, serif;
         }
 
@@ -82,6 +105,14 @@
             font-weight: bold;
             padding: 3px;
             font-family: 'Times New Roman', Times, serif;
+=======
+        }
+
+        .codigo-cell{
+            font-size: 9px;
+            font-weight: bold;
+            padding: 3px;
+>>>>>>> actualizacion
         }
 
         /* =====================================================
@@ -116,11 +147,14 @@
            ALTURAS
         ====================================================== */
 
+<<<<<<< HEAD
         .fila-superior td{
             font-size: 9pt;
             font-family: 'Times New Roman', Times, serif;
         }
 
+=======
+>>>>>>> actualizacion
         .fila-superior{
             height: 7mm;
         }
@@ -150,7 +184,11 @@
         .col-identificacion,
         .col-codigo,
         .col-matriz-principal{
+<<<<<<< HEAD
             font-size: 10pt;
+=======
+            font-size: 9px;
+>>>>>>> actualizacion
             font-weight: bold;
             padding: 1px;
             line-height: 1.1;
@@ -332,7 +370,11 @@
             <td colspan="2">{{ $proforma->tipo_muestra }}</td>
 
             <!-- REQUERIMIENTO -->
+<<<<<<< HEAD
             <td colspan="31" rowspan="3" class="text-center" style="font-size: 12pt; font-family: 'Times New Roman', Times, serif;">
+=======
+            <td colspan="31" rowspan="3" class="text-center">
+>>>>>>> actualizacion
 
                 <strong>REQUERIMIENTO DE ANALISIS</strong>
 
@@ -354,7 +396,11 @@
             </td>
 
             <!-- ESPACIO GRANDE -->
+<<<<<<< HEAD
             <td colspan="2">{{ $proforma->fecha_emision->format('Y/m/d') }}</td>
+=======
+            <td colspan="2">{{ $proforma->fecha_emision->format('d/m/Y') }}</td>
+>>>>>>> actualizacion
 
         </tr>
 
@@ -372,7 +418,11 @@
             </td>
 
             <!-- ESPACIO GRANDE -->
+<<<<<<< HEAD
             <td colspan="2">{{ $proforma->fecha_recepcion->format('Y/m/d') }}</td>
+=======
+            <td colspan="2">{{ $proforma->fecha_recepcion->format('d/m/Y') }}</td>
+>>>>>>> actualizacion
 
         </tr>
 
@@ -535,7 +585,11 @@
             </td>
 
             <!-- CODIGO -->
+<<<<<<< HEAD
             <td colspan="1" style="width: 10mm; font-size: 9pt; font-family: 'Times New Roman', Times, serif; text-align: center; overflow: hidden;">
+=======
+            <td colspan="1" style="width: 10mm; font-size: 7px; text-align: center; overflow: hidden;">
+>>>>>>> actualizacion
                 @php
                     $numeroProforma = last(explode('-', $proforma->codigo));
                     $partesCodigoLab = explode('-', $proforma->generarCodigoLaboratorio($numMuestra));
@@ -621,7 +675,11 @@
     </table>
         <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
             <tr>
+<<<<<<< HEAD
                 <td style="border:1px solid black; padding:5px; font-size: 11pt; background-color: rgb(100, 170, 220); color: #000">
+=======
+                <td style="border:1px solid black; padding:5px; font-size: 12px; background-color: #2c5282; color: #fff">
+>>>>>>> actualizacion
                     <strong>OBSERVACIONES</strong>
                 </td>
             </tr>

@@ -313,7 +313,11 @@
                                     id="tipo" name="tipo" required 
                                     onchange="calcularTotalesEstimados()">
                                 <option value="AMBIENTAL" {{ old('tipo', $proforma->tipo) == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
+<<<<<<< HEAD
                                 <option value="AGUA" {{ old('tipo', $proforma->tipo) == 'AGUA' ? 'selected' : '' }}>AGUA</option>
+=======
+                                <option value="ANALISIS QUIMICO" {{ old('tipo', $proforma->tipo) == 'ANALISIS QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
+>>>>>>> actualizacion
                                 <option value="INVESTIGACION" {{ old('tipo', $proforma->tipo) == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN (20% descuento)</option>
                             </select>
                             @error('tipo')
@@ -669,6 +673,12 @@
                                     </button>
                                 </div>
                             </div>
+<<<<<<< HEAD
+=======
+
+                            <!-- CAMPO OCULTO PARA GUARDAR EL ORDEN (Tarea 30) -->
+                            <input type="hidden" name="parametros[{{ $paramIndex }}][orden]" value="{{ $paramIndex }}">
+>>>>>>> actualizacion
                             
                             <!-- Método de ensayo -->
                             <div class="row mt-2 metodo-container" id="metodo-{{ $paramIndex }}" style="display: {{ $parametro->categoria === 'GASES' ? 'none' : 'block' }};">
@@ -719,7 +729,11 @@
                                         @foreach($logisticasMuestreo as $opt)
                                             <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}"
                                                 {{ $log->id == $opt->id ? 'selected' : '' }}>
+<<<<<<< HEAD
                                                 {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }})
+=======
+                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }}) 
+>>>>>>> actualizacion
                                             </option>
                                         @endforeach
                                     </select>
@@ -763,7 +777,11 @@
                                         <option value="">Seleccionar concepto...</option>
                                         @foreach($logisticasMuestreo as $opt)
                                             <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}">
+<<<<<<< HEAD
                                                 {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }})
+=======
+                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }}) 
+>>>>>>> actualizacion
                                             </option>
                                         @endforeach
                                     </select>

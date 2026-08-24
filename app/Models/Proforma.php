@@ -77,7 +77,11 @@ class Proforma extends Model
     // ========== TIPOS DE PROFORMA ==========
     public const TIPOS = [
         'AMBIENTAL' => 'AMB',
+<<<<<<< HEAD
         'AGUA' => 'AGUA',
+=======
+        'ANALISIS QUIMICO' => 'AQUIM',
+>>>>>>> actualizacion
         'INVESTIGACION' => 'INV',
     ];
 
@@ -114,7 +118,11 @@ class Proforma extends Model
 
     /**
      * Generar código de proforma en formato: {unidad}-{tipo}-{numero}
+<<<<<<< HEAD
      * Ejemplos: UIA-INV-001, UAQ-AMB-002, UAQ-AGUA-003
+=======
+     * Ejemplos: UIA-INV-001, UAQ-AMB-002, UAQ-AQUIM-003
+>>>>>>> actualizacion
      */
     public static function generarCodigo($unidad, $tipo)
     {
@@ -126,7 +134,11 @@ class Proforma extends Model
 
         // Buscar el último número para esta combinación unidad-tipo
         // Buscar en formato nuevo: {unidad}-{tipo}-{numero}
+<<<<<<< HEAD
         $ultimo = self::withTrashed()->where('codigo', 'LIKE', $unidadAbr.'-'.$tipoAbr.'-%')
+=======
+        $ultimo = self::where('codigo', 'LIKE', $unidadAbr.'-'.$tipoAbr.'-%')
+>>>>>>> actualizacion
             ->orderBy('id', 'desc')
             ->first();
 
@@ -137,7 +149,11 @@ class Proforma extends Model
         } else {
             // Si no hay códigos con el nuevo formato, buscar en formato antiguo
             // Formato antiguo: {numero}-{tipo} (ejemplo: 001-INV)
+<<<<<<< HEAD
             $ultimoAntiguo = self::withTrashed()->where('codigo', 'LIKE', '%-'.$tipoAbr)
+=======
+            $ultimoAntiguo = self::where('codigo', 'LIKE', '%-'.$tipoAbr)
+>>>>>>> actualizacion
                 ->where('codigo', 'NOT LIKE', '%-%-%')
                 ->orderBy('id', 'desc')
                 ->first();
@@ -178,12 +194,18 @@ class Proforma extends Model
         |--------------------------------------------------------------------------
         | TIPO DE MUESTRA
         |--------------------------------------------------------------------------
+<<<<<<< HEAD
         | 1 = AGUA (natural, residual, de mina, industrial, vida ambiental, bacteriologia)
         | 2 = SUELO O SEDIMENTO
         | 3 = MINERALES
         | 4 = VEGETALES
         | 5 = SALMUERAS
         | 6 = POLVOS
+=======
+        | 1 = AGUA
+        | 2 = SUELO
+        | 3 = OTROS
+>>>>>>> actualizacion
         |
         */
 
@@ -197,12 +219,17 @@ class Proforma extends Model
 
         } elseif (
 
+<<<<<<< HEAD
             str_contains($tipoMuestra, 'SUELO') || str_contains($tipoMuestra, 'SEDIMENTO')
+=======
+            str_contains($tipoMuestra, 'SUELO')
+>>>>>>> actualizacion
 
         ) {
 
             $tipoCodigo = 2;
 
+<<<<<<< HEAD
         } elseif (
 
             str_contains($tipoMuestra, 'MINERAL')
@@ -238,6 +265,11 @@ class Proforma extends Model
         } else {
 
             $tipoCodigo = 1;
+=======
+        } else {
+
+            $tipoCodigo = 3;
+>>>>>>> actualizacion
 
         }
 
@@ -290,8 +322,14 @@ class Proforma extends Model
     public function parametros()
     {
         return $this->belongsToMany(Parametro::class, 'proforma_parametro')
+<<<<<<< HEAD
             ->withPivot('cantidad_muestras', 'precio_unitario', 'metodo')
             ->withTimestamps();
+=======
+            ->withPivot('cantidad_muestras', 'precio_unitario', 'metodo', 'orden')
+            ->withTimestamps()
+            ->orderBy('orden', 'asc'); // <-- CORREGIDO: cambiado 'pivot_orden' por 'orden'
+>>>>>>> actualizacion
     }
 
     public function informe()
@@ -345,4 +383,8 @@ class Proforma extends Model
 
         return $this;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> actualizacion

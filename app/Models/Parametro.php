@@ -39,8 +39,4 @@ class Parametro extends Model
             ->withPivot('cantidad_muestras', 'precio_unitario', 'metodo')
             ->withTimestamps();
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> actualizacion

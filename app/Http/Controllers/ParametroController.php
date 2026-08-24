@@ -14,7 +14,19 @@ class ParametroController extends Controller
      */
     private function esAdmin()
     {
-        return Auth::check() && Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']);
+        if (!Auth::check()) {
+            return false;
+        }
+
+        $user = Auth::user();
+        
+        // Verificar por roles de Spatie (si existe el método)
+        if (method_exists($user, 'hasRole')) {
+            return $user->hasRole(['admin', 'tecnico', 'analista']);
+        }
+        
+        // Fallback por campo role o tipo
+        return in_array($user->role ?? $user->tipo ?? 'usuario', ['admin', 'tecnico', 'analista']);
     }
 
     /**
@@ -318,9 +330,6 @@ class ParametroController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-<<<<<<< HEAD
-}
-=======
 
     // ============================================================
     // NUEVAS FUNCIONES PARA EL PANEL DE PRECIOS MASIVOS
@@ -379,4 +388,3 @@ class ParametroController extends Controller
         }
     }
 }
->>>>>>> actualizacion

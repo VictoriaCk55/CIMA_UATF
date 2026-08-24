@@ -8,7 +8,7 @@
     <style>
         /* CONFIGURACIÓN BASE */
         @page {
-            margin: 15mm 10mm 15mm 10mm;
+            margin: 15mm 10mm 32mm 10mm;
         }
 
         @page horizontal {
@@ -28,6 +28,47 @@
             margin: 0;
             padding: 0;
             background-color: white;
+        }
+
+        /* ===== PIE DE PÁGINA (se repite en TODAS las páginas) =====
+           Contenido fijo dibujado con "position: fixed" (confirmado que
+           se repite correctamente en todas las páginas). El número de
+           página ACTUAL usa "counter(page)" en CSS (funciona bien en
+           este proyecto). El TOTAL de páginas ($totalPaginas) llega ya
+           calculado desde ProformaController::pdf()/pdfCadenaCustodia(),
+           que renderiza el documento dos veces: una para contar páginas
+           reales y otra, la definitiva, con ese total ya conocido. */
+        .pie-pagina {
+            position: fixed;
+            left: 10mm;
+            right: 10mm;
+            bottom: -24mm;
+            padding-top: 4px;
+            border-top: 0.75pt solid #999;
+        }
+        .pie-pagina table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .pie-pagina td {
+            border: none;
+            padding: 0;
+            font-size: 8px;
+            line-height: 1.35;
+            color: #666;
+            vertical-align: top;
+        }
+        .pie-izquierda {
+            width: 75%;
+            text-align: left;
+        }
+        .pie-derecha {
+            width: 25%;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .num-pagina-actual::after {
+            content: counter(page);
         }
         
         /* ENCABEZADO */
@@ -360,7 +401,7 @@
             line-height: 1.4;
         }
         
-        /* FOOTER */
+        /* FOOTER (colofón institucional: sale una sola vez, al final del contenido) */
         .footer {
             margin-top: 30px;
             font-size: 9px;
@@ -380,6 +421,23 @@
     </style>
 </head>
 <body>
+
+    <!-- ===== PIE DE PÁGINA (fixed: se repite en cada página) ===== -->
+    <div class="pie-pagina">
+        <table>
+            <tr>
+                <td class="pie-izquierda">
+                    <strong>{{ $cfg->config('institucion_nombre') }}</strong><br>
+                    {{ $cfg->config('footer_direccion') }}<br>
+                    {{ $cfg->config('footer_telefono') }} | {{ $cfg->config('footer_email') }}
+                </td>
+                <td class="pie-derecha">
+                    Página <span class="num-pagina-actual"></span> de {{ $totalPaginas ?? 1 }}
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <!-- ENCABEZADO -->
     <table class="header-table">
          <tr>
@@ -707,7 +765,7 @@
          </tr>
      </table>
 
-    <!-- FOOTER -->
+    <!-- FOOTER (colofón institucional, sale una sola vez, no en cada página) -->
     <div class="footer">
         <p><strong>{{ $cfg->config('institucion_nombre') }}</strong></p>
         <p>{{ $cfg->config('footer_direccion') }}</p>
@@ -715,11 +773,5 @@
         <p><em>{{ $cfg->config('footer_texto') }}</em></p>
     </div>
 
-    <script type="text/php">
-        if (isset($pdf)) {
-            $font = $fontMetrics->getFont("times", "normal");
-            $pdf->getCanvas()->page_text(260, 50, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, 9, array(100,100,100));
-        }
-    </script>
 </body>
 </html>

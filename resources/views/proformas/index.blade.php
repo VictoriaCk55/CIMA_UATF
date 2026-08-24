@@ -19,7 +19,6 @@
             
             <div class="d-flex gap-2">
                 @auth
-
                     @can('crear proformas')
                         <a href="{{ route('proformas.create') }}" class="btn btn-primary" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000; border: none; transition: all 0.3s ease;">
                             <i class="fas fa-plus-circle"></i>
@@ -38,7 +37,7 @@
     <!-- BUSCADOR Y FILTROS -->
     <div class="card mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ route('proformas.index') }}" class="row">
+            <form method="GET" action="{{ route('proformas.index') }}" class="row" id="searchForm">
                 <!-- Buscador general -->
                 <div class="col-md-12 mb-3">
                     <label for="search" class="form-label fw-semibold">
@@ -64,11 +63,7 @@
                     </div>
                     <small class="text-muted mt-1 d-block">
                         <i class="fas fa-info-circle me-1"></i>
-<<<<<<< HEAD
-                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, AGUA, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
-=======
                         Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, ANÁLISIS QUÍMICO, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
->>>>>>> actualizacion
                     </small>
                 </div>
                 
@@ -235,20 +230,12 @@
                                     <td>
                                         <span class="badge rounded-pill 
                                             @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
-<<<<<<< HEAD
-                                            @elseif($proforma->tipo == 'AGUA') bg-info
-=======
                                             @elseif($proforma->tipo == 'ANALISIS QUIMICO') bg-info
->>>>>>> actualizacion
                                             @else bg-secondary
                                             @endif">
                                             <i class="fas 
                                                 @if($proforma->tipo == 'AMBIENTAL') fa-leaf
-<<<<<<< HEAD
-                                                @elseif($proforma->tipo == 'AGUA') fa-tint
-=======
                                                 @elseif($proforma->tipo == 'ANALISIS QUIMICO') fa-tint
->>>>>>> actualizacion
                                                 @else fa-flask
                                                 @endif me-1"></i>
                                             {{ $proforma->tipo }}
@@ -295,7 +282,6 @@
                                         @endphp
                                         
                                         <span class="badge rounded-pill {{ $bgColor }}" style="color: {{ $textColor }}; padding: 8px 12px; {{ $estado === 'FINALIZADA' ? 'border: 1px solid #ddd;' : '' }}">
-                                            <!-- <i class="fas {{ $icono }} me-1" style="color: {{ $textColor }};"></i> -->
                                             {{ $estado }}
                                         </span>
                                     </td>
@@ -304,7 +290,6 @@
                                     </td>
                                     <td>
                                         <small>
-                                            <!-- <i class="far fa-calendar me-1"></i> -->
                                             {{ $proforma->fecha_emision->format('d/m/Y') }}
                                         </small>
                                     </td>
@@ -385,38 +370,38 @@
                                                 </li>
 
                                                 @if($proforma->tipo === 'AMBIENTAL')
-                                                @hasanyrole('admin|tecnico')
-                                                <li>
-                                                    <a class="dropdown-item" href="{{ route('reportes.ambiental.index', $proforma) }}" title="Reporte Ambiental">
-                                                        <i class="fas fa-file-signature me-2" style="color: #6f42c1;"></i>Reporte Ambiental
-                                                    </a>
-                                                </li>
-                                                @endhasanyrole
+                                                    @hasanyrole('admin|tecnico')
+                                                    <li>
+                                                        <a class="dropdown-item" href="{{ route('reportes.ambiental.index', $proforma) }}" title="Reporte Ambiental">
+                                                            <i class="fas fa-file-signature me-2" style="color: #6f42c1;"></i>Reporte Ambiental
+                                                        </a>
+                                                    </li>
+                                                    @endhasanyrole
                                                 @else
-                                                <!-- Cadena de Custodia (solo AGUA / INVESTIGACIÓN) -->
-                                                @can('generar cadena custodia')
-                                                <li>
-                                                    <a class="dropdown-item" 
-                                                    href="{{ route('proformas.cadena-custodia', $proforma) }}"
-                                                    target="_blank"
-                                                    title="Generar Cadena de Custodia">
-                                                        <i class="fas fa-clipboard-list me-2" style="color: #198754;"></i>
-                                                        Cadena de Custodia
-                                                    </a>
-                                                </li>
-                                                @endcan
-                                                
-                                                <!-- Formulario de resultados (solo AGUA / INVESTIGACIÓN) -->
-                                                @can('ver resultados')
-                                                <li>
-                                                    <a class="dropdown-item" 
-                                                    href="{{ route('resultados.index', $proforma->id) }}"
-                                                    title="Abrir formulario de resultados">
-                                                        <i class="fas fa-file-alt me-2" style="color: #0d6efd;"></i>
-                                                        Formulario de resultados
-                                                    </a>
-                                                </li>
-                                                @endcan
+                                                    <!-- Cadena de Custodia -->
+                                                    @can('generar cadena custodia')
+                                                    <li>
+                                                        <a class="dropdown-item" 
+                                                        href="{{ route('proformas.cadena-custodia', $proforma) }}"
+                                                        target="_blank"
+                                                        title="Generar Cadena de Custodia">
+                                                            <i class="fas fa-clipboard-list me-2" style="color: #198754;"></i>
+                                                            Cadena de Custodia
+                                                        </a>
+                                                    </li>
+                                                    @endcan
+                                                    
+                                                    <!-- Formulario de resultados -->
+                                                    @can('ver resultados')
+                                                    <li>
+                                                        <a class="dropdown-item" 
+                                                        href="{{ route('resultados.index', $proforma->id) }}"
+                                                        title="Abrir formulario de resultados">
+                                                            <i class="fas fa-file-alt me-2" style="color: #0d6efd;"></i>
+                                                            Formulario de resultados
+                                                        </a>
+                                                    </li>
+                                                    @endcan
                                                 @endif
                                             </ul>
                                         </div>
@@ -504,14 +489,12 @@
 
 <!-- Estilos adicionales -->
 <style>
-/* Estilo para el botón de nueva proforma */
 .btn-primary[style*="background-color: #ffc107"]:hover {
     background-color: #e6a800 !important;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
 }
 
-/* Estilo para el botón de papelera en círculo */
 .btn-icon-circle {
     width: 35px !important;
     height: 35px !important;
@@ -527,7 +510,6 @@
     transform: scale(1.1) !important;
 }
 
-/* Estilos para la paginación */
 .pagination .page-link {
     color: #ffc107 !important;
     border-radius: 8px;
@@ -540,7 +522,6 @@
     color: #000 !important;
 }
 
-/* Estilo para los botones de acción */
 .btn-outline-warning,
 .btn-outline-danger,
 .btn-outline-success {
@@ -554,7 +535,6 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Estilo para el input de búsqueda */
 .input-group-text {
     border-radius: 30px 0 0 30px !important;
 }
@@ -563,7 +543,6 @@
     border-radius: 0 !important;
 }
 
-/* Estilo para el foco de inputs y selects en proformas */
 .form-control:focus,
 .form-select:focus,
 .input-group-text:focus,
@@ -573,30 +552,25 @@
     outline: none !important;
 }
 
-/* Específico para el input de búsqueda */
 #search:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
-/* Para los selects de filtros */
 select.form-select:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
-/* Para el botón de filtrar */
 button[type="submit"]:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
-/* Reforzar color del icono de proformas */
 .fa-file-invoice-dollar {
     color: #ffc107 !important;
 }
 
-/* ========== CORRECCIÓN PARA MÓVIL ========== */
 @media (max-width: 768px) {
     .page-header .d-flex {
         flex-direction: column !important;
@@ -647,7 +621,6 @@ button[type="submit"]:focus {
         display: none !important;
     }
     
-    /* Ajuste para móvil - papelera y texto */
     .d-flex.align-items-center.justify-content-center.position-relative {
         flex-direction: column !important;
         padding-top: 40px !important;
@@ -659,24 +632,18 @@ button[type="submit"]:focus {
         margin-bottom: 10px !important;
     }
 }
-<<<<<<< HEAD
-=======
 
-/* ========== CORRECCIÓN DE ESPACIADO PARA MÓVIL Y TABLETS ========== */
 @media (max-width: 992px) {
-    /* Separación entre los botones de Filtrar y Limpiar */
     .col-md-4.d-flex.align-items-end {
         margin-top: 20px !important;
-        gap: 12px !important; /* Espacio horizontal entre ellos */
+        gap: 12px !important;
     }
 }
->>>>>>> actualizacion
 </style>
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar tooltips de Bootstrap
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl, {
@@ -687,7 +654,6 @@ button[type="submit"]:focus {
             });
         });
         
-        // Auto-submit del formulario de búsqueda al escribir
         let searchTimeout;
         const searchInput = document.getElementById('search');
         const searchForm = document.getElementById('searchForm');

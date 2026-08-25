@@ -49,6 +49,7 @@
                             <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-info" title="Ver">
                                 <i class="fas fa-eye"></i>
                             </a>
+                            @can('restore usuarios')
                             <form action="{{ route('users.restore', $user->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('¿Activar este usuario?')">
                                 @csrf
                                 @method('POST')
@@ -56,6 +57,8 @@
                                     <i class="fas fa-user-check"></i>
                                 </button>
                             </form>
+                            @endcan
+                            @can('force-delete usuarios')
                             <form action="{{ route('users.force-delete', $user->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('⚠️ ¿ELIMINAR PERMANENTEMENTE? Esta acción no se puede deshacer.')">
                                 @csrf
                                 @method('DELETE')
@@ -63,6 +66,7 @@
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </form>
+                            @endcan
                         </td>
                     </tr>
                     @endforeach

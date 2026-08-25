@@ -151,6 +151,7 @@
         </div>
         <div class="card-body">
             <div class="row">
+                @can('crear clientes')
                 <div class="col-md-4 mb-2">
                     <a href="{{ route('clientes.create') }}" class="btn w-100 py-3 text-white" style="background-color: rgb(21, 88, 185); border: none;">
                         <i class="fas fa-user-plus fa-lg me-2"></i>
@@ -160,6 +161,8 @@
                         </div>
                     </a>
                 </div>
+                @endcan
+                @can('crear parametros')
                 <div class="col-md-4 mb-2">
                     <a href="{{ route('parametros.create') }}" class="btn w-100 py-3 text-white" style="background-color: rgb(213, 94, 94); border: none;">
                         <i class="fas fa-plus-circle fa-lg me-2"></i>
@@ -169,6 +172,8 @@
                         </div>
                     </a>
                 </div>
+                @endcan
+                @can('crear proformas')
                 <div class="col-md-4 mb-2">
                     <a href="{{ route('proformas.create') }}" class="btn btn-warning w-100 py-3">
                         <i class="fas fa-file-invoice fa-lg me-2"></i>
@@ -178,6 +183,7 @@
                         </div>
                     </a>
                 </div>
+                @endcan
             </div>
         </div>
     </div>

@@ -14,12 +14,16 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-list me-2"></i> Usuarios Activos</span>
         <div>
+            @can('ver papelera usuarios')
             <a href="{{ route('users.trash') }}" class="btn btn-sm btn-secondary me-2">
                 <i class="fas fa-trash-restore me-1"></i> Inactivos
             </a>
+            @endcan
+            @can('crear usuarios')
             <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus me-1"></i> Nuevo Usuario
             </a>
+            @endcan
         </div>
     </div>
     <div class="card-body">
@@ -64,10 +68,13 @@
                             <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-info" title="Ver">
                                 <i class="fas fa-eye"></i>
                             </a>
+                            @can('editar usuarios')
                             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
+                            @endcan
                             @if($user->id !== auth()->id())
+                            @can('eliminar usuarios')
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('¿Desactivar este usuario? Podrá restaurarlo después.')">
                                 @csrf
                                 @method('DELETE')
@@ -75,6 +82,7 @@
                                     <i class="fas fa-user-slash"></i>
                                 </button>
                             </form>
+                            @endcan
                             @endif
                         </td>
                     </tr>

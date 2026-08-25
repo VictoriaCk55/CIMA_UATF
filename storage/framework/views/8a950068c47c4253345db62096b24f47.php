@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Sistema CIMA - @yield('title', 'Dashboard')</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title>Sistema CIMA - <?php echo $__env->yieldContent('title', 'Dashboard'); ?></title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -443,13 +443,13 @@
     }
     </style>
     
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body>
     <!-- ========== NAVBAR ========== -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url('/') }}">
+            <a class="navbar-brand fw-bold" href="<?php echo e(url('/')); ?>">
                 <i class="fas fa-flask me-2"></i>
                 Sistema CIMA
             </a>
@@ -461,90 +461,91 @@
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">
+                        <a class="nav-link <?php echo e(request()->is('/') ? 'active' : ''); ?>" href="<?php echo e(url('/')); ?>">
                             <i class="fas fa-home me-1"></i> Inicio
                         </a>
                     </li>
                     
-                    @auth
+                    <?php if(auth()->guard()->check()): ?>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('clientes*') ? 'active' : '' }}" href="{{ route('clientes.index') }}">
+                        <a class="nav-link <?php echo e(request()->is('clientes*') ? 'active' : ''); ?>" href="<?php echo e(route('clientes.index')); ?>">
                             <i class="fas fa-users me-1"></i> Clientes
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('parametros*') ? 'active' : '' }}" href="{{ route('parametros.index') }}">
+                        <a class="nav-link <?php echo e(request()->is('parametros*') ? 'active' : ''); ?>" href="<?php echo e(route('parametros.index')); ?>">
                             <i class="fas fa-microscope me-2"></i> Parámetros
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('proformas*') ? 'active' : '' }}" href="{{ route('proformas.index') }}">
+                        <a class="nav-link <?php echo e(request()->is('proformas*') ? 'active' : ''); ?>" href="<?php echo e(route('proformas.index')); ?>">
                             <i class="fas fa-file-invoice-dollar me-1"></i> Proformas
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('informes*') ? 'active' : '' }}" 
-                           href="{{ route('informes.index') }}">
+                        <a class="nav-link <?php echo e(request()->is('informes*') ? 'active' : ''); ?>" 
+                           href="<?php echo e(route('informes.index')); ?>">
                             <i class="fas fa-file-alt me-1"></i> Informes
                         </a>
                     </li>
                     <!-- ===== ENLACE FINANCIERO ===== -->
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('financiero*') ? 'active' : '' }}" href="{{ route('financiero.index') }}">
+                        <a class="nav-link <?php echo e(request()->is('financiero*') ? 'active' : ''); ?>" href="<?php echo e(route('financiero.index')); ?>">
                             <i class="fas fa-chart-line me-1"></i> Financiero
                         </a>
                     </li>
                     <!-- ===== ENLACES DE ADMINISTRACIÓN (SOLO ADMIN) ===== -->
-                    @role('admin')
+                    <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin')): ?>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ request()->is('users*') || request()->is('roles*') || request()->is('permissions*') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle <?php echo e(request()->is('users*') || request()->is('roles*') || request()->is('permissions*') ? 'active' : ''); ?>" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-cog me-1"></i> Admin
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item {{ request()->is('users*') ? 'active' : '' }}" href="{{ route('users.index') }}">
+                                <a class="dropdown-item <?php echo e(request()->is('users*') ? 'active' : ''); ?>" href="<?php echo e(route('users.index')); ?>">
                                     <i class="fas fa-users-cog me-2"></i> Usuarios
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item {{ request()->is('roles*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
+                                <a class="dropdown-item <?php echo e(request()->is('roles*') ? 'active' : ''); ?>" href="<?php echo e(route('roles.index')); ?>">
                                     <i class="fas fa-user-tag me-2"></i> Roles
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item {{ request()->is('permissions*') ? 'active' : '' }}" href="{{ route('permissions.index') }}">
+                                <a class="dropdown-item <?php echo e(request()->is('permissions*') ? 'active' : ''); ?>" href="<?php echo e(route('permissions.index')); ?>">
                                     <i class="fas fa-shield-alt me-2"></i> Permisos
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item {{ request()->is('configuraciones*') ? 'active' : '' }}" href="{{ route('configuraciones.index') }}">
+                                <a class="dropdown-item <?php echo e(request()->is('configuraciones*') ? 'active' : ''); ?>" href="<?php echo e(route('configuraciones.index')); ?>">
                                     <i class="fas fa-sliders-h me-2"></i> Configuración
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    @endrole
-                    @endauth
+                    <?php endif; ?>
+                    <?php endif; ?>
                 </ul>   
                 
                 <ul class="navbar-nav">
-                    @auth
+                    <?php if(auth()->guard()->check()): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle me-2"></i>
                                 <div class="d-flex flex-column">
-                                    <span>{{ Auth::user()->name }}</span>
-                                    <small class="user-badge {{ Auth::user()->role === 'admin' ? 'admin' : 'user' }}">
-                                        @if(Auth::user()->role === 'admin')
+                                    <span><?php echo e(Auth::user()->name); ?></span>
+                                    <small class="user-badge <?php echo e(Auth::user()->role === 'admin' ? 'admin' : 'user'); ?>">
+                                        <?php if(Auth::user()->role === 'admin'): ?>
                                             <i class="fas fa-shield-alt me-1"></i> Administrador
-                                        @elseif(Auth::user()->role === 'tecnico')
+                                        <?php elseif(Auth::user()->role === 'tecnico'): ?>
                                             <i class="fas fa-user-cog me-1"></i> Técnico
-                                        @elseif(Auth::user()->role === 'analista')
+                                        <?php elseif(Auth::user()->role === 'analista'): ?>
                                             <i class="fas fa-flask me-1"></i> Analista
-                                        @else
-                                            <i class="fas fa-user me-1"></i> {{ ucfirst(Auth::user()->role) }}
-                                        @endif
+                                        <?php else: ?>
+                                            <i class="fas fa-user me-1"></i> <?php echo e(ucfirst(Auth::user()->role)); ?>
+
+                                        <?php endif; ?>
                                     </small>
                                 </div>
                             </a>
@@ -552,52 +553,52 @@
                                 <li>
                                     <span class="dropdown-item-text">
                                         <small>Conectado como:</small><br>
-                                        <strong>{{ Auth::user()->email }}</strong>
+                                        <strong><?php echo e(Auth::user()->email); ?></strong>
                                     </span>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 
-                                {{-- ENLACE AL PERFIL (PARA TODOS LOS USUARIOS) --}}
+                                
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    <a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>">
                                         <i class="fas fa-user-circle me-2"></i> Mi Perfil
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 
-                                @can('crear clientes')
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear clientes')): ?>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('clientes.create') }}">
+                                    <a class="dropdown-item" href="<?php echo e(route('clientes.create')); ?>">
                                         <i class="fas fa-user-plus me-2"></i> Nuevo Cliente
                                     </a>
                                 </li>
-                                @endcan
-                                @can('crear parametros')
+                                <?php endif; ?>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear parametros')): ?>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('parametros.create') }}">
+                                    <a class="dropdown-item" href="<?php echo e(route('parametros.create')); ?>">
                                         <i class="fas fa-plus-circle me-2"></i> Nuevo Parámetro
                                     </a>
                                 </li>
-                                @endcan
-                                @can('crear proformas')
+                                <?php endif; ?>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear proformas')): ?>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('proformas.create') }}">
+                                    <a class="dropdown-item" href="<?php echo e(route('proformas.create')); ?>">
                                         <i class="fas fa-file-invoice me-2"></i> Nueva Proforma
                                     </a>
                                 </li>
-                                @endcan
-                                @can('crear informes')
+                                <?php endif; ?>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear informes')): ?>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('informes.create') }}">
+                                    <a class="dropdown-item" href="<?php echo e(route('informes.create')); ?>">
                                         <i class="fas fa-file-medical me-2"></i> Nuevo Informe
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
-                                @endcan
+                                <?php endif; ?>
                                 
                                 <li>
-                                    <form method="POST" action="{{ route('logout') }}" id="logout-form">
-                                        @csrf
+                                    <form method="POST" action="<?php echo e(route('logout')); ?>" id="logout-form">
+                                        <?php echo csrf_field(); ?>
                                         <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                             <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
                                         </a>
@@ -605,13 +606,13 @@
                                 </li>
                             </ul>
                         </li>
-                    @else
+                    <?php else: ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">
+                            <a class="nav-link" href="<?php echo e(route('login')); ?>">
                                 <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
                             </a>
                         </li>
-                    @endauth
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -619,28 +620,31 @@
 
     <main>
         <div class="container-fluid">
-            @if(session('success'))
+            <?php if(session('success')): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+                <i class="fas fa-check-circle me-2"></i> <?php echo e(session('success')); ?>
+
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            @endif
+            <?php endif; ?>
             
-            @if(session('error'))
+            <?php if(session('error')): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
+                <i class="fas fa-exclamation-circle me-2"></i> <?php echo e(session('error')); ?>
+
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            @endif
+            <?php endif; ?>
             
-            @if(session('warning'))
+            <?php if(session('warning')): ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-triangle me-2"></i> {{ session('warning') }}
+                <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e(session('warning')); ?>
+
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            @endif
+            <?php endif; ?>
             
-            @yield('content')
+            <?php echo $__env->yieldContent('content'); ?>
         </div>
     </main>
 
@@ -649,18 +653,20 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <p class="mb-0">
-                        <i class="fas fa-copyright me-1"></i> {{ date('Y') }} - Centro de Investigación Minero Ambiental (CIMA)
+                        <i class="fas fa-copyright me-1"></i> <?php echo e(date('Y')); ?> - Centro de Investigación Minero Ambiental (CIMA)
                     </p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <p class="mb-0">
                         <i class="fas fa-code me-1"></i> Sistema de Gestión v1.0
                         <span class="mx-2">|</span>
-                        <i class="fas fa-calendar me-1"></i> {{ date('d/m/Y') }}
-                        @auth
+                        <i class="fas fa-calendar me-1"></i> <?php echo e(date('d/m/Y')); ?>
+
+                        <?php if(auth()->guard()->check()): ?>
                         <span class="mx-2">|</span>
-                        <i class="fas fa-user me-1"></i> {{ Auth::user()->name }}
-                        @endauth
+                        <i class="fas fa-user me-1"></i> <?php echo e(Auth::user()->name); ?>
+
+                        <?php endif; ?>
                     </p>
                 </div>
             </div>
@@ -686,7 +692,7 @@
             telefono: document.getElementById('nueva_telefono')?.value.trim() || '',
             nit: document.getElementById('nueva_nit')?.value.trim() || '',
             direccion: document.getElementById('nueva_direccion')?.value.trim() || '',
-            _token: document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}'
+            _token: document.querySelector('meta[name="csrf-token"]')?.content || '<?php echo e(csrf_token()); ?>'
         };
 
         if (!formData.razon_social || !formData.persona_contacto) {
@@ -795,6 +801,6 @@
         });
     });
     </script>
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
-</html>
+</html><?php /**PATH D:\CIMA_UATF-main\resources\views/layouts/app.blade.php ENDPATH**/ ?>

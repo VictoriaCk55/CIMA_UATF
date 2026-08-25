@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Resultados de Ensayo - Proforma {{ $proforma->id }}</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title>Resultados de Ensayo - Proforma <?php echo e($proforma->id); ?></title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -588,28 +588,29 @@
                         <p>Ingrese los resultados de laboratorio para cada parámetro</p>
                     </div>
                     <div class="header-badge">
-                        @php
+                        <?php
                             $partes = (explode('-', $proforma->codigo));
                             $numero = end($partes);
-                        @endphp
+                        ?>
                         <td width="100" class="center " style="color: #ef1111;">
-                            <strong>Nº:</strong> {{ $numero }}
+                            <strong>Nº:</strong> <?php echo e($numero); ?>
+
                         </td>
-                        <!-- <i class="fas fa-file-invoice"></i> Proforma #{{ $proforma->id }} -->
+                        <!-- <i class="fas fa-file-invoice"></i> Proforma #<?php echo e($proforma->id); ?> -->
                     </div>
                 </div>
             </div>
             
             <div class="nav-bar">
                 <div class="nav-links">
-                    <a href="{{ route('proformas.index') }}" class="btn-modern btn-gray">
+                    <a href="<?php echo e(route('proformas.index')); ?>" class="btn-modern btn-gray">
                         <i class="fas fa-arrow-left"></i> Volver al Listado
                     </a>
-                    @can('generar cadena custodia')
-                    <a href="{{ route('proformas.cadena-custodia', $proforma->id) }}" class="btn-modern btn-purple">
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar cadena custodia')): ?>
+                    <a href="<?php echo e(route('proformas.cadena-custodia', $proforma->id)); ?>" class="btn-modern btn-purple">
                         <i class="fas fa-link"></i> Cadena Custodia
                     </a>
-                    @endcan
+                    <?php endif; ?>
                 </div>
                 <div class="estado-actual" id="estadoActual">
                     <i class="fas fa-info-circle"></i> Estado: <span id="estadoTexto">Sin datos</span>
@@ -621,7 +622,7 @@
                     <div class="info-icon"><i class="fas fa-hashtag"></i></div>
                     <div class="info-text">
                         <h4>CÓDIGO</h4>
-                        <p>{{ $proforma->codigo }}</p>
+                        <p><?php echo e($proforma->codigo); ?></p>
                     </div>
                 </div>
                 <div class="info-item">
@@ -629,7 +630,7 @@
                     <div class="info-text">
                         <h4>N° RECEPCIÓN</h4>
                         <input type="text" id="numeroRecepcion" name="numero_recepcion"
-                            class="modern-input" value="{{ $proforma->numero_recepcion ?? Str::afterLast($proforma->codigo, '-') }}"
+                            class="modern-input" value="<?php echo e($proforma->numero_recepcion ?? Str::afterLast($proforma->codigo, '-')); ?>"
                             placeholder="N°" style="width: 120px;">
                     </div>
                 </div>
@@ -637,35 +638,35 @@
                     <div class="info-icon"><i class="fas fa-building"></i></div>
                     <div class="info-text">
                         <h4>CLIENTE</h4>
-                        <p>{{ $proforma->cliente->razon_social ?? 'N/A' }}</p>
+                        <p><?php echo e($proforma->cliente->razon_social ?? 'N/A'); ?></p>
                     </div>
                 </div>
                 <div class="info-item">
                     <div class="info-icon"><i class="fas fa-tint"></i></div>
                     <div class="info-text">
                         <h4>TIPO DE MUESTRA</h4>
-                        <p>{{ $proforma->tipo_muestra }}</p>
+                        <p><?php echo e($proforma->tipo_muestra); ?></p>
                     </div>
                 </div>
                 <!-- <div class="info-item">
                     <div class="info-icon"><i class="fas fa-calendar"></i></div>
                     <div class="info-text">
                         <h4>FECHA</h4>
-                        <p>{{ now()->format('d/m/Y') }}</p>
+                        <p><?php echo e(now()->format('d/m/Y')); ?></p>
                     </div>
                 </div> -->
                 <div class="info-item">
                     <div class="info-icon"><i class="fas fa-chart-line"></i></div>
                     <div class="info-text">
                         <h4>TOTAL</h4>
-                        <p>Bs. {{ number_format($proforma->total, 2) }}</p>
+                        <p>Bs. <?php echo e(number_format($proforma->total, 2)); ?></p>
                     </div>
                 </div>
                 <div class="info-item">
                     <div class="info-icon"><i class="fas fa-flag-checkered"></i></div>
                     <div class="info-text">
                         <h4>ESTADO</h4>
-                        <p><span class="estado-badge" style="background: {{ $proforma->estado_color }}20; color: {{ $proforma->estado_color }};">{{ $proforma->estado_texto }}</span></p>
+                        <p><span class="estado-badge" style="background: <?php echo e($proforma->estado_color); ?>20; color: <?php echo e($proforma->estado_color); ?>;"><?php echo e($proforma->estado_texto); ?></span></p>
                     </div>
                 </div>
 
@@ -678,7 +679,7 @@
                         <input type="date" 
                         id="fecha_inicio_ensayo" 
                         class="modern-input fecha-inicio-ensayo" 
-                        value="{{ $fecha_inicio_ensayo ?: date('Y-m-d') }}"> </div>
+                        value="<?php echo e($fecha_inicio_ensayo ?: date('Y-m-d')); ?>"> </div>
                 </div>
 
                 <div class="info-item">
@@ -690,7 +691,7 @@
                         <input type="date" 
                         id="fecha_conclusion_ensayo" 
                         class="modern-input fecha-conclusion-ensayo" 
-                        value="{{ $fecha_conclusion_ensayo ?: date('Y-m-d') }}">
+                        value="<?php echo e($fecha_conclusion_ensayo ?: date('Y-m-d')); ?>">
                     </div>
                 </div>
 
@@ -722,7 +723,7 @@
                 </div>
             </div>
             
-            @php
+            <?php
                 $parametros = $proforma->parametros->reverse();
                 $maxMuestras = 0;
                 foreach($parametros as $p) {
@@ -730,158 +731,159 @@
                     if($cant > $maxMuestras) $maxMuestras = $cant;
                 }
                 if($maxMuestras == 0) $maxMuestras = 1;
-            @endphp
+            ?>
             
             <div class="table-wrapper">
                 <table class="modern-table">
                     <thead>
                         <tr>
                             <th style="min-width: 180px;">Parámetro</th>
-                            @foreach($parametros as $p)
-                                <th style="min-width: 100px;">{{ $p->nombre }}</th>
-                            @endforeach
+                            <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <th style="min-width: 100px;"><?php echo e($p->nombre); ?></th>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Límites de cuantificación</td>
-                            @foreach($parametros as $p)
-                                <td>{{ $p->limite_cuantificacion ?? '---' }}</td>
-                            @endforeach
+                            <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <td><?php echo e($p->limite_cuantificacion ?? '---'); ?></td>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
                         <tr>
                             <td>Unidad</td>
-                            @foreach($parametros as $p)
-                                <td>{{ $p->unidad ?? '---' }}</td>
-                            @endforeach
+                            <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <td><?php echo e($p->unidad ?? '---'); ?></td>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
                         <tr>
                             <td>Método ó técnica de ensayo</td>
-                            @foreach($parametros as $p)
-                                <td>{{ $p->codigo_poe ?? '---' }}</td>
-                            @endforeach
+                            <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <td><?php echo e($p->codigo_poe ?? '---'); ?></td>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
                         <tr>
                             <td>Responsable de ensayo</td>
-                            @foreach($parametros as $p)
+                            <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <td>
                                     <input type="text" class="modern-input responsable" 
-                                           data-id="{{ $p->id }}" value="{{ $responsables[$p->id] ?? '' }}"
+                                           data-id="<?php echo e($p->id); ?>" value="<?php echo e($responsables[$p->id] ?? ''); ?>"
                                            placeholder="Responsable" style="width: 100px;">
                                 </td>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
                         <tr>
                             <td>Fecha de ensayo</td>
-                            @foreach($parametros as $p)
+                            <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <td>
                                     <input type="date" class="modern-input fecha" 
-                                           data-id="{{ $p->id }}" value="{{ $fechas[$p->id] ?? date('Y-m-d') }}"
+                                           data-id="<?php echo e($p->id); ?>" value="<?php echo e($fechas[$p->id] ?? date('Y-m-d')); ?>"
                                            style="width: 120px;">
                                 </td>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
                         
-                        @for($m = 1; $m <= $maxMuestras; $m++)
+                        <?php for($m = 1; $m <= $maxMuestras; $m++): ?>
                             <tr>
                                 <td style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); font-weight: 700;">
-                                    <i class="fas fa-vial"></i> {{ $proforma->generarCodigoLaboratorio($m) }}
-                                    <br><small style="font-size: 10px; color: #666;">Muestra {{ $m }}</small>
+                                    <i class="fas fa-vial"></i> <?php echo e($proforma->generarCodigoLaboratorio($m)); ?>
+
+                                    <br><small style="font-size: 10px; color: #666;">Muestra <?php echo e($m); ?></small>
                                 </td>
-                                @foreach($parametros as $p)
-                                    @php $aplica = $m <= ($p->pivot->cantidad_muestras ?? 1); @endphp
+                                <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php $aplica = $m <= ($p->pivot->cantidad_muestras ?? 1); ?>
                                     <td>
-                                        @if($aplica)
+                                        <?php if($aplica): ?>
                                             <input type="text"
                                             class="modern-input resultado"
-                                            data-muestra="{{ $m }}"
-                                            data-parametro="{{ $p->id }}"
-                                            value="{{ $resultados[$m][$p->id] ?? '' }}"
+                                            data-muestra="<?php echo e($m); ?>"
+                                            data-parametro="<?php echo e($p->id); ?>"
+                                            value="<?php echo e($resultados[$m][$p->id] ?? ''); ?>"
                                             placeholder="_____"
                                             style="width: 80px;">
-                                        @else
+                                        <?php else: ?>
                                             <span style="color: #999;">---</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tr>
-                        @endfor
+                        <?php endfor; ?>
 
                         <tr>
                             <td>V°B°</td>
-                            @foreach($parametros as $p)
+                            <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <td>
                                     <input type="text" class="modern-input vb" 
-                                           data-id="{{ $p->id }}" value="{{ $vbs[$p->id] ?? '' }}"
+                                           data-id="<?php echo e($p->id); ?>" value="<?php echo e($vbs[$p->id] ?? ''); ?>"
                                            placeholder="V°B°" style="width: 100px;">
                                 </td>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
                         <tr class="acciones-row" style="display: none;">
                             <td style="background: #f8f9fa; font-weight: 600;">Acciones</td>
-                            @foreach($parametros as $p)
+                            <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <td>
-                                    <div class="param-actions" data-id="{{ $p->id }}">
-                                        @can('guardar resultados')
+                                    <div class="param-actions" data-id="<?php echo e($p->id); ?>">
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('guardar resultados')): ?>
                                         <button class="btn-sm-action btn-sm-edit btn-modificar-parametro"
-                                                data-id="{{ $p->id }}" data-nombre="{{ $p->nombre }}"
+                                                data-id="<?php echo e($p->id); ?>" data-nombre="<?php echo e($p->nombre); ?>"
                                                 title="Modificar parámetro">
                                             <i class="fas fa-edit"></i> Modificar Parámetro
                                         </button>
-                                        @endcan
-                                        @can('cargar resultados')
+                                        <?php endif; ?>
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('cargar resultados')): ?>
                                         <button class="btn-sm-action btn-sm-history btn-historial-parametro"
-                                                data-id="{{ $p->id }}" data-nombre="{{ $p->nombre }}"
+                                                data-id="<?php echo e($p->id); ?>" data-nombre="<?php echo e($p->nombre); ?>"
                                                 title="Ver historial">
                                             <i class="fas fa-history"></i> Historial
                                         </button>
-                                        @endcan
+                                        <?php endif; ?>
                                     </div>
                                 </td>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
                     </tbody>
                 </table>
             </div>
             
             <div class="action-buttons">
-                @can('guardar resultados')
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('guardar resultados')): ?>
                 <button id="btnGuardar" class="btn-modern btn-success" onclick="guardarTodo()">
                     <i class="fas fa-save"></i> Guardar
                 </button>
-                @endcan
-                @can('guardar resultados')
+                <?php endif; ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('guardar resultados')): ?>
                 <button id="btnEditarGenerales" class="btn-modern btn-warning" onclick="editarGenerales()" style="display: none;">
                     <i class="fas fa-edit"></i> Editar
                 </button>
-                @endcan
+                <?php endif; ?>
                 <button id="btnHistorialGenerales" class="btn-modern btn-info" onclick="verHistorial(null)" style="display: none;">
                     <i class="fas fa-history"></i> Historial General
                 </button>
-                @can('limpiar resultados')
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('limpiar resultados')): ?>
                 <button class="btn-modern btn-clean" onclick="confirmarLimpiar()">
                     <i class="fas fa-eraser"></i> Limpiar
                 </button>
-                @endcan
+                <?php endif; ?>
 
-                @can('generar pdf resultados')
-                <a href="{{ route('proformas.resultados.pdf', $proforma->id) }}" 
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar pdf resultados')): ?>
+                <a href="<?php echo e(route('proformas.resultados.pdf', $proforma->id)); ?>" 
                 class="btn-modern btn-info" target="_blank"> 
                 <i class="fas fa-file-pdf"></i> Resultado de Ensayo </a>
-                @endcan
-                @can('generar informe resultados')
-                <a href="{{ route('proformas.informe-resultados-pdf', $proforma->id) }}"
+                <?php endif; ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar informe resultados')): ?>
+                <a href="<?php echo e(route('proformas.informe-resultados-pdf', $proforma->id)); ?>"
                 target="_blank"
                 class="btn-modern btn-purple">
                     <i class="fas fa-print"></i> Informe de Resultados
                 </a>
-                @endcan
-                @can('generar informe resultados')
+                <?php endif; ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar informe resultados')): ?>
                 <a href="#" id="btnInformePermisible" class="btn-modern btn-primary">
                     <i class="fas fa-file-pdf"></i> TIPO LÍMITE PERMISIBLE
                 </a>
-                @endcan
-                <a href="{{ route('proformas.show', $proforma->id) }}" class="btn-modern btn-gray">
+                <?php endif; ?>
+                <a href="<?php echo e(route('proformas.show', $proforma->id)); ?>" class="btn-modern btn-gray">
                     <i class="fas fa-times"></i> Salir
                 </a>
             </div>
@@ -977,7 +979,7 @@
 
         let estadoActual = 'sin_datos';
         let parametroEditandoId = null;
-        const proformaId = {{ $proforma->id }};
+        const proformaId = <?php echo e($proforma->id); ?>;
 
         const btnGuardar = document.getElementById('btnGuardar');
         const btnEditarGenerales = document.getElementById('btnEditarGenerales');
@@ -1185,7 +1187,7 @@
             formData.append('zona_utm', datos.zona_utm);
             formData.append('numero_recepcion', datos.numero_recepcion);
 
-            fetch('{{ route("proformas.resultados.guardar", $proforma->id) }}', {
+            fetch('<?php echo e(route("proformas.resultados.guardar", $proforma->id)); ?>', {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': csrfToken(), 'Accept': 'application/json' },
                 body: formData
@@ -1212,7 +1214,7 @@
         }
 
         function cargarTodo() {
-            fetch('{{ route("proformas.resultados.cargar", $proforma->id) }}', {
+            fetch('<?php echo e(route("proformas.resultados.cargar", $proforma->id)); ?>', {
                 method: 'GET',
                 headers: { 'Accept': 'application/json' }
             })
@@ -1290,7 +1292,7 @@
 
             formData.append('motivo', 'Modificación de datos generales');
 
-            const url = '{{ route("proformas.resultados.guardar-generales", $proforma->id) }}';
+            const url = '<?php echo e(route("proformas.resultados.guardar-generales", $proforma->id)); ?>';
 
             fetch(url, {
                 method: 'POST',
@@ -1403,7 +1405,7 @@
             formData.append('motivo', motivo);
             if (muestra) formData.append('muestra', muestra);
 
-            fetch('{{ route("proformas.resultados.modificar-parametro", $proforma->id) }}', {
+            fetch('<?php echo e(route("proformas.resultados.modificar-parametro", $proforma->id)); ?>', {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': csrfToken(), 'Accept': 'application/json' },
                 body: formData
@@ -1441,7 +1443,7 @@
         function verHistorial(parametroId) {
             document.getElementById('historialContenido').innerHTML = '<p style="text-align:center;color:#999;padding:20px;">Cargando historial...</p>';
 
-            let url = '{{ route("proformas.resultados.historial", ["id" => $proforma->id]) }}';
+            let url = '<?php echo e(route("proformas.resultados.historial", ["id" => $proforma->id])); ?>';
             if (parametroId) {
                 url += '/' + parametroId;
                 const btn = document.querySelector(`.btn-historial-parametro[data-id="${parametroId}"]`);
@@ -1512,7 +1514,7 @@
         function limpiarResultados() {
             const formData = new FormData();
 
-            fetch('{{ route("proformas.limpiar-resultados", $proforma->id) }}', {
+            fetch('<?php echo e(route("proformas.limpiar-resultados", $proforma->id)); ?>', {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': csrfToken(), 'Accept': 'application/json' },
                 body: formData
@@ -1571,7 +1573,7 @@
         document.getElementById('btnInformePermisible')?.addEventListener('click', function(e) {
             e.preventDefault();
             const tipo = document.getElementById('tipoPermisible').value;
-            const url = '{{ route("proformas.informe-permisibles-pdf", ["id" => $proforma->id, "tipo" => "TIPO_PLACEHOLDER"]) }}'.replace('TIPO_PLACEHOLDER', tipo);
+            const url = '<?php echo e(route("proformas.informe-permisibles-pdf", ["id" => $proforma->id, "tipo" => "TIPO_PLACEHOLDER"])); ?>'.replace('TIPO_PLACEHOLDER', tipo);
             window.open(url, '_blank');
         });
 
@@ -1584,4 +1586,4 @@
 
 
 </body>
-</html>
+</html><?php /**PATH D:\CIMA_UATF-main\resources\views/proformas/ingreso-resultados.blade.php ENDPATH**/ ?>

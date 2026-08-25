@@ -89,6 +89,7 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
+                                            @can('restore informes')
                                             <form action="{{ route('informes.restore', $informe->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-success" 
@@ -97,7 +98,9 @@
                                                     <i class="fas fa-trash-restore me-1"></i> Restaurar
                                                 </button>
                                             </form>
+                                            @endcan
                                             
+                                            @can('force-delete informes')
                                             <form action="{{ route('informes.force-delete', $informe->id) }}" method="POST" class="d-inline" id="delete-form-{{ $informe->id }}">
                                                 @csrf
                                                 @method('DELETE')
@@ -109,6 +112,7 @@
                                                     <i class="fas fa-times-circle me-1"></i> Eliminar
                                                 </button>
                                             </form>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

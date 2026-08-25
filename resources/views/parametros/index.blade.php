@@ -366,6 +366,7 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
+<!-- <<<<<<< HEAD
                                             @auth
                                                 @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
                                                     <a href="{{ route('informes.edit', $informe) }}" 
@@ -399,6 +400,37 @@
                                                 <i class="fas fa-file-pdf"></i>
                                             </a>
                                         </div>
+======= -->
+                                            @can('editar parametros')
+                                                <a href="{{ route('parametros.edit', $parametro) }}" 
+                                                   class="btn btn-outline-warning btn-sm"
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top"
+                                                   title="Editar parámetro">
+                                                    <i class="fas fa-edit"></i>
+                                            @endcan
+                                            </a>
+                                            @can('eliminar parametros')
+                                            <button type="button" 
+                                                    class="btn btn-outline-danger btn-sm"
+                                                    data-bs-toggle="tooltip" 
+                                                    data-bs-placement="top"
+                                                    title="Eliminar parámetro"
+                                                    onclick="confirmarEliminacion({{ $parametro->id }}, '{{ $parametro->nombre }}', 'parámetro')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            @endcan
+                                        </div>
+                                        
+                                        <!-- Formulario oculto para eliminar -->
+                                        @can('eliminar parametros')
+                                            <form id="delete-form-{{ $parametro->id }}" 
+                                                  action="{{ route('parametros.destroy', $parametro) }}" 
+                                                  method="POST" class="d-none">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach
@@ -441,6 +473,7 @@
                         @endif
                     </p>
                     
+<!-- <<<<<<< HEAD
                     @auth
                         @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
                             <a href="{{ route('informes.create') }}" 
@@ -456,8 +489,25 @@
                                 <i class="fas fa-info-circle me-2"></i>
                                 Solo el administrador puede crear nuevos informes.
                             </div>
+======= -->
+                    @can('crear parametros')
+                        @if(request('search'))
+                            <a href="{{ route('parametros.index') }}" class="btn btn-outline-secondary" style="border-radius: 30px; padding: 10px 25px;">
+                                <i class="fas fa-times me-2"></i>
+                                Limpiar búsqueda
+                            </a>
+                        @else
+                            <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;">
+                                <i class="fas fa-plus-circle me-2"></i>
+                                Crear primer parámetro
+                            </a>
                         @endif
-                    @endauth
+                    @else
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Solo el administrador puede crear nuevos parámetros.
+                        </div>
+                    @endcan
                 </div>
             @endif
         </div>

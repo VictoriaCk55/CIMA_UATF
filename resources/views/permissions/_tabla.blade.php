@@ -35,9 +35,12 @@
                     @endif
                 </td>
                 <td>
+                    @can('editar permisos')
                     <a href="{{ route('permissions.edit', $perm) }}" class="btn btn-sm btn-warning" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
+                    @endcan
+                    @can('eliminar permisos')
                     <form action="{{ route('permissions.destroy', $perm) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('¿Eliminar el permiso &quot;{{ $perm->name }}&quot;?')">
                         @csrf
                         @method('DELETE')
@@ -45,6 +48,7 @@
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>
+                    @endcan
                 </td>
             </tr>
             @endforeach

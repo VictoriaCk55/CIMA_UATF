@@ -13,9 +13,11 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-list me-2"></i> Permisos</span>
+        @can('crear permisos')
         <a href="{{ route('permissions.create') }}" class="btn btn-sm btn-primary">
             <i class="fas fa-plus me-1"></i> Nuevo Permiso
         </a>
+        @endcan
     </div>
     <div class="card-body">
         <div id="tablaPermisos">

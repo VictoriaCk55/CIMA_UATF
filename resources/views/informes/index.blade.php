@@ -20,8 +20,7 @@
             </div>
             
             <div class="d-flex gap-2">
-                @auth
-                    @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+                @can('crear informes')
                         <a href="{{ route('informes.create') }}" 
                            class="btn" 
                            style="background-color: #C2F527; border-radius: 30px; padding: 10px 25px; color: #000000; border: none; transition: all 0.3s ease;"
@@ -34,8 +33,7 @@
                         <div class="alert alert-info mb-0 py-2 px-3">
                             <i class="fas fa-eye me-1"></i> Modo solo lectura
                         </div>
-                    @endif
-                @endauth
+                    @endcan
             </div>
         </div>
     </div>
@@ -366,15 +364,16 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
-                                            @auth
-                                                @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+                                            @can('editar informes')
                                                     <a href="{{ route('informes.edit', $informe) }}" 
                                                        class="btn btn-outline-warning btn-sm"
                                                        data-bs-toggle="tooltip"
                                                        title="Editar informe">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    
+                                            @endcan
+                                            
+                                            @can('eliminar informes')
                                                     <form action="{{ route('informes.destroy', $informe) }}" 
                                                           method="POST" 
                                                           class="d-inline"
@@ -388,16 +387,17 @@
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
-                                                @endif
-                                            @endauth
+                                            @endcan
                                             
-                                            <a href="{{ route('informes.pdf', $informe) }}" 
-                                               class="btn btn-outline-success btn-sm"
-                                               data-bs-toggle="tooltip"
-                                               title="Generar PDF"
-                                               target="_blank">
-                                                <i class="fas fa-file-pdf"></i>
-                                            </a>
+                                            @can('generar pdf informes')
+                                                <a href="{{ route('informes.pdf', $informe) }}" 
+                                                   class="btn btn-outline-success btn-sm"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Generar PDF"
+                                                   target="_blank">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </a>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -408,8 +408,7 @@
 
                 <!-- Botón de Papelera y texto de registros centrado -->
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
-                    @auth
-                        @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+                    @can('ver papelera informes')
                             <a href="{{ route('informes.trash') }}" 
                                class="btn btn-icon-circle position-absolute start-0"
                                style="width: 35px; height: 35px; border-radius: 50%; background-color: #6c757d; color: white; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;"
@@ -419,8 +418,7 @@
                                onmouseout="this.style.backgroundColor='#6c757d'; this.style.transform='scale(1)';">
                                 <i class="fas fa-trash-alt" style="font-size: 1rem;"></i>
                             </a>
-                        @endif
-                    @endauth
+                    @endcan
                     
                     <div style="color: #C2F527; font-weight: 500;">
                         <i class="fas fa-database me-1"></i> 
@@ -441,8 +439,7 @@
                         @endif
                     </p>
                     
-                    @auth
-                        @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+                    @can('crear informes')
                             <a href="{{ route('informes.create') }}" 
                                class="btn" 
                                style="background-color: #C2F527; border-radius: 30px; padding: 10px 25px; color: #000000; border: none; transition: all 0.3s ease;"
@@ -456,8 +453,7 @@
                                 <i class="fas fa-info-circle me-2"></i>
                                 Solo el administrador puede crear nuevos informes.
                             </div>
-                        @endif
-                    @endauth
+                    @endcan
                 </div>
             @endif
         </div>

@@ -565,29 +565,35 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 
-                                @if(Auth::user()->role === 'admin')
+                                @can('crear clientes')
                                 <li>
                                     <a class="dropdown-item" href="{{ route('clientes.create') }}">
                                         <i class="fas fa-user-plus me-2"></i> Nuevo Cliente
                                     </a>
                                 </li>
+                                @endcan
+                                @can('crear parametros')
                                 <li>
                                     <a class="dropdown-item" href="{{ route('parametros.create') }}">
                                         <i class="fas fa-plus-circle me-2"></i> Nuevo Parámetro
                                     </a>
                                 </li>
+                                @endcan
+                                @can('crear proformas')
                                 <li>
                                     <a class="dropdown-item" href="{{ route('proformas.create') }}">
                                         <i class="fas fa-file-invoice me-2"></i> Nueva Proforma
                                     </a>
                                 </li>
+                                @endcan
+                                @can('crear informes')
                                 <li>
                                     <a class="dropdown-item" href="{{ route('informes.create') }}">
                                         <i class="fas fa-file-medical me-2"></i> Nuevo Informe
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
-                                @endif
+                                @endcan
                                 
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" id="logout-form">

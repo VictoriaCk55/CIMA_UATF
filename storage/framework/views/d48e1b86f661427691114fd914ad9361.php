@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Proformas'); ?>
 
-@section('title', 'Proformas')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-main">
     <!-- Encabezado de página -->
     <div class="page-header">
@@ -18,18 +16,19 @@
             </div>
             
             <div class="d-flex gap-2">
-                @auth
-                    @can('crear proformas')
-                        <a href="{{ route('proformas.create') }}" class="btn btn-primary" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000; border: none; transition: all 0.3s ease;">
+                <?php if(auth()->guard()->check()): ?>
+
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear proformas')): ?>
+                        <a href="<?php echo e(route('proformas.create')); ?>" class="btn btn-primary" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000; border: none; transition: all 0.3s ease;">
                             <i class="fas fa-plus-circle"></i>
                             Nueva Proforma
                         </a>
-                    @else
+                    <?php else: ?>
                         <div class="alert alert-info mb-0 py-2 px-3">
                             <i class="fas fa-eye me-1"></i> Modo solo lectura
                         </div>
-                    @endcan
-                @endauth
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -37,7 +36,7 @@
     <!-- BUSCADOR Y FILTROS -->
     <div class="card mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ route('proformas.index') }}" class="row" id="searchForm">
+            <form method="GET" action="<?php echo e(route('proformas.index')); ?>" class="row">
                 <!-- Buscador general -->
                 <div class="col-md-12 mb-3">
                     <label for="search" class="form-label fw-semibold">
@@ -52,18 +51,18 @@
                                class="form-control" 
                                id="search" 
                                name="search" 
-                               value="{{ request('search') }}" 
+                               value="<?php echo e(request('search')); ?>" 
                                placeholder="Buscar por código, cliente o tipo..."
                                style="border-left: none;">
-                        @if(request('search'))
-                        <a href="{{ route('proformas.index') }}" class="btn btn-outline-secondary" style="border-radius: 0 30px 30px 0;">
+                        <?php if(request('search')): ?>
+                        <a href="<?php echo e(route('proformas.index')); ?>" class="btn btn-outline-secondary" style="border-radius: 0 30px 30px 0;">
                             <i class="fas fa-times"></i> Limpiar
                         </a>
-                        @endif
+                        <?php endif; ?>
                     </div>
                     <small class="text-muted mt-1 d-block">
                         <i class="fas fa-info-circle me-1"></i>
-                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, ANÁLISIS QUÍMICO, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
+                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, AGUA, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
                     </small>
                 </div>
                 
@@ -74,11 +73,12 @@
                     </label>
                     <select name="mes" id="mes" class="form-select">
                         <option value="">Todos los meses</option>
-                        @foreach(range(1, 12) as $m)
-                            <option value="{{ $m }}" {{ request('mes') == $m ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::create()->month($m)->locale('es')->monthName }}
+                        <?php $__currentLoopData = range(1, 12); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($m); ?>" <?php echo e(request('mes') == $m ? 'selected' : ''); ?>>
+                                <?php echo e(\Carbon\Carbon::create()->month($m)->locale('es')->monthName); ?>
+
                             </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
                 
@@ -88,19 +88,21 @@
                     </label>
                     <select name="anio" id="anio" class="form-select">
                         <option value="">Todos los años</option>
-                        @if(isset($añosDisponibles) && count($añosDisponibles) > 0)
-                            @foreach($añosDisponibles as $año)
-                                <option value="{{ $año }}" {{ request('anio') == $año ? 'selected' : '' }}>
-                                    {{ $año }}
+                        <?php if(isset($añosDisponibles) && count($añosDisponibles) > 0): ?>
+                            <?php $__currentLoopData = $añosDisponibles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $año): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($año); ?>" <?php echo e(request('anio') == $año ? 'selected' : ''); ?>>
+                                    <?php echo e($año); ?>
+
                                 </option>
-                            @endforeach
-                        @else
-                            @for($a = date('Y'); $a >= date('Y')-5; $a--)
-                                <option value="{{ $a }}" {{ request('anio') == $a ? 'selected' : '' }}>
-                                    {{ $a }}
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php else: ?>
+                            <?php for($a = date('Y'); $a >= date('Y')-5; $a--): ?>
+                                <option value="<?php echo e($a); ?>" <?php echo e(request('anio') == $a ? 'selected' : ''); ?>>
+                                    <?php echo e($a); ?>
+
                                 </option>
-                            @endfor
-                        @endif
+                            <?php endfor; ?>
+                        <?php endif; ?>
                     </select>
                 </div>
                 
@@ -110,11 +112,11 @@
                     </label>
                     <select name="estado" id="estado" class="form-select">
                         <option value="">Todos los estados</option>
-                        <option value="BORRADOR" {{ request('estado') == 'BORRADOR' ? 'selected' : '' }}>📝 Borrador</option>
-                        <option value="ENVIADA" {{ request('estado') == 'ENVIADA' ? 'selected' : '' }}>⏳ Enviada</option>
-                        <option value="APROBADA" {{ request('estado') == 'APROBADA' ? 'selected' : '' }}>✅ Aprobada</option>
-                        <option value="RECHAZADA" {{ request('estado') == 'RECHAZADA' ? 'selected' : '' }}>❌ Rechazada</option>
-                        <option value="FINALIZADA" {{ request('estado') == 'FINALIZADA' ? 'selected' : '' }}>🏁 Finalizada</option>
+                        <option value="BORRADOR" <?php echo e(request('estado') == 'BORRADOR' ? 'selected' : ''); ?>>📝 Borrador</option>
+                        <option value="ENVIADA" <?php echo e(request('estado') == 'ENVIADA' ? 'selected' : ''); ?>>⏳ Enviada</option>
+                        <option value="APROBADA" <?php echo e(request('estado') == 'APROBADA' ? 'selected' : ''); ?>>✅ Aprobada</option>
+                        <option value="RECHAZADA" <?php echo e(request('estado') == 'RECHAZADA' ? 'selected' : ''); ?>>❌ Rechazada</option>
+                        <option value="FINALIZADA" <?php echo e(request('estado') == 'FINALIZADA' ? 'selected' : ''); ?>>🏁 Finalizada</option>
                     </select>
                 </div>
                 
@@ -122,7 +124,7 @@
                     <button type="submit" class="btn btn-primary me-2" style="background-color: #ffc107; border-radius: 30px; padding: 8px 20px; color: #000; border: none; transition: all 0.3s ease;">
                         <i class="fas fa-filter"></i> Filtrar
                     </button>
-                    <a href="{{ route('proformas.index') }}" 
+                    <a href="<?php echo e(route('proformas.index')); ?>" 
                        class="btn btn-secondary" 
                        style="border-radius: 30px; padding: 8px 20px; transition: all 0.3s ease;">
                         <i class="fas fa-eraser"></i> Limpiar
@@ -131,40 +133,43 @@
             </form>
         </div>
         
-        @if(request()->has('search') || request()->has('mes') || request()->has('anio') || request()->has('estado'))
+        <?php if(request()->has('search') || request()->has('mes') || request()->has('anio') || request()->has('estado')): ?>
             <div class="card-footer bg-light py-2">
                 <small class="text-muted">
                     <i class="fas fa-info-circle me-1" style="color: #ffc107;"></i>
                     Mostrando resultados para:
-                    @if(request('search'))
-                        búsqueda "<strong>{{ request('search') }}</strong>"
-                    @endif
-                    @if(request('mes') && request('anio'))
-                        @php
+                    <?php if(request('search')): ?>
+                        búsqueda "<strong><?php echo e(request('search')); ?></strong>"
+                    <?php endif; ?>
+                    <?php if(request('mes') && request('anio')): ?>
+                        <?php
                             $mesNumerico = (int)request('mes');
                             $anioNumerico = (int)request('anio');
                             $nombreMes = \Carbon\Carbon::createFromDate($anioNumerico, $mesNumerico, 1)->locale('es')->monthName;
-                        @endphp
-                        de {{ $nombreMes }} de {{ request('anio') }}
-                    @elseif(request('mes'))
-                        @php
+                        ?>
+                        de <?php echo e($nombreMes); ?> de <?php echo e(request('anio')); ?>
+
+                    <?php elseif(request('mes')): ?>
+                        <?php
                             $mesNumerico = (int)request('mes');
                             $nombreMes = \Carbon\Carbon::create()->month($mesNumerico)->locale('es')->monthName;
-                        @endphp
-                        de {{ $nombreMes }}
-                    @elseif(request('anio'))
-                        del año {{ request('anio') }}
-                    @endif
+                        ?>
+                        de <?php echo e($nombreMes); ?>
+
+                    <?php elseif(request('anio')): ?>
+                        del año <?php echo e(request('anio')); ?>
+
+                    <?php endif; ?>
                     
-                    @if(request('estado'))
-                        @php
+                    <?php if(request('estado')): ?>
+                        <?php
                             $estados = ['BORRADOR' => 'Borrador', 'ENVIADA' => 'Enviada', 'APROBADA' => 'Aprobada', 'RECHAZADA' => 'Rechazada', 'FINALIZADA' => 'Finalizada'];
-                        @endphp
-                        con estado <strong>{{ $estados[request('estado')] ?? request('estado') }}</strong>
-                    @endif
+                        ?>
+                        con estado <strong><?php echo e($estados[request('estado')] ?? request('estado')); ?></strong>
+                    <?php endif; ?>
                 </small>
             </div>
-        @endif
+        <?php endif; ?>
     </div>
 
     <!-- Tabla de proformas -->
@@ -175,27 +180,29 @@
                 Listado de Proformas
             </h5>
             <span class="badge" style="background-color: #ffc107; color: #000; padding: 8px 15px; border-radius: 20px; font-weight: 500;">
-                {{ $proformas->total() }} registros
+                <?php echo e($proformas->total()); ?> registros
             </span>
         </div>
         <div class="card-body">
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <i class="fas fa-check-circle me-2"></i>
-                    {{ session('success') }}
+                    <?php echo e(session('success')); ?>
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
-            @if(session('error'))
+            <?php if(session('error')): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    {{ session('error') }}
+                    <?php echo e(session('error')); ?>
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
-            @if($proformas->count() > 0)
+            <?php if($proformas->count() > 0): ?>
                 <div class="table-responsive">
                     <table class="table table-hover" style="font-size: 0.75rem;">
                         <thead>
@@ -212,37 +219,40 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($proformas as $proforma)
+                            <?php $__currentLoopData = $proformas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $proforma): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
                                     <td>
                                         <span style="font-weight: bold;">
-                                            {{ $proforma->codigo }}
+                                            <?php echo e($proforma->codigo); ?>
+
                                         </span>
                                     </td>
                                     <td>
-                                        <strong>{{ $proforma->cliente->razon_social }}</strong>
+                                        <strong><?php echo e($proforma->cliente->razon_social); ?></strong>
                                         <br>
                                         <small class="text-muted">
                                             <i class="fas fa-user me-1"></i>
-                                            {{ $proforma->persona_contacto ?? $proforma->cliente->persona_contacto ?? 'N/A' }}
+                                            <?php echo e($proforma->persona_contacto ?? $proforma->cliente->persona_contacto ?? 'N/A'); ?>
+
                                         </small>
                                     </td>
                                     <td>
                                         <span class="badge rounded-pill 
-                                            @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
-                                            @elseif($proforma->tipo == 'ANALISIS QUIMICO') bg-info
-                                            @else bg-secondary
-                                            @endif">
+                                            <?php if($proforma->tipo == 'AMBIENTAL'): ?> bg-warning text-dark
+                                            <?php elseif($proforma->tipo == 'AGUA'): ?> bg-info
+                                            <?php else: ?> bg-secondary
+                                            <?php endif; ?>">
                                             <i class="fas 
-                                                @if($proforma->tipo == 'AMBIENTAL') fa-leaf
-                                                @elseif($proforma->tipo == 'ANALISIS QUIMICO') fa-tint
-                                                @else fa-flask
-                                                @endif me-1"></i>
-                                            {{ $proforma->tipo }}
+                                                <?php if($proforma->tipo == 'AMBIENTAL'): ?> fa-leaf
+                                                <?php elseif($proforma->tipo == 'AGUA'): ?> fa-tint
+                                                <?php else: ?> fa-flask
+                                                <?php endif; ?> me-1"></i>
+                                            <?php echo e($proforma->tipo); ?>
+
                                         </span>
                                     </td>
                                     <td>
-                                        @php
+                                        <?php
                                             $estado = $proforma->estado;
                                             $bgColor = '';
                                             $textColor = '';
@@ -279,27 +289,33 @@
                                                     $textColor = '#ffffff';
                                                     $icono = 'fa-question-circle';
                                             }
-                                        @endphp
+                                        ?>
                                         
-                                        <span class="badge rounded-pill {{ $bgColor }}" style="color: {{ $textColor }}; padding: 8px 12px; {{ $estado === 'FINALIZADA' ? 'border: 1px solid #ddd;' : '' }}">
-                                            {{ $estado }}
+                                        <span class="badge rounded-pill <?php echo e($bgColor); ?>" style="color: <?php echo e($textColor); ?>; padding: 8px 12px; <?php echo e($estado === 'FINALIZADA' ? 'border: 1px solid #ddd;' : ''); ?>">
+                                            <!-- <i class="fas <?php echo e($icono); ?> me-1" style="color: <?php echo e($textColor); ?>;"></i> -->
+                                            <?php echo e($estado); ?>
+
                                         </span>
                                     </td>
                                     <td>
-                                        <small>{{ $proforma->tipo_muestra }}</small>
+                                        <small><?php echo e($proforma->tipo_muestra); ?></small>
                                     </td>
                                     <td>
                                         <small>
-                                            {{ $proforma->fecha_emision->format('d/m/Y') }}
+                                            <!-- <i class="far fa-calendar me-1"></i> -->
+                                            <?php echo e($proforma->fecha_emision->format('d/m/Y')); ?>
+
                                         </small>
                                     </td>
                                     <td class="text-end fw-semibold text-success">
                                         <i class="fas fa-dollar-sign me-1"></i>
-                                        {{ number_format($proforma->total, 2) }}
+                                        <?php echo e(number_format($proforma->total, 2)); ?>
+
                                     </td>
                                     <td class="text-end fw-semibold" style="color: #ffc107;">
                                         <i class="fas fa-hand-holding-usd me-1"></i>
-                                        {{ number_format($proforma->adelanto, 2) }}
+                                        <?php echo e(number_format($proforma->adelanto, 2)); ?>
+
                                     </td>
                                     <td class="text-center">
                                         <div class="dropdown">
@@ -315,7 +331,7 @@
                                                 <!-- Ver detalles -->
                                                 <li>
                                                     <a class="dropdown-item" 
-                                                    href="{{ route('proformas.show', $proforma) }}"
+                                                    href="<?php echo e(route('proformas.show', $proforma)); ?>"
                                                     title="Ver detalles de la proforma">
                                                         <i class="fas fa-eye me-2" style="color: #0dcaf0;"></i>
                                                         Ver detalles
@@ -323,28 +339,28 @@
                                                 </li>
                                                 
                                                 <!-- Editar (solo admin y borrador) -->
-                                                @canany(['editar proformas', 'eliminar proformas'])
-                                                    @if($proforma->estado == 'BORRADOR')
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['editar proformas', 'eliminar proformas'])): ?>
+                                                    <?php if($proforma->estado == 'BORRADOR'): ?>
                                                         <li>
-                                                            @can('editar proformas')
+                                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar proformas')): ?>
                                                             <a class="dropdown-item" 
-                                                            href="{{ route('proformas.edit', $proforma) }}"
+                                                            href="<?php echo e(route('proformas.edit', $proforma)); ?>"
                                                             title="Editar proforma">
                                                                 <i class="fas fa-edit me-2" style="color: #ffc107;"></i>
                                                                 Editar
                                                             </a>
-                                                            @endcan
+                                                            <?php endif; ?>
                                                         </li>
                                                         
                                                         <!-- Eliminar -->
                                                         <li>
-                                                            @can('eliminar proformas')
-                                                            <form action="{{ route('proformas.destroy', $proforma) }}" 
+                                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('eliminar proformas')): ?>
+                                                            <form action="<?php echo e(route('proformas.destroy', $proforma)); ?>" 
                                                                 method="POST" 
                                                                 class="d-inline"
-                                                                onsubmit="return confirm('¿Está seguro de eliminar la proforma {{ $proforma->codigo }}?');">
-                                                                @csrf
-                                                                @method('DELETE')
+                                                                onsubmit="return confirm('¿Está seguro de eliminar la proforma <?php echo e($proforma->codigo); ?>?');">
+                                                                <?php echo csrf_field(); ?>
+                                                                <?php echo method_field('DELETE'); ?>
                                                                 <button type="submit" 
                                                                         class="dropdown-item"
                                                                         style="background: none; border: none; width: 100%; text-align: left;">
@@ -352,16 +368,16 @@
                                                                     Eliminar
                                                                 </button>
                                                             </form>
-                                                            @endcan
+                                                            <?php endif; ?>
                                                         </li>
                                                         <li><hr class="dropdown-divider"></li>
-                                                    @endif
-                                                @endcanany
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                                 
                                                 <!-- Generar PDF -->
                                                 <li>
                                                     <a class="dropdown-item" 
-                                                    href="{{ route('proformas.pdf', $proforma) }}"
+                                                    href="<?php echo e(route('proformas.pdf', $proforma)); ?>"
                                                     target="_blank"
                                                     title="Generar PDF">
                                                         <i class="fas fa-file-pdf me-2" style="color: #dc3545;"></i>
@@ -369,54 +385,54 @@
                                                     </a>
                                                 </li>
 
-                                                @if($proforma->tipo === 'AMBIENTAL')
-                                                    @hasanyrole('admin|tecnico')
-                                                    <li>
-                                                        <a class="dropdown-item" href="{{ route('reportes.ambiental.index', $proforma) }}" title="Reporte Ambiental">
-                                                            <i class="fas fa-file-signature me-2" style="color: #6f42c1;"></i>Reporte Ambiental
-                                                        </a>
-                                                    </li>
-                                                    @endhasanyrole
-                                                @else
-                                                    <!-- Cadena de Custodia -->
-                                                    @can('generar cadena custodia')
-                                                    <li>
-                                                        <a class="dropdown-item" 
-                                                        href="{{ route('proformas.cadena-custodia', $proforma) }}"
-                                                        target="_blank"
-                                                        title="Generar Cadena de Custodia">
-                                                            <i class="fas fa-clipboard-list me-2" style="color: #198754;"></i>
-                                                            Cadena de Custodia
-                                                        </a>
-                                                    </li>
-                                                    @endcan
-                                                    
-                                                    <!-- Formulario de resultados -->
-                                                    @can('ver resultados')
-                                                    <li>
-                                                        <a class="dropdown-item" 
-                                                        href="{{ route('resultados.index', $proforma->id) }}"
-                                                        title="Abrir formulario de resultados">
-                                                            <i class="fas fa-file-alt me-2" style="color: #0d6efd;"></i>
-                                                            Formulario de resultados
-                                                        </a>
-                                                    </li>
-                                                    @endcan
-                                                @endif
+                                                <?php if($proforma->tipo === 'AMBIENTAL'): ?>
+                                                <?php if (\Illuminate\Support\Facades\Blade::check('hasanyrole', 'admin|tecnico')): ?>
+                                                <li>
+                                                    <a class="dropdown-item" href="<?php echo e(route('reportes.ambiental.index', $proforma)); ?>" title="Reporte Ambiental">
+                                                        <i class="fas fa-file-signature me-2" style="color: #6f42c1;"></i>Reporte Ambiental
+                                                    </a>
+                                                </li>
+                                                <?php endif; ?>
+                                                <?php else: ?>
+                                                <!-- Cadena de Custodia (solo AGUA / INVESTIGACIÓN) -->
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar cadena custodia')): ?>
+                                                <li>
+                                                    <a class="dropdown-item" 
+                                                    href="<?php echo e(route('proformas.cadena-custodia', $proforma)); ?>"
+                                                    target="_blank"
+                                                    title="Generar Cadena de Custodia">
+                                                        <i class="fas fa-clipboard-list me-2" style="color: #198754;"></i>
+                                                        Cadena de Custodia
+                                                    </a>
+                                                </li>
+                                                <?php endif; ?>
+                                                
+                                                <!-- Formulario de resultados (solo AGUA / INVESTIGACIÓN) -->
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver resultados')): ?>
+                                                <li>
+                                                    <a class="dropdown-item" 
+                                                    href="<?php echo e(route('resultados.index', $proforma->id)); ?>"
+                                                    title="Abrir formulario de resultados">
+                                                        <i class="fas fa-file-alt me-2" style="color: #0d6efd;"></i>
+                                                        Formulario de resultados
+                                                    </a>
+                                                </li>
+                                                <?php endif; ?>
+                                                <?php endif; ?>
                                             </ul>
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Botón de Papelera y texto de registros centrado -->
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
-                    @auth
-                        @can('ver papelera proformas')
-                            <a href="{{ route('proformas.trash') }}" 
+                    <?php if(auth()->guard()->check()): ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver papelera proformas')): ?>
+                            <a href="<?php echo e(route('proformas.trash')); ?>" 
                                class="btn btn-icon-circle position-absolute start-0"
                                style="width: 35px; height: 35px; border-radius: 50%; background-color: #6c757d; color: white; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;"
                                data-bs-toggle="tooltip"
@@ -425,74 +441,76 @@
                                onmouseout="this.style.backgroundColor='#6c757d'; this.style.transform='scale(1)';">
                                 <i class="fas fa-trash-alt" style="font-size: 1rem;"></i>
                             </a>
-                        @endcan
-                    @endauth
+                        <?php endif; ?>
+                    <?php endif; ?>
                     
                     <div style="color: #ffc107; font-weight: 500;">
                         <i class="fas fa-database me-1"></i> 
-                        Mostrando {{ $proformas->firstItem() }} a {{ $proformas->lastItem() }} de {{ $proformas->total() }} registros
+                        Mostrando <?php echo e($proformas->firstItem()); ?> a <?php echo e($proformas->lastItem()); ?> de <?php echo e($proformas->total()); ?> registros
                     </div>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="text-center py-5">
                     <i class="fas fa-file-invoice-dollar fa-4x mb-4" style="color: #ffc107;"></i>
                     <h4 class="mb-3" style="color: #334155;">No hay proformas registradas</h4>
                     <p class="text-muted mb-4">
-                        @if(request()->has('search') || request()->has('mes') || request()->has('anio') || request()->has('estado'))
+                        <?php if(request()->has('search') || request()->has('mes') || request()->has('anio') || request()->has('estado')): ?>
                             No hay proformas para los filtros seleccionados.
-                            <a href="{{ route('proformas.index') }}">Ver todas</a>
-                        @else
+                            <a href="<?php echo e(route('proformas.index')); ?>">Ver todas</a>
+                        <?php else: ?>
                             Comience creando su primera proforma.
-                        @endif
+                        <?php endif; ?>
                     </p>
                     
-                    @can('crear proformas')
-                        <a href="{{ route('proformas.create') }}" class="btn btn-primary" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000; border: none; transition: all 0.3s ease;">
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear proformas')): ?>
+                        <a href="<?php echo e(route('proformas.create')); ?>" class="btn btn-primary" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000; border: none; transition: all 0.3s ease;">
                             <i class="fas fa-plus-circle me-2"></i>
                             Crear primera proforma
                         </a>
-                    @else
+                    <?php else: ?>
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
                             Solo el administrador puede crear nuevas proformas.
                         </div>
-                    @endcan
+                    <?php endif; ?>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
         
-        @if($proformas->count() > 0)
+        <?php if($proformas->count() > 0): ?>
         <div class="card-footer bg-light">
             <div class="row">
                 <div class="col-md-6">
                     <small class="text-muted">
                         <i class="fas fa-info-circle me-1" style="color: #ffc107;"></i>
-                        Mostrando {{ $proformas->count() }} de {{ $proformas->total() }} proformas
+                        Mostrando <?php echo e($proformas->count()); ?> de <?php echo e($proformas->total()); ?> proformas
                     </small>
                 </div>
                 <div class="col-md-6 text-end">
                     <small class="text-muted">
                         <i class="fas fa-calculator me-1" style="color: #ffc107;"></i>
                         Total General: 
-                        <strong>Bs. {{ number_format($proformas->sum('total'), 2) }}</strong>
+                        <strong>Bs. <?php echo e(number_format($proformas->sum('total'), 2)); ?></strong>
                         | Adelantos: 
-                        <strong>Bs. {{ number_format($proformas->sum('adelanto'), 2) }}</strong>
+                        <strong>Bs. <?php echo e(number_format($proformas->sum('adelanto'), 2)); ?></strong>
                     </small>
                 </div>
             </div>
         </div>
-        @endif
+        <?php endif; ?>
     </div>
 </div>
 
 <!-- Estilos adicionales -->
 <style>
+/* Estilo para el botón de nueva proforma */
 .btn-primary[style*="background-color: #ffc107"]:hover {
     background-color: #e6a800 !important;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
 }
 
+/* Estilo para el botón de papelera en círculo */
 .btn-icon-circle {
     width: 35px !important;
     height: 35px !important;
@@ -508,6 +526,7 @@
     transform: scale(1.1) !important;
 }
 
+/* Estilos para la paginación */
 .pagination .page-link {
     color: #ffc107 !important;
     border-radius: 8px;
@@ -520,6 +539,7 @@
     color: #000 !important;
 }
 
+/* Estilo para los botones de acción */
 .btn-outline-warning,
 .btn-outline-danger,
 .btn-outline-success {
@@ -533,6 +553,7 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
+/* Estilo para el input de búsqueda */
 .input-group-text {
     border-radius: 30px 0 0 30px !important;
 }
@@ -541,6 +562,7 @@
     border-radius: 0 !important;
 }
 
+/* Estilo para el foco de inputs y selects en proformas */
 .form-control:focus,
 .form-select:focus,
 .input-group-text:focus,
@@ -550,25 +572,30 @@
     outline: none !important;
 }
 
+/* Específico para el input de búsqueda */
 #search:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
+/* Para los selects de filtros */
 select.form-select:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
+/* Para el botón de filtrar */
 button[type="submit"]:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
+/* Reforzar color del icono de proformas */
 .fa-file-invoice-dollar {
     color: #ffc107 !important;
 }
 
+/* ========== CORRECCIÓN PARA MÓVIL ========== */
 @media (max-width: 768px) {
     .page-header .d-flex {
         flex-direction: column !important;
@@ -619,6 +646,7 @@ button[type="submit"]:focus {
         display: none !important;
     }
     
+    /* Ajuste para móvil - papelera y texto */
     .d-flex.align-items-center.justify-content-center.position-relative {
         flex-direction: column !important;
         padding-top: 40px !important;
@@ -630,18 +658,12 @@ button[type="submit"]:focus {
         margin-bottom: 10px !important;
     }
 }
-
-@media (max-width: 992px) {
-    .col-md-4.d-flex.align-items-end {
-        margin-top: 20px !important;
-        gap: 12px !important;
-    }
-}
 </style>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar tooltips de Bootstrap
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl, {
@@ -652,6 +674,7 @@ button[type="submit"]:focus {
             });
         });
         
+        // Auto-submit del formulario de búsqueda al escribir
         let searchTimeout;
         const searchInput = document.getElementById('search');
         const searchForm = document.getElementById('searchForm');
@@ -668,5 +691,6 @@ button[type="submit"]:focus {
         }
     });
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\CIMA_UATF-main\resources\views/proformas/index.blade.php ENDPATH**/ ?>

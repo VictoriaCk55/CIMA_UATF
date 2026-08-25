@@ -366,6 +366,7 @@
                     <div class="mb-3">
                         <label class="form-label text-muted small">Informe PDF</label>
                         <div class="d-grid">
+                            @can('descargar informes')
                             <a href="{{ route('informes.descargar', ['informe' => $informe->id, 'tipo' => 'adjunto']) }}" 
                                class="btn"
                                style="color: #dc3545; border: 2px solid #dc3545; background-color: transparent; border-radius: 30px; padding: 10px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -374,6 +375,7 @@
                                 <i class="fas fa-file-pdf me-2"></i>
                                 Descargar PDF
                             </a>
+                            @endcan
                         </div>
                     </div>
                     @endif
@@ -382,6 +384,7 @@
                     <div class="mb-3">
                         <label class="form-label text-muted small">Archivo de Resultados</label>
                         <div class="d-grid">
+                            @can('descargar informes')
                             <a href="{{ route('informes.descargar', ['informe' => $informe->id, 'tipo' => 'resultados']) }}" 
                                class="btn"
                                style="color: #198754; border: 2px solid #198754; background-color: transparent; border-radius: 30px; padding: 10px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -390,6 +393,7 @@
                                 <i class="fas fa-file-excel me-2"></i>
                                 Descargar Resultados
                             </a>
+                            @endcan
                         </div>
                     </div>
                     @endif
@@ -414,6 +418,7 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <!-- Botón de PDF -->
+                        @can('generar pdf informes')
                         <a href="{{ route('informes.pdf', $informe) }}" 
                            class="btn"
                            style="color: #000000; border: 2px solid #198754; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -423,9 +428,9 @@
                             <i class="fas fa-file-pdf me-2"></i>
                             Generar PDF
                         </a>
+                        @endcan
                         
-                        @auth
-                            @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+                        @can('editar informes')
                                 <!-- Editar (solo para estados BORRADOR y EN_PROCESO) -->
                                 @if(in_array($informe->estado, ['BORRADOR', 'EN_PROCESO']))
                                     <a href="{{ route('informes.edit', $informe) }}" 
@@ -437,7 +442,9 @@
                                         Editar Informe
                                     </a>
                                 @endif
-                                
+                        @endcan
+                        
+                        @can('cambiar estado informes')
                                 <!-- Cambiar estado -->
                                 <button type="button" 
                                         class="btn"
@@ -449,7 +456,9 @@
                                     <i class="fas fa-exchange-alt me-2"></i>
                                     Cambiar Estado
                                 </button>
-                                
+                        @endcan
+                        
+                        @can('eliminar informes')
                                 <!-- Eliminar (solo BORRADOR) -->
                                 @if($informe->estado == 'BORRADOR')
                                     <button type="button" 
@@ -470,8 +479,7 @@
                                         @method('DELETE')
                                     </form>
                                 @endif
-                            @endif
-                        @endauth
+                        @endcan
                         
                         <!-- Ver proforma asociada -->
                         @if($informe->proforma)
@@ -494,8 +502,7 @@
 </div>
 
 <!-- Modal para cambiar estado -->
-@auth
-    @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+@can('cambiar estado informes')
         <div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -566,8 +573,7 @@
                 </div>
             </div>
         </div>
-    @endif
-@endauth
+@endcan
 
 <!-- Estilos adicionales -->
 <style>

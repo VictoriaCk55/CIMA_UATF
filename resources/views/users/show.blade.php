@@ -14,9 +14,11 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-info-circle me-2"></i> {{ $user->name }}</span>
         <div>
+            @can('editar usuarios')
             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">
                 <i class="fas fa-edit me-1"></i> Editar
             </a>
+            @endcan
             <a href="{{ route('users.index') }}" class="btn btn-sm btn-secondary">
                 <i class="fas fa-arrow-left me-1"></i> Volver
             </a>

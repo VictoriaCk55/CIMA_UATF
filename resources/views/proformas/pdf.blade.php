@@ -8,6 +8,7 @@
     <style>
         /* CONFIGURACIÓN BASE */
         @page {
+<<<<<<< HEAD
             margin: 12mm 10mm 30mm 10mm;
             size: A4 portrait;
         }
@@ -16,11 +17,30 @@
             font-family: "Times New Roman", Times, serif;
             font-size: 10px;
             line-height: 1.2;
+=======
+            margin: 15mm 10mm 15mm 10mm;
+        }
+
+        @page horizontal {
+            size: letter landscape;
+        }
+
+        .horizontal-page {
+            page: horizontal;
+        }
+
+        
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 11px;
+            line-height: 1.3;
+>>>>>>> ambientales
             color: #000;
             margin: 0;
             padding: 0;
             background-color: white;
         }
+<<<<<<< HEAD
 
         /* ===== PIE DE PÁGINA (se repite en TODAS las páginas) ===== */
         /* El número de página ("Página X de Y") se dibuja aparte, desde
@@ -65,11 +85,18 @@
             content: counter(page);
         }
 
+=======
+        
+>>>>>>> ambientales
         /* ENCABEZADO */
         .header-table {
             width: 100%;
             border-collapse: collapse;
+<<<<<<< HEAD
             margin-bottom: 8px;
+=======
+            margin-bottom: 15px;
+>>>>>>> ambientales
         }
         
         .header-table td {
@@ -78,12 +105,21 @@
         }
         
         .logo-cell {
+<<<<<<< HEAD
             width: 80px;
         }
         
         .logo-container {
             width: 70px;
             height: 70px;
+=======
+            width: 100px;
+        }
+        
+        .logo-container {
+            width: 90px;
+            height: 90px;
+>>>>>>> ambientales
             border: 1px solid #ccc;
             display: block;
             background-color: #f9f9f9;
@@ -92,13 +128,19 @@
         }
         
         .logo-container img {
+<<<<<<< HEAD
             max-width: 65px;
             max-height: 65px;
+=======
+            max-width: 85px;
+            max-height: 85px;
+>>>>>>> ambientales
             margin-top: 2px;
         }
         
         .center-cell {
             text-align: center;
+<<<<<<< HEAD
             padding: 0 8px;
         }
         
@@ -106,24 +148,43 @@
             font-size: 14px;
             font-weight: bold;
             margin: 0 0 2px 0;
+=======
+            padding: 0 10px;
+        }
+        
+        .center-cell h1 {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 0 3px 0;
+>>>>>>> ambientales
             text-transform: uppercase;
             color: #1c3d6e;
         }
         
         .center-cell h2 {
+<<<<<<< HEAD
             font-size: 11px;
+=======
+            font-size: 13px;
+>>>>>>> ambientales
             margin: 0 0 2px 0;
             color: #2c5282;
             font-weight: 600;
         }
         
         .center-cell h3 {
+<<<<<<< HEAD
             font-size: 9px;
             margin: 0 0 3px 0;
+=======
+            font-size: 11px;
+            margin: 0 0 4px 0;
+>>>>>>> ambientales
             color: #4a5568;
             font-style: italic;
         }
         
+<<<<<<< HEAD
         .unidad-badge {
             padding: 2px 6px;
             border-radius: 15px;
@@ -151,17 +212,47 @@
         .document-options {
             margin: 5px 0 0 0;
             font-size: 8px;
+=======
+        /* Unidad de la proforma */
+        .unidad-badge {
+            background-color: #2c5282;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 9px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        .document-subtitle {
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
+            margin: 5px 0;
+        }
+        
+        .document-options {
+            margin: 8px 0 0 0;
+            font-size: 10px;
+>>>>>>> ambientales
         }
         
         .doc-option {
             display: inline-block;
+<<<<<<< HEAD
             margin: 0 2px;
             padding: 1px 4px;
+=======
+            margin: 0 4px;
+            padding: 2px 6px;
+>>>>>>> ambientales
             border: 1px solid #666;
             border-radius: 2px;
             background-color: #f8f9fa;
         }
         
+<<<<<<< HEAD
         .doc-option.selected.proforma { background-color: #2c5282; color: white; border-color: #2c5282; font-weight: bold; }
         .doc-option.selected.cotizacion { background-color: #28a745; color: white; border-color: #28a745; font-weight: bold; }
         .doc-option.selected.contrato { background-color: #fd7e14; color: white; border-color: #fd7e14; font-weight: bold; }
@@ -169,28 +260,77 @@
         
         .codigo-cell {
             width: 100px;
+=======
+        .doc-option.selected.proforma {
+            background-color: #2c5282;
+            color: white;
+            border-color: #2c5282;
+            font-weight: bold;
+        }
+        
+        .doc-option.selected.cotizacion {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+            font-weight: bold;
+        }
+        
+        .doc-option.selected.contrato {
+            background-color: #fd7e14;
+            color: white;
+            border-color: #fd7e14;
+            font-weight: bold;
+        }
+        
+        .doc-option.selected.contrato-modificado {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .codigo-cell {
+            width: 120px;
+>>>>>>> ambientales
             text-align: right;
         }
         
         .codigo-box {
             border: 1px solid #000;
+<<<<<<< HEAD
             padding: 3px;
             font-size: 8px;
+=======
+            padding: 5px;
+            font-size: 9px;
+>>>>>>> ambientales
             background-color: #f8f9fa;
             text-align: center;
             display: inline-block;
         }
         
+<<<<<<< HEAD
         .separator {
             border-top: 2px solid #1c3d6e;
             margin: 5px 0 8px 0;
             width: 100%;
         }
         
+=======
+        /* LÍNEA SEPARADORA */
+        .separator {
+            border-top: 2px solid #1c3d6e;
+            margin: 8px 0 15px 0;
+            width: 100%;
+        }
+        
+        /* SECCIONES */
+>>>>>>> ambientales
         .section-title {
             background-color: #2c5282;
             color: white;
             font-weight: bold;
+<<<<<<< HEAD
             padding: 3px 6px;
             margin-bottom: 5px;
             font-size: 9px;
@@ -206,11 +346,29 @@
             border-collapse: collapse;
             font-size: 9px;
             margin-bottom: 5px;
+=======
+            padding: 5px 10px;
+            margin-bottom: 8px;
+            font-size: 11px;
+            border-radius: 3px;
+        }
+        
+        /* TABLAS DE DATOS */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-bottom: 10px;
+>>>>>>> ambientales
         }
         
         .data-table th, .data-table td {
             border: 1px solid #999;
+<<<<<<< HEAD
             padding: 2px 5px;
+=======
+            padding: 5px 8px;
+>>>>>>> ambientales
             vertical-align: top;
         }
         
@@ -220,17 +378,27 @@
             font-weight: bold;
         }
         
+<<<<<<< HEAD
         .params-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 9px;
             margin-bottom: 8px;
+=======
+        /* TABLA DE PARÁMETROS */
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-bottom: 15px;
+>>>>>>> ambientales
         }
         
         .params-table thead th {
             background-color: #2c5282;
             color: white;
             text-align: center;
+<<<<<<< HEAD
             padding: 3px;
             border: 1px solid #999;
             font-weight: bold;
@@ -251,10 +419,40 @@
         .align-left { text-align: left; }
         .bold { font-weight: bold; }
         
+=======
+            padding: 6px;
+            border: 1px solid #999;
+            font-weight: bold;
+        }
+        
+        .params-table tbody td {
+            border: 1px solid #999;
+            padding: 5px 6px;
+        }
+        
+        .align-right {
+            text-align: right;
+        }
+        
+        .align-center {
+            text-align: center;
+        }
+        
+        .align-left {
+            text-align: left;
+        }
+        
+        .bold {
+            font-weight: bold;
+        }
+        
+        /* ALERTA DE MODIFICACIÓN DE PARÁMETROS */
+>>>>>>> ambientales
         .alert-modification {
             background-color: #fff3cd;
             border: 1px solid #ffc107;
             border-left: 5px solid #ffc107;
+<<<<<<< HEAD
             padding: 6px;
             margin: 8px 0;
             border-radius: 5px;
@@ -268,19 +466,60 @@
             border: 2px solid #2c5282;
             padding: 6px;
             margin: 10px 0;
+=======
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+        
+        .alert-modification-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+        
+        .alert-modification-text {
+            color: #856404;
+            margin-bottom: 5px;
+        }
+        
+        .alert-modification-detail {
+            font-style: italic;
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px dashed #ffc107;
+            color: #6c757d;
+        }
+        
+        /* RESUMEN FINANCIERO */
+        .financial-summary {
+            border: 2px solid #2c5282;
+            padding: 12px;
+            margin: 20px 0;
+>>>>>>> ambientales
             background-color: #f8f9fa;
             border-radius: 4px;
         }
         
         .summary-title {
+<<<<<<< HEAD
             font-size: 10px;
             font-weight: bold;
             color: #2c5282;
             margin-bottom: 3px;
+=======
+            font-size: 12px;
+            font-weight: bold;
+            color: #2c5282;
+            margin-bottom: 10px;
+>>>>>>> ambientales
             text-align: center;
             text-transform: uppercase;
         }
         
+<<<<<<< HEAD
         .summary-line { margin: 2px 0; font-size: 10px; display: flex; justify-content: space-between; }
         .summary-line.total { font-size: 11px; font-weight: bold; margin-top: 3px; padding-top: 3px; border-top: 2px solid #2c5282; }
         .summary-label { font-weight: bold; }
@@ -294,6 +533,45 @@
             text-align: center;
             font-size: 10px;
             padding: 6px;
+=======
+        .summary-line {
+            margin: 6px 0;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .summary-line.total {
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 2px solid #2c5282;
+        }
+        
+        .summary-label {
+            font-weight: bold;
+        }
+        
+        .summary-value {
+            font-weight: bold;
+        }
+        
+        .summary-value.text-success {
+            color: #28a745;
+        }
+        
+        .summary-value.text-danger {
+            color: #dc3545;
+        }
+        
+        .total-in-words {
+            font-style: italic;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 11px;
+            padding: 10px;
+>>>>>>> ambientales
             background-color: #f0f7ff;
             border: 1px solid #cce5ff;
             border-radius: 4px;
@@ -301,6 +579,7 @@
         }
         
         /* FIRMAS */
+<<<<<<< HEAD
         .signatures-wrapper {
             width: 100%;
             margin-top: 30px;
@@ -309,6 +588,11 @@
 
         .signatures-table {
             width: 100%;
+=======
+        .signatures-table {
+            width: 100%;
+            margin-top: 60px;
+>>>>>>> ambientales
             border-collapse: collapse;
         }
         
@@ -322,7 +606,11 @@
         .signature-line {
             border-top: 1px solid #000;
             width: 80%;
+<<<<<<< HEAD
             margin: 30px auto 0 auto;
+=======
+            margin: 50px auto 0 auto;
+>>>>>>> ambientales
             display: block;
         }
         
@@ -331,6 +619,7 @@
             font-size: 10px;
             color: #333;
             line-height: 1.4;
+<<<<<<< HEAD
             text-align: center;
         }
 
@@ -372,6 +661,30 @@
         </table>
     </div>
 
+=======
+        }
+        
+        /* FOOTER */
+        .footer {
+            margin-top: 30px;
+            font-size: 9px;
+            color: #666;
+            text-align: center;
+            padding-top: 8px;
+        }
+        
+        /* ESPACIOS */
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+        
+        .mt-10 {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+>>>>>>> ambientales
     <!-- ENCABEZADO -->
     <table class="header-table">
          <tr>
@@ -404,7 +717,11 @@
                 </h3>
                 
                 <div class="document-subtitle">
+<<<<<<< HEAD
                     @if($proforma->tipo === 'ANALISIS QUIMICO' || $proforma->tipo === 'AGUA')
+=======
+                    @if($proforma->tipo === 'AGUA')
+>>>>>>> ambientales
                         ANÁLISIS QUÍMICO - BACTERIOLÓGICO: AGUAS, SUELOS, SEDIMENTOS Y MINERALES
                     @elseif($proforma->tipo === 'AMBIENTAL')
                         MUESTREO DE MATERIAL PARTICULADO, RUIDO, GASES, AGUAS, SEDIMIENTOS Y VEGETACIÓN
@@ -415,6 +732,7 @@
                 
                 <div class="document-options">
                     @php $td = $proforma->tipo_documento ?? []; @endphp
+<<<<<<< HEAD
                     <span class="doc-option{{ in_array('PROFORMA', $td) ? ' selected proforma' : '' }}">PROFORMA</span>
                     <span class="doc-option{{ in_array('COTIZACION', $td) ? ' selected cotizacion' : '' }}">COTIZACIÓN</span>
                     <span class="doc-option{{ in_array('CONTRATO', $td) ? ' selected contrato' : '' }}">CONTRATO</span>
@@ -424,6 +742,28 @@
                 @if($proforma->unidad)
                 <div class="unidad-badge {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : 'agua' }}">
                     {{ $proforma->unidad == 'UIA' ? 'Unidad de Investigación Ambiental' : 'Unidad de Análisis Químico' }}
+=======
+                    <span class="doc-option{{ in_array('PROFORMA', $td) ? ' selected proforma' : '' }}">
+                        PROFORMA
+                    </span>
+
+                    <span class="doc-option{{ in_array('COTIZACION', $td) ? ' selected cotizacion' : '' }}">
+                        COTIZACIÓN
+                    </span>
+
+                    <span class="doc-option{{ in_array('CONTRATO', $td) ? ' selected contrato' : '' }}">
+                        CONTRATO
+                    </span>
+
+                    <span class="doc-option{{ in_array('CONTRATO MODIFICADO', $td) ? ' selected contrato-modificado' : '' }}">
+                        CONTRATO MODIFICADO
+                    </span>
+                </div>
+                
+                @if($proforma->unidad)
+                <div class="unidad-badge">
+                    <i class="fas fa-building"></i> {{ $proforma->unidad == 'UIA' ? 'Unidad de Investigación Ambiental' : 'Unidad de Análisis Químico' }}
+>>>>>>> ambientales
                 </div>
                 @endif
             </td>
@@ -445,7 +785,11 @@
 
     <!-- DATOS DE RECEPCIÓN -->
     @php $numRecepcion = explode('-', $proforma->codigo)[2] ?? $proforma->numero_recepcion; @endphp
+<<<<<<< HEAD
     <table class="data-table" style="margin-bottom: 3px;">
+=======
+    <table class="data-table" style="margin-bottom: 5px;">
+>>>>>>> ambientales
         <tr>
             <td style="width: 50%; text-align: left;"><strong>Fecha de recepción:</strong> {{ $proforma->fecha_recepcion->format('d/m/Y') }}</td>
             <td style="width: 50%; text-align: right;"><strong>Nro. Recepción:</strong> {{ $numRecepcion }}</td>
@@ -453,8 +797,13 @@
     </table>
 
     <!-- SECCIÓN 1: DATOS DEL CLIENTE -->
+<<<<<<< HEAD
     <div class="mb-8">
         <div class="section-title {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">1.- DATOS DEL CLIENTE</div>
+=======
+    <div class="mb-10">
+        <div class="section-title">1.- DATOS DEL CLIENTE</div>
+>>>>>>> ambientales
         
         <table class="data-table">
                <tr>
@@ -477,8 +826,13 @@
     </div>
 
     <!-- SECCIÓN 2: DATOS DE LA MUESTRA -->
+<<<<<<< HEAD
     <div class="mb-8">
         <div class="section-title {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">2.- DATOS DE LA MUESTRA</div>
+=======
+    <div class="mb-10">
+        <div class="section-title">2.- DATOS DE LA MUESTRA</div>
+>>>>>>> ambientales
         
         <table class="data-table">
               <tr>
@@ -518,10 +872,17 @@
     </div>
 
     <!-- SECCIÓN 3: PARÁMETROS A ANALIZAR -->
+<<<<<<< HEAD
     <div class="mb-8">
         <div class="section-title {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">3.- PARÁMETROS A ANALIZAR - MUESTRAS DE {{ strtoupper($proforma->tipo_muestra) }}</div>
         
         <table class="params-table {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">
+=======
+    <div class="mb-10">
+        <div class="section-title">3.- PARÁMETROS A ANALIZAR - MUESTRAS DE {{ strtoupper($proforma->tipo_muestra) }}</div>
+        
+        <table class="params-table">
+>>>>>>> ambientales
             <thead>
                  <tr>
                     <th style="width: 5%;">#</th>
@@ -563,8 +924,13 @@
                         <td class="align-center">{{ $proforma->parametros->count() + 1 }}</td>
                         <td>{{ $descripcionUsuario }}</td>
                         <td class="align-center" style="text-align: center; vertical-align: middle;">
+<<<<<<< HEAD
                             <strong style="font-size: 7px;">NÚMERO DE PUNTOS TOTALES</strong><br>
                             <span style="font-size: 12px; font-weight: bold;">{{ $totalPuntos }}</span>
+=======
+                            <strong style="font-size: 8px;">NÚMERO DE PUNTOS TOTALES</strong><br>
+                            <span style="font-size: 14px; font-weight: bold;">{{ $totalPuntos }}</span>
+>>>>>>> ambientales
                         </td>
                         <td class="align-center">{{ $totalPuntos }}</td>
                         <td class="align-right">Bs. {{ number_format($totalCosto, 2) }}</td>
@@ -635,12 +1001,20 @@
         </div>
         
         @if($proforma->adelanto > 0)
+<<<<<<< HEAD
         <div class="summary-line" style="margin-top: 4px;">
+=======
+        <div class="summary-line" style="margin-top: 8px;">
+>>>>>>> ambientales
             <span class="summary-label">Adelanto recibido:</span>
             <span class="summary-value">Bs. {{ number_format($proforma->adelanto, 2) }}</span>
         </div>
         
+<<<<<<< HEAD
         <div class="summary-line" style="border-top: 1px dashed #999; padding-top: 3px;">
+=======
+        <div class="summary-line" style="border-top: 1px dashed #999; padding-top: 5px;">
+>>>>>>> ambientales
             <span class="summary-label">Saldo pendiente:</span>
             <span class="summary-value {{ $proforma->saldo > 0 ? 'text-danger' : 'text-success' }}">
                 Bs. {{ number_format($proforma->saldo, 2) }}
@@ -651,21 +1025,32 @@
 
     <!-- OBSERVACIONES -->
     @if($proforma->observaciones)
+<<<<<<< HEAD
     <div class="mb-8">
         <div class="section-title {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">OBSERVACIONES</div>
         <div style="padding: 4px; border: 1px solid #e2e8f0; border-radius: 3px; font-size: 9px; background-color: #fffde7; line-height: 1.2;">
+=======
+    <div class="mb-10">
+        <div class="section-title">OBSERVACIONES</div>
+        <div style="padding: 8px; border: 1px solid #e2e8f0; border-radius: 3px; font-size: 10px; background-color: #fffde7; line-height: 1.4;">
+>>>>>>> ambientales
             {!! nl2br(e($proforma->observaciones)) !!}
         </div>
     </div>
     @endif
 
     <!-- NOTAS -->
+<<<<<<< HEAD
     <div class="notes-section {{ $proforma->tipo === 'AMBIENTAL' ? 'ambiental' : '' }}">
+=======
+    <div style="font-size: 10px; margin-top: 15px; padding: 8px; background-color: #f8f9fa; border-radius: 3px; border-left: 3px solid #2c5282;">
+>>>>>>> ambientales
         <p><strong>Nota 1:</strong> {{ $cfg->config('nota1', 'Para realizar el análisis se debe dejar cancelado el 100% del monto total.') }}</p>
         <p><strong>Nota 2:</strong> {{ $cfg->config('nota2', 'El laboratorio no realiza declaraciones de conformidad sobre los resultados que se reportan.') }}</p>
         <p><strong>Nota 3:</strong> {{ $cfg->config('nota3', 'Los resultados estarán disponibles dentro de los plazos establecidos según el tipo de análisis.') }}</p>
     </div>
 
+<<<<<<< HEAD
     <!-- ===== FIRMAS ===== -->
     <div class="signatures-wrapper">
         <table class="signatures-table">
@@ -690,5 +1075,43 @@
          </table>
      </div>
 
+=======
+    <!-- FIRMAS -->
+    <table class="signatures-table">
+         <tr>
+             <td>
+                <div class="signature-line"></div>
+                <div class="signature-text">
+                    <strong>{{ $cfg->config('responsable_nombre') }}</strong><br>
+                    {{ $cfg->config('responsable_cargo') }}<br>
+                    {{ $cfg->config('institucion_nombre') }}
+                </div>
+             </td>
+             <td>
+                <div class="signature-line"></div>
+                <div class="signature-text">
+                    <strong>{{ $cfg->config('director_nombre') }}</strong><br>
+                    {{ $cfg->config('director_cargo') }}<br>
+                    {{ $proforma->cliente->razon_social }}
+                </div>
+             </td>
+         </tr>
+     </table>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p><strong>{{ $cfg->config('institucion_nombre') }}</strong></p>
+        <p>{{ $cfg->config('footer_direccion') }}</p>
+        <p>{{ $cfg->config('footer_telefono') }} | {{ $cfg->config('footer_email') }}</p>
+        <p><em>{{ $cfg->config('footer_texto') }}</em></p>
+    </div>
+
+    <script type="text/php">
+        if (isset($pdf)) {
+            $font = $fontMetrics->getFont("times", "normal");
+            $pdf->getCanvas()->page_text(260, 50, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, 9, array(100,100,100));
+        }
+    </script>
+>>>>>>> ambientales
 </body>
 </html>

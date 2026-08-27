@@ -16,6 +16,7 @@
             </div>
             
             <div class="d-flex gap-2">
+<<<<<<< HEAD
                 @auth
                     @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
                         <a href="{{ route('clientes.create') }}" class="btn" style="background-color: #2798F5; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;">
@@ -28,6 +29,18 @@
                         </div>
                     @endif
                 @endauth
+=======
+                @can('crear clientes')
+                    <a href="{{ route('clientes.create') }}" class="btn" style="background-color: #2798F5; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;">
+                        <i class="fas fa-plus-circle"></i>
+                        Nuevo Cliente
+                    </a>
+                @else
+                    <div class="alert alert-info mb-0 py-2 px-3">
+                        <i class="fas fa-eye me-1"></i> Modo solo lectura
+                    </div>
+                @endcan
+>>>>>>> ambientales
             </div>
         </div>
     </div>
@@ -320,6 +333,7 @@
                         @endif
                     </p>
                     
+<<<<<<< HEAD
                     @auth
                         @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
                             @if(request('search'))
@@ -340,6 +354,26 @@
                             </div>
                         @endif
                     @endauth
+=======
+                    @can('crear clientes')
+                        @if(request('search'))
+                            <a href="{{ route('clientes.index') }}" class="btn btn-outline-secondary" style="border-radius: 30px; padding: 10px 25px;">
+                                <i class="fas fa-times me-2"></i>
+                                Limpiar búsqueda
+                            </a>
+                        @else
+                            <a href="{{ route('clientes.create') }}" class="btn" style="background-color: #2798F5; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;">
+                                <i class="fas fa-plus-circle me-2"></i>
+                                Crear primer cliente
+                            </a>
+                        @endif
+                    @else
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Solo el administrador puede crear nuevos clientes.
+                        </div>
+                    @endcan
+>>>>>>> ambientales
                 </div>
             @endif
         </div>

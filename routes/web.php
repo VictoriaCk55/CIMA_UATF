@@ -101,10 +101,17 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/parametros/{id}/restore', [ParametroController::class, 'restore'])->name('parametros.restore')->middleware('permission:restaurar parametros');
         Route::delete('/parametros/{id}/force-delete', [ParametroController::class, 'forceDelete'])->name('parametros.force-delete')->middleware('permission:forzar eliminar parametros');
 
+<<<<<<< HEAD
         // ===== NUEVA RUTA: PANEL DE PRECIOS MASIVOS (AGREGADA AQUÍ) =====
         Route::get('/parametros/precios/masivos', [ParametroController::class, 'preciosMasivos'])->name('parametros.precios.masivos')->middleware('permission:editar parametros');
         Route::post('/parametros/precios/masivos', [ParametroController::class, 'actualizarPreciosMasivos'])->name('parametros.precios.actualizar')->middleware('permission:editar parametros');
 
+=======
+        // ===== NUEVAS RUTAS: PANEL DE PRECIOS MASIVOS =====
+        Route::get('/parametros/precios/masivos', [ParametroController::class, 'preciosMasivos'])->name('parametros.precios.masivos')->middleware('permission:editar parametros');
+        Route::post('/parametros/precios/masivos', [ParametroController::class, 'actualizarPreciosMasivos'])->name('parametros.precios.actualizar')->middleware('permission:editar parametros');
+        
+>>>>>>> ambientales
         // ===== PROFORMAS =====
         Route::get('/proformas/create', [ProformaController::class, 'create'])->name('proformas.create')->middleware('permission:crear proformas');
         Route::post('/proformas', [ProformaController::class, 'store'])->name('proformas.store')->middleware('permission:crear proformas');
@@ -184,6 +191,26 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cliente/{cliente}', [FinancieroController::class, 'cliente'])->name('cliente')->middleware('role:admin|tecnico|analista');
         Route::get('/exportar', [FinancieroController::class, 'exportar'])->name('exportar')->middleware('permission:exportar financiero');
     });
+<<<<<<< HEAD
+=======
+
+    // ========== CADENA DE CUSTODIA ==========
+    Route::get('proformas/{proforma}/cadena-custodia', [ProformaController::class, 'pdfCadenaCustodia'])->name('proformas.cadena-custodia')->middleware('permission:generar cadena custodia');
+
+    // ========== REPORTE AMBIENTAL ==========
+    Route::prefix('proformas/{proforma}/reporte-ambiental')->name('reportes.ambiental.')->middleware('role:admin|tecnico|analista')->group(function () {
+        Route::get('/', [App\Http\Controllers\ReporteAmbientalController::class, 'index'])->name('index');
+        Route::get('/aire', [App\Http\Controllers\ReporteAmbientalController::class, 'aire'])->name('aire');
+        Route::get('/ruido', [App\Http\Controllers\ReporteAmbientalController::class, 'ruido'])->name('ruido');
+        Route::get('/gases', [App\Http\Controllers\ReporteAmbientalController::class, 'gases'])->name('gases');
+        Route::post('/', [App\Http\Controllers\ReporteAmbientalController::class, 'store'])->name('store');
+    });
+    Route::get('/reportes-ambientales/{reporte}/pdf', [App\Http\Controllers\ReporteAmbientalController::class, 'pdf'])->name('reportes.ambiental.pdf')->middleware('role:admin|tecnico');
+    Route::get('/reportes-ambientales/{reporte}/pdf/aire', [App\Http\Controllers\ReporteAmbientalController::class, 'pdfAire'])->name('reportes.ambiental.pdf.aire')->middleware('role:admin|tecnico|analista');
+    Route::get('/reportes-ambientales/{reporte}/pdf/ruido', [App\Http\Controllers\ReporteAmbientalController::class, 'pdfRuido'])->name('reportes.ambiental.pdf.ruido')->middleware('role:admin|tecnico|analista');
+    Route::get('/reportes-ambientales/{reporte}/pdf/gases', [App\Http\Controllers\ReporteAmbientalController::class, 'pdfGases'])->name('reportes.ambiental.pdf.gases')->middleware('role:admin|tecnico|analista');
+    Route::get('/reportes-ambientales/{reporte}/descargar', [App\Http\Controllers\ReporteAmbientalController::class, 'downloadPdf'])->name('reportes.ambiental.download')->middleware('role:admin|tecnico|analista');
+>>>>>>> ambientales
 });
 
 // ========== RUTA DE FALLBACK ==========
@@ -191,6 +218,7 @@ Route::fallback(function () {
     return redirect()->route('home')
         ->with('error', 'La pagina que buscas no existe.');
 });
+<<<<<<< HEAD
 
 // ========== CADENA DE CUSTODIA ==========
 Route::get('proformas/{proforma}/cadena-custodia', [ProformaController::class, 'pdfCadenaCustodia'])->name('proformas.cadena-custodia')->middleware('permission:generar cadena custodia');
@@ -208,3 +236,5 @@ Route::get('/reportes-ambientales/{reporte}/pdf/aire', [App\Http\Controllers\Rep
 Route::get('/reportes-ambientales/{reporte}/pdf/ruido', [App\Http\Controllers\ReporteAmbientalController::class, 'pdfRuido'])->name('reportes.ambiental.pdf.ruido')->middleware('role:admin|tecnico|analista');
 Route::get('/reportes-ambientales/{reporte}/pdf/gases', [App\Http\Controllers\ReporteAmbientalController::class, 'pdfGases'])->name('reportes.ambiental.pdf.gases')->middleware('role:admin|tecnico|analista');
 Route::get('/reportes-ambientales/{reporte}/descargar', [App\Http\Controllers\ReporteAmbientalController::class, 'downloadPdf'])->name('reportes.ambiental.download')->middleware('role:admin|tecnico|analista');
+=======
+>>>>>>> ambientales

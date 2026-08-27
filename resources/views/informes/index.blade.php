@@ -20,8 +20,12 @@
             </div>
             
             <div class="d-flex gap-2">
+<<<<<<< HEAD
                 @auth
                     @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+=======
+                @can('crear informes')
+>>>>>>> ambientales
                         <a href="{{ route('informes.create') }}" 
                            class="btn" 
                            style="background-color: #C2F527; border-radius: 30px; padding: 10px 25px; color: #000000; border: none; transition: all 0.3s ease;"
@@ -34,8 +38,12 @@
                         <div class="alert alert-info mb-0 py-2 px-3">
                             <i class="fas fa-eye me-1"></i> Modo solo lectura
                         </div>
+<<<<<<< HEAD
                     @endif
                 @endauth
+=======
+                    @endcan
+>>>>>>> ambientales
             </div>
         </div>
     </div>
@@ -366,15 +374,25 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
+<<<<<<< HEAD
                                             @auth
                                                 @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+=======
+                                            @can('editar informes')
+>>>>>>> ambientales
                                                     <a href="{{ route('informes.edit', $informe) }}" 
                                                        class="btn btn-outline-warning btn-sm"
                                                        data-bs-toggle="tooltip"
                                                        title="Editar informe">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
+<<<<<<< HEAD
                                                     
+=======
+                                            @endcan
+                                            
+                                            @can('eliminar informes')
+>>>>>>> ambientales
                                                     <form action="{{ route('informes.destroy', $informe) }}" 
                                                           method="POST" 
                                                           class="d-inline"
@@ -388,6 +406,7 @@
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
+<<<<<<< HEAD
                                                 @endif
                                             @endauth
                                             
@@ -398,6 +417,19 @@
                                                target="_blank">
                                                 <i class="fas fa-file-pdf"></i>
                                             </a>
+=======
+                                            @endcan
+                                            
+                                            @can('generar pdf informes')
+                                                <a href="{{ route('informes.pdf', $informe) }}" 
+                                                   class="btn btn-outline-success btn-sm"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Generar PDF"
+                                                   target="_blank">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </a>
+                                            @endcan
+>>>>>>> ambientales
                                         </div>
                                     </td>
                                 </tr>
@@ -408,8 +440,12 @@
 
                 <!-- Botón de Papelera y texto de registros centrado -->
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
+<<<<<<< HEAD
                     @auth
                         @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+=======
+                    @can('ver papelera informes')
+>>>>>>> ambientales
                             <a href="{{ route('informes.trash') }}" 
                                class="btn btn-icon-circle position-absolute start-0"
                                style="width: 35px; height: 35px; border-radius: 50%; background-color: #6c757d; color: white; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;"
@@ -419,8 +455,12 @@
                                onmouseout="this.style.backgroundColor='#6c757d'; this.style.transform='scale(1)';">
                                 <i class="fas fa-trash-alt" style="font-size: 1rem;"></i>
                             </a>
+<<<<<<< HEAD
                         @endif
                     @endauth
+=======
+                    @endcan
+>>>>>>> ambientales
                     
                     <div style="color: #C2F527; font-weight: 500;">
                         <i class="fas fa-database me-1"></i> 
@@ -441,8 +481,12 @@
                         @endif
                     </p>
                     
+<<<<<<< HEAD
                     @auth
                         @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
+=======
+                    @can('crear informes')
+>>>>>>> ambientales
                             <a href="{{ route('informes.create') }}" 
                                class="btn" 
                                style="background-color: #C2F527; border-radius: 30px; padding: 10px 25px; color: #000000; border: none; transition: all 0.3s ease;"
@@ -456,8 +500,12 @@
                                 <i class="fas fa-info-circle me-2"></i>
                                 Solo el administrador puede crear nuevos informes.
                             </div>
+<<<<<<< HEAD
                         @endif
                     @endauth
+=======
+                    @endcan
+>>>>>>> ambientales
                 </div>
             @endif
         </div>

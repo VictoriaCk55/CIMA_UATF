@@ -340,6 +340,10 @@
                     </div>
 
                     {{-- BOTONES EDICIÓN / VISTA PREVIA / GUARDAR --}}
+<<<<<<< HEAD
+=======
+                    @can('editar configuraciones')
+>>>>>>> ambientales
                     <div class="col-12 text-end mb-4">
                         <button type="button" id="btnEditar" class="btn btn-outline-primary btn-lg px-4 me-2">
                             <i class="fas fa-pen me-2"></i> Editar
@@ -354,6 +358,10 @@
                             <i class="fas fa-save me-2"></i> Guardar «{{ $documento->nombre }}»
                         </button>
                     </div>
+<<<<<<< HEAD
+=======
+                    @endcan
+>>>>>>> ambientales
                 </div>
             </form>
         </div>

@@ -77,7 +77,11 @@ class Proforma extends Model
     // ========== TIPOS DE PROFORMA ==========
     public const TIPOS = [
         'AMBIENTAL' => 'AMB',
+<<<<<<< HEAD
         'ANALISIS QUIMICO' => 'AQUIM',
+=======
+        'ANALISIS_QUIMICO' => 'AQ',
+>>>>>>> ambientales
         'INVESTIGACION' => 'INV',
     ];
 
@@ -114,7 +118,11 @@ class Proforma extends Model
 
     /**
      * Generar código de proforma en formato: {unidad}-{tipo}-{numero}
+<<<<<<< HEAD
      * Ejemplos: UIA-INV-001, UAQ-AMB-002, UAQ-AQUIM-003
+=======
+     * Ejemplos: UIA-INV-001, UAQ-AQ-002, UAQ-AMB-003
+>>>>>>> ambientales
      */
     public static function generarCodigo($unidad, $tipo)
     {
@@ -125,8 +133,12 @@ class Proforma extends Model
         $unidadAbr = $unidad ?? 'GEN';
 
         // Buscar el último número para esta combinación unidad-tipo
+<<<<<<< HEAD
         // Buscar en formato nuevo: {unidad}-{tipo}-{numero}
         $ultimo = self::where('codigo', 'LIKE', $unidadAbr.'-'.$tipoAbr.'-%')
+=======
+        $ultimo = self::withTrashed()->where('codigo', 'LIKE', $unidadAbr.'-'.$tipoAbr.'-%')
+>>>>>>> ambientales
             ->orderBy('id', 'desc')
             ->first();
 
@@ -136,14 +148,21 @@ class Proforma extends Model
             $nuevoNumero = $ultimoNumero + 1;
         } else {
             // Si no hay códigos con el nuevo formato, buscar en formato antiguo
+<<<<<<< HEAD
             // Formato antiguo: {numero}-{tipo} (ejemplo: 001-INV)
             $ultimoAntiguo = self::where('codigo', 'LIKE', '%-'.$tipoAbr)
+=======
+            $ultimoAntiguo = self::withTrashed()->where('codigo', 'LIKE', '%-'.$tipoAbr)
+>>>>>>> ambientales
                 ->where('codigo', 'NOT LIKE', '%-%-%')
                 ->orderBy('id', 'desc')
                 ->first();
 
             if ($ultimoAntiguo) {
+<<<<<<< HEAD
                 // Extraer el número del formato antiguo
+=======
+>>>>>>> ambientales
                 $partes = explode('-', $ultimoAntiguo->codigo);
                 $ultimoNumero = intval($partes[0]);
                 $nuevoNumero = $ultimoNumero + 1;
@@ -165,6 +184,7 @@ class Proforma extends Model
      */
     public function generarCodigoLaboratorio($numeroMuestra = 1)
     {
+<<<<<<< HEAD
 
         /*
         |--------------------------------------------------------------------------
@@ -220,6 +240,29 @@ class Proforma extends Model
         |--------------------------------------------------------------------------
         */
 
+=======
+        $unidad = $this->unidad ?? 'NULL';
+        $tipoMuestra = strtoupper($this->tipo_muestra);
+
+        if (str_contains($tipoMuestra, 'AGUA') || str_contains($tipoMuestra, 'ANALISIS')) {
+            $tipoCodigo = 1;
+        } elseif (str_contains($tipoMuestra, 'SUELO') || str_contains($tipoMuestra, 'SEDIMENTO')) {
+            $tipoCodigo = 2;
+        } elseif (str_contains($tipoMuestra, 'MINERAL')) {
+            $tipoCodigo = 3;
+        } elseif (str_contains($tipoMuestra, 'VEGETAL')) {
+            $tipoCodigo = 4;
+        } elseif (str_contains($tipoMuestra, 'SALMUERA')) {
+            $tipoCodigo = 5;
+        } elseif (str_contains($tipoMuestra, 'POLVO')) {
+            $tipoCodigo = 6;
+        } else {
+            $tipoCodigo = 1;
+        }
+
+        $recepcion = $this->numero_recepcion ?? str_pad($this->id, 3, '0', STR_PAD_LEFT);
+
+>>>>>>> ambientales
         return $unidad
             .'-'
             .$tipoCodigo
@@ -255,9 +298,14 @@ class Proforma extends Model
     public function parametros()
     {
         return $this->belongsToMany(Parametro::class, 'proforma_parametro')
+<<<<<<< HEAD
             ->withPivot('cantidad_muestras', 'precio_unitario', 'metodo', 'orden')
             ->withTimestamps()
             ->orderBy('orden', 'asc'); // <-- CORREGIDO: cambiado 'pivot_orden' por 'orden'
+=======
+            ->withPivot('cantidad_muestras', 'precio_unitario', 'metodo')
+            ->withTimestamps();
+>>>>>>> ambientales
     }
 
     public function informe()
@@ -278,7 +326,11 @@ class Proforma extends Model
     public function logisticasMuestreo()
     {
         return $this->belongsToMany(LogisticaMuestreo::class, 'proforma_logisticas')
+<<<<<<< HEAD
             ->withPivot('cantidad', 'subtotal', 'descripcion')
+=======
+            ->withPivot('cantidad', 'subtotal', 'descripcion', 'precio_unitario')
+>>>>>>> ambientales
             ->withTimestamps();
     }
 

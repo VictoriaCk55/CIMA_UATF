@@ -345,7 +345,11 @@
                                     id="tipo" name="tipo" required onchange="calcularTotalesEstimados()">
                                 <option value="">Seleccionar tipo...</option>
                                 <option value="AMBIENTAL" {{ old('tipo') == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
+<<<<<<< HEAD
                                 <option value="ANALISIS QUIMICO" {{ old('tipo') == 'ANALISIS QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
+=======
+                                <option value="ANALISIS_QUIMICO" {{ old('tipo') == 'ANALISIS_QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
+>>>>>>> ambientales
                                 <option value="INVESTIGACION" {{ old('tipo') == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN (20% descuento)</option>
                             </select>
                             @error('tipo')
@@ -406,6 +410,7 @@
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+<<<<<<< HEAD
 
                         <!-- <div class="col-md-4 mb-3">
                             <label for="numero_recepcion" class="form-label">Nro. de Recepción</label>
@@ -417,6 +422,8 @@
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div> -->
+=======
+>>>>>>> ambientales
                     </div>
                     
                     <div class="row">
@@ -714,7 +721,11 @@
                     </button>
                 </div>
 
+<<<<<<< HEAD
                 <!-- SECCIÓN 6: LOGÍSTICA DE MUESTREO (solo AMBIENTAL) -->
+=======
+                <!-- SECCIÓN 6: LOGÍSTICA DE MUESTREO -->
+>>>>>>> ambientales
                 <div class="mb-4" id="logistica-muestreo" style="display: none;">
                     <h6 class="border-bottom pb-2 mb-3">
                         <i class="fas fa-truck me-2" style="color: #ffc107;"></i>
@@ -729,7 +740,11 @@
                                         <option value="">Seleccionar concepto...</option>
                                         @foreach($logisticasMuestreo as $log)
                                             <option value="{{ $log->id }}" data-costo="{{ $log->costo }}" data-categoria="{{ $log->categoria }}">
+<<<<<<< HEAD
                                                 {{ $log->categoria }} - {{ $log->descripcion }} (Bs. {{ number_format($log->costo, 2) }}) 
+=======
+                                                {{ $log->categoria }} - {{ $log->descripcion }}
+>>>>>>> ambientales
                                             </option>
                                         @endforeach
                                     </select>
@@ -748,10 +763,22 @@
                                            name="logisticas[0][cantidad]" value="1" min="1" required>
                                 </div>
                                 <div class="col-md-2 mb-2 mb-md-0">
+<<<<<<< HEAD
                                     <label class="form-label small">Costo Unitario</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Bs.</span>
                                         <input type="text" class="form-control logistica-costo" value="0.00" readonly>
+=======
+                                    <label class="form-label small">Precio Unitario (Bs.)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Bs.</span>
+                                        <input type="number" class="form-control logistica-precio"
+                                               name="logisticas[0][precio_unitario]" 
+                                               value="0" 
+                                               step="0.01" 
+                                               min="0"
+                                               required>
+>>>>>>> ambientales
                                     </div>
                                 </div>
                                 <div class="col-md-1 text-center">
@@ -1168,8 +1195,15 @@ $(document).ready(function() {
             subtotal += precio * cantidad;
         });
 
+<<<<<<< HEAD
         $('#logistica-muestreo:visible .logistica-costo').each(function() {
             subtotal += parseFloat($(this).val()) || 0;
+=======
+        $('#logistica-muestreo:visible .logistica-precio').each(function() {
+            const precio = parseFloat($(this).val()) || 0;
+            const cantidad = parseInt($(this).closest('.logistica-row').find('.logistica-cantidad').val()) || 0;
+            subtotal += precio * cantidad;
+>>>>>>> ambientales
         });
         
         const tipo = $('#tipo').val();
@@ -1193,11 +1227,19 @@ $(document).ready(function() {
             $('#logistica-muestreo').show();
             $('.logistica-select').prop('required', true).prop('disabled', false);
             $('.logistica-cantidad').prop('required', true).prop('disabled', false);
+<<<<<<< HEAD
+=======
+            $('.logistica-precio').prop('required', true).prop('disabled', false);
+>>>>>>> ambientales
             $('.logistica-descripcion').prop('disabled', false);
         } else {
             $('#logistica-muestreo').hide();
             $('.logistica-select').prop('required', false).prop('disabled', true);
             $('.logistica-cantidad').prop('required', false).prop('disabled', true);
+<<<<<<< HEAD
+=======
+            $('.logistica-precio').prop('required', false).prop('disabled', true);
+>>>>>>> ambientales
             $('.logistica-descripcion').prop('disabled', true);
         }
     }
@@ -1205,6 +1247,7 @@ $(document).ready(function() {
     toggleLogisticaMuestreo();
 
     // ===== LOGÍSTICA DE MUESTREO - FILAS DINÁMICAS =====
+<<<<<<< HEAD
     function calcularSubtotalesLogistica() {
         // Recalcula internamente cuando cambia cantidad (sin UI de subtotal)
     }
@@ -1224,24 +1267,43 @@ $(document).ready(function() {
         }
     }
 
+=======
+>>>>>>> ambientales
     function actualizarLogisticaSelect(row) {
         const select = row.find('.logistica-select');
         const selected = select.find('option:selected');
         if (selected.val()) {
             const costo = selected.data('costo');
+<<<<<<< HEAD
             row.find('.logistica-costo').val(parseFloat(costo).toFixed(2));
         } else {
             row.find('.logistica-costo').val('0.00');
         }
         calcularSubtotalesLogistica();
+=======
+            const precioInput = row.find('.logistica-precio');
+            // Solo establecer valor si está vacío o es 0
+            if (!precioInput.val() || parseFloat(precioInput.val()) === 0) {
+                precioInput.val(parseFloat(costo).toFixed(2));
+            }
+        }
+>>>>>>> ambientales
     }
 
     $(document).on('change', '.logistica-select', function() {
         actualizarLogisticaSelect($(this).closest('.logistica-row'));
+<<<<<<< HEAD
     });
 
     $(document).on('input', '.logistica-cantidad', function() {
         calcularSubtotalesLogistica();
+=======
+        calcularTotalesEstimados();
+    });
+
+    $(document).on('input', '.logistica-cantidad, .logistica-precio', function() {
+        calcularTotalesEstimados();
+>>>>>>> ambientales
     });
 
     $('#add-logistica').click(function() {
@@ -1258,7 +1320,12 @@ $(document).ready(function() {
         newRow.find('.logistica-cantidad')
               .attr('name', 'logisticas[' + index + '][cantidad]').val(1);
 
+<<<<<<< HEAD
         newRow.find('.logistica-costo').val('0.00');
+=======
+        newRow.find('.logistica-precio')
+              .attr('name', 'logisticas[' + index + '][precio_unitario]').val(0);
+>>>>>>> ambientales
 
         newRow.find('.logistica-descripcion')
               .attr('name', 'logisticas[' + index + '][descripcion]').val('');
@@ -1273,14 +1340,39 @@ $(document).ready(function() {
                     }
                     if (confirm('¿Eliminar este concepto logístico?')) {
                         $(this).closest('.logistica-row').remove();
+<<<<<<< HEAD
                         calcularSubtotalesLogistica();
+=======
+                        calcularTotalesEstimados();
+>>>>>>> ambientales
                     }
                 });
 
         container.append(newRow);
         actualizarDescripcionLogistica();
+<<<<<<< HEAD
     });
 
+=======
+        calcularTotalesEstimados();
+    });
+
+    function actualizarDescripcionLogistica() {
+        const nombres = [];
+        $('.parametro-row:visible .form-control-plaintext').each(function() {
+            let t = $(this).text().trim();
+            t = t.replace(/\s*\(Bs\..*$/, '');
+            if (nombres.indexOf(t) === -1) nombres.push(t);
+        });
+        if ($('#ambient-gases-list .gas-checkbox:checked').length > 0 && nombres.indexOf('GASES') === -1) {
+            nombres.push('GASES');
+        }
+        if (nombres.length > 0) {
+            $('.logistica-descripcion').val('Logística de Muestreo de: ' + nombres.join(', '));
+        }
+    }
+
+>>>>>>> ambientales
     $('#tipo, #adelanto').on('change keyup', calcularTotalesEstimados);
     $(document).on('input', '.muestra-input', calcularTotalesEstimados);
     

@@ -605,9 +605,17 @@
                     <a href="{{ route('proformas.index') }}" class="btn-modern btn-gray">
                         <i class="fas fa-arrow-left"></i> Volver al Listado
                     </a>
+<<<<<<< HEAD
                     <a href="{{ route('proformas.cadena-custodia', $proforma->id) }}" class="btn-modern btn-purple">
                         <i class="fas fa-link"></i> Cadena Custodia
                     </a>
+=======
+                    @can('generar cadena custodia')
+                    <a href="{{ route('proformas.cadena-custodia', $proforma->id) }}" class="btn-modern btn-purple">
+                        <i class="fas fa-link"></i> Cadena Custodia
+                    </a>
+                    @endcan
+>>>>>>> ambientales
                 </div>
                 <div class="estado-actual" id="estadoActual">
                     <i class="fas fa-info-circle"></i> Estado: <span id="estadoTexto">Sin datos</span>
@@ -820,16 +828,29 @@
                             @foreach($parametros as $p)
                                 <td>
                                     <div class="param-actions" data-id="{{ $p->id }}">
+<<<<<<< HEAD
+=======
+                                        @can('guardar resultados')
+>>>>>>> ambientales
                                         <button class="btn-sm-action btn-sm-edit btn-modificar-parametro"
                                                 data-id="{{ $p->id }}" data-nombre="{{ $p->nombre }}"
                                                 title="Modificar parámetro">
                                             <i class="fas fa-edit"></i> Modificar Parámetro
                                         </button>
+<<<<<<< HEAD
+=======
+                                        @endcan
+                                        @can('cargar resultados')
+>>>>>>> ambientales
                                         <button class="btn-sm-action btn-sm-history btn-historial-parametro"
                                                 data-id="{{ $p->id }}" data-nombre="{{ $p->nombre }}"
                                                 title="Ver historial">
                                             <i class="fas fa-history"></i> Historial
                                         </button>
+<<<<<<< HEAD
+=======
+                                        @endcan
+>>>>>>> ambientales
                                     </div>
                                 </td>
                             @endforeach
@@ -839,6 +860,7 @@
             </div>
             
             <div class="action-buttons">
+<<<<<<< HEAD
                 <button id="btnGuardar" class="btn-modern btn-success" onclick="guardarTodo()">
                     <i class="fas fa-save"></i> Guardar
                 </button>
@@ -855,14 +877,50 @@
                 <a href="{{ route('proformas.resultados.pdf', $proforma->id) }}" 
                 class="btn-modern btn-info" target="_blank"> 
                 <i class="fas fa-file-pdf"></i> Resultado de Ensayo </a>
+=======
+                @can('guardar resultados')
+                <button id="btnGuardar" class="btn-modern btn-success" onclick="guardarTodo()">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+                @endcan
+                @can('guardar resultados')
+                <button id="btnEditarGenerales" class="btn-modern btn-warning" onclick="editarGenerales()" style="display: none;">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                @endcan
+                <button id="btnHistorialGenerales" class="btn-modern btn-info" onclick="verHistorial(null)" style="display: none;">
+                    <i class="fas fa-history"></i> Historial General
+                </button>
+                @can('limpiar resultados')
+                <button class="btn-modern btn-clean" onclick="confirmarLimpiar()">
+                    <i class="fas fa-eraser"></i> Limpiar
+                </button>
+                @endcan
+
+                @can('generar pdf resultados')
+                <a href="{{ route('proformas.resultados.pdf', $proforma->id) }}" 
+                class="btn-modern btn-info" target="_blank"> 
+                <i class="fas fa-file-pdf"></i> Resultado de Ensayo </a>
+                @endcan
+                @can('generar informe resultados')
+>>>>>>> ambientales
                 <a href="{{ route('proformas.informe-resultados-pdf', $proforma->id) }}"
                 target="_blank"
                 class="btn-modern btn-purple">
                     <i class="fas fa-print"></i> Informe de Resultados
                 </a>
+<<<<<<< HEAD
                 <a href="#" id="btnInformePermisible" class="btn-modern btn-primary">
                     <i class="fas fa-file-pdf"></i> TIPO LÍMITE PERMISIBLE
                 </a>
+=======
+                @endcan
+                @can('generar informe resultados')
+                <a href="#" id="btnInformePermisible" class="btn-modern btn-primary">
+                    <i class="fas fa-file-pdf"></i> TIPO LÍMITE PERMISIBLE
+                </a>
+                @endcan
+>>>>>>> ambientales
                 <a href="{{ route('proformas.show', $proforma->id) }}" class="btn-modern btn-gray">
                     <i class="fas fa-times"></i> Salir
                 </a>
@@ -997,9 +1055,15 @@
 
             switch (estadoActual) {
                 case 'sin_datos':
+<<<<<<< HEAD
                     btnGuardar.style.display = 'inline-flex';
                     btnEditarGenerales.style.display = 'none';
                     btnHistorialGenerales.style.display = 'none';
+=======
+                    if (btnGuardar) btnGuardar.style.display = 'inline-flex';
+                    if (btnEditarGenerales) btnEditarGenerales.style.display = 'none';
+                    if (btnHistorialGenerales) btnHistorialGenerales.style.display = 'none';
+>>>>>>> ambientales
                     document.querySelector('.acciones-row').style.display = 'none';
                     estadoTexto.innerHTML = 'Sin datos <i class="fas fa-database"></i>';
                     habilitarGenerales(true);
@@ -1007,9 +1071,15 @@
                     break;
 
                 case 'guardado':
+<<<<<<< HEAD
                     btnGuardar.style.display = 'none';
                     btnEditarGenerales.style.display = 'inline-flex';
                     btnHistorialGenerales.style.display = 'inline-flex';
+=======
+                    if (btnGuardar) btnGuardar.style.display = 'none';
+                    if (btnEditarGenerales) btnEditarGenerales.style.display = 'inline-flex';
+                    if (btnHistorialGenerales) btnHistorialGenerales.style.display = 'inline-flex';
+>>>>>>> ambientales
                     document.querySelector('.acciones-row').style.display = '';
                     estadoTexto.innerHTML = 'Datos guardados <i class="fas fa-lock"></i>';
                     habilitarGenerales(false);
@@ -1112,8 +1182,13 @@
                     }
                 }
             });
+<<<<<<< HEAD
             btnEditarGenerales.style.display = 'none';
             btnGuardar.style.display = 'inline-flex';
+=======
+            if (btnEditarGenerales) btnEditarGenerales.style.display = 'none';
+            if (btnGuardar) btnGuardar.style.display = 'inline-flex';
+>>>>>>> ambientales
         }
 
         function obtenerDatosFormulario() {
@@ -1289,9 +1364,15 @@
                         if (el) el.dataset.valorOriginal = el.value;
                     });
                     habilitarGenerales(false);
+<<<<<<< HEAD
                     btnGuardarGenerales.style.display = 'none';
                     btnEditarGenerales.style.display = 'inline-flex';
                     btnGuardar.style.display = hayPendientes() ? 'inline-flex' : 'none';
+=======
+                    if (typeof btnGuardarGenerales !== 'undefined' && btnGuardarGenerales) btnGuardarGenerales.style.display = 'none';
+                    if (btnEditarGenerales) btnEditarGenerales.style.display = 'inline-flex';
+                    if (btnGuardar) btnGuardar.style.display = hayPendientes() ? 'inline-flex' : 'none';
+>>>>>>> ambientales
                     mostrarToast('✅ Datos generales guardados correctamente');
                 } else {
                     mostrarToast('❌ Error: ' + (data.message || 'Error desconocido'));

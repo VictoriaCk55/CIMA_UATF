@@ -228,8 +228,12 @@
             </div>
             
             <!-- Acciones -->
+<<<<<<< HEAD
             @auth
                 @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
+=======
+                @canany(['editar clientes', 'eliminar clientes', 'registrar pago clientes', 'actualizar saldo clientes'])
+>>>>>>> ambientales
                     <div class="card">
                         <div class="card-header" style="background-color: #2798F5; border-bottom: none;">
                             <h5 class="mb-0 text-white">
@@ -297,7 +301,11 @@
                         </div>
                     </div>
                 @endif
+<<<<<<< HEAD
             @endauth
+=======
+            @endcanany
+>>>>>>> ambientales
         </div>
     </div>
 

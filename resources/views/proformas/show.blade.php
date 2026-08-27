@@ -76,15 +76,26 @@
                             <p class="h5">
                                 <span class="badge 
                                     @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
+<<<<<<< HEAD
                                     @elseif($proforma->tipo == 'ANALISIS QUIMICO') bg-info
+=======
+                                    @elseif($proforma->tipo == 'ANALISIS_QUIMICO') bg-info text-white
+>>>>>>> ambientales
                                     @else bg-secondary
                                     @endif">
                                     <i class="fas 
                                         @if($proforma->tipo == 'AMBIENTAL') fa-leaf
+<<<<<<< HEAD
                                         @elseif($proforma->tipo == 'ANALISIS QUIMICO') fa-tint
                                         @else fa-flask
                                         @endif me-1"></i>
                                     {{ $proforma->tipo }}
+=======
+                                        @elseif($proforma->tipo == 'ANALISIS_QUIMICO') fa-flask
+                                        @else fa-flask
+                                        @endif me-1"></i>
+                                    {{ $proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo }}
+>>>>>>> ambientales
                                 </span>
                             </p>
                         </div>
@@ -295,7 +306,11 @@
                                     <td>
                                         <strong>{{ $parametro->categoria === 'RUIDO' ? 'RUIDO' : ($parametro->categoria === 'GASES' ? 'GASES' : $parametro->nombre) }}</strong>
                                     </td>
+<<<<<<< HEAD
                                     <td class="text-center">{{ $proforma->tipo === 'AGUA' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A') }}</td>
+=======
+                                    <td class="text-center">{{ $proforma->tipo === 'AMBIENTAL' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A') }}</td>
+>>>>>>> ambientales
                                     <td class="text-center">{{ $parametro->pivot->cantidad_muestras }}</td>
                                     <td class="text-end">Bs. {{ number_format($parametro->pivot->precio_unitario, 2) }}</td>
                                     <td class="text-end">Bs. {{ number_format($parametro->pivot->precio_unitario * $parametro->pivot->cantidad_muestras, 2) }}</td>
@@ -339,11 +354,16 @@
                                     <th>Concepto</th>
                                     <th>Descripción</th>
                                     <th class="text-center">Cantidad</th>
+<<<<<<< HEAD
                                     <th class="text-end">Costo Unit.</th>
+=======
+                                    <th class="text-end">Precio Unit.</th>
+>>>>>>> ambientales
                                     <th class="text-end">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
+<<<<<<< HEAD
                                 @foreach($proforma->logisticasMuestreo as $log)
                                 <tr>
                                     <td>{{ $log->categoria }} - {{ $log->descripcion }}</td>
@@ -354,6 +374,30 @@
                                 </tr>
                                 @endforeach
                             </tbody>
+=======
+                                @php $totalLogistica = 0; @endphp
+                                @foreach($proforma->logisticasMuestreo as $log)
+                                @php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $subtotal = $precio * ($log->pivot->cantidad ?? 1);
+                                    $totalLogistica += $subtotal;
+                                @endphp
+                                <tr>
+                                    <td>{{ $log->categoria }} - {{ $log->descripcion }}</td>
+                                    <td>{{ $log->pivot->descripcion ?? '' }}</td>
+                                    <td class="text-center">{{ $log->pivot->cantidad ?? 1 }}</td>
+                                    <td class="text-end">Bs. {{ number_format($precio, 2) }}</td>
+                                    <td class="text-end">Bs. {{ number_format($subtotal, 2) }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Total Logística:</td>
+                                    <td class="text-end fw-bold">Bs. {{ number_format($totalLogistica, 2) }}</td>
+                                </tr>
+                            </tfoot>
+>>>>>>> ambientales
                         </table>
                     </div>
                 </div>
@@ -373,7 +417,32 @@
                         <table class="table table-sm" style="margin-bottom: 0;">
                             <tbody>
                                 <tr>
+<<<<<<< HEAD
                                     <td class="text-end fw-bold">Total:</td>
+=======
+                                    <td class="text-end fw-bold">Subtotal Servicios:</td>
+                                    <td class="text-end">Bs. {{ number_format($proforma->parametros->sum(fn($p) => $p->pivot->precio_unitario * $p->pivot->cantidad_muestras), 2) }}</td>
+                                </tr>
+                                @if($proforma->logisticasMuestreo->count() > 0)
+                                @php $totalLogistica = 0; @endphp
+                                @foreach($proforma->logisticasMuestreo as $log)
+                                @php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $totalLogistica += $precio * ($log->pivot->cantidad ?? 1);
+                                @endphp
+                                @endforeach
+                                <tr>
+                                    <td class="text-end fw-bold">Logística:</td>
+                                    <td class="text-end">Bs. {{ number_format($totalLogistica, 2) }}</td>
+                                </tr>
+                                @endif
+                                <tr>
+                                    <td class="text-end fw-bold">Descuento:</td>
+                                    <td class="text-end text-danger">- Bs. {{ number_format($proforma->descuento, 2) }}</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td class="text-end fw-bold text-success">Total:</td>
+>>>>>>> ambientales
                                     <td class="text-end fw-bold text-success">
                                         Bs. {{ number_format($proforma->total, 2) }}
                                     </td>
@@ -424,6 +493,10 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         @if($proforma->tipo === 'AMBIENTAL')
+<<<<<<< HEAD
+=======
+                            @can('ver resultados')
+>>>>>>> ambientales
                             <div style="text-align: center; margin-top: 20px;">
                                 <a href="{{ route('reportes.ambiental.index', $proforma->id) }}" 
                                 class="btn"
@@ -433,7 +506,13 @@
                                     📝 Reporte Ambiental
                                 </a>
                             </div>
+<<<<<<< HEAD
                         @else
+=======
+                            @endcan
+                        @else
+                            @can('ver resultados')
+>>>>>>> ambientales
                             <div style="text-align: center; margin-top: 20px;">
                                 <a href="{{ route('resultados.index', $proforma->id) }}" 
                                 class="btn"
@@ -443,6 +522,11 @@
                                     📝 Resultados de Ensayo
                                 </a>
                             </div>
+<<<<<<< HEAD
+=======
+                            @endcan
+                            @can('generar cadena custodia')
+>>>>>>> ambientales
                             <div style="text-align: center; margin-top: 12px;">
                                 <a href="{{ route('proformas.cadena-custodia', $proforma->id) }}" 
                                 class="btn"
@@ -452,8 +536,14 @@
                                     🔗 Cadena de Custodia
                                 </a>
                             </div>
+<<<<<<< HEAD
                         @endif
                                         <!-- PDF - Verde outline con texto negro, hover verde sólido texto blanco -->
+=======
+                            @endcan
+                        @endif
+                            @can('generar pdf proformas')
+>>>>>>> ambientales
                         <a href="{{ route('proformas.pdf', $proforma) }}" 
                            class="btn"
                            style="color: #000000; border: 2px solid #198754; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -463,12 +553,21 @@
                             <i class="fas fa-file-pdf me-2"></i>
                             Generar PDF
                         </a>
+<<<<<<< HEAD
                         
                         @auth
                             @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
                                 
                                 @if($proforma->estado == 'BORRADOR')
                                     <!-- Editar Proforma Completa - Amarillo outline -->
+=======
+                        @endcan
+                        
+                        @canany(['editar proformas', 'eliminar proformas', 'revision de proformas', 'editar adelanto de proformas', 'crear informes'])
+                            
+                            @if($proforma->estado == 'BORRADOR')
+                                    @can('editar proformas')
+>>>>>>> ambientales
                                     <a href="{{ route('proformas.edit', $proforma) }}" 
                                        class="btn"
                                        style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -477,8 +576,13 @@
                                         <i class="fas fa-edit me-2"></i>
                                         Editar Proforma Completa
                                     </a>
+<<<<<<< HEAD
                                     
                                     <!-- ENVIAR A REVISIÓN -->
+=======
+                                    @endcan
+                                    
+>>>>>>> ambientales
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -492,7 +596,11 @@
                                         Enviar a Revisión
                                     </button>
                                     @endcan
+<<<<<<< HEAD
                                     <!-- Rechazar Proforma -->
+=======
+                                    @can('revision de proformas')
+>>>>>>> ambientales
                                     <button type="button" 
                                             class="btn"
                                             style="color: #000000; border: 2px solid #dc3545; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; width: 100%; text-align: center;"
@@ -504,8 +612,13 @@
                                         <i class="fas fa-times-circle me-2"></i>
                                         Rechazar Proforma
                                     </button>
+<<<<<<< HEAD
                                     
                                     <!-- Eliminar Proforma -->
+=======
+                                    @endcan
+                                    
+>>>>>>> ambientales
                                      @can('eliminar proformas')
                                     <form action="{{ route('proformas.destroy', $proforma) }}" 
                                           method="POST" 
@@ -528,7 +641,11 @@
                                         Proforma en revisión
                                     </div>
                                     
+<<<<<<< HEAD
                                     <!-- Botón para editar SOLO ADELANTO (ENVIADA) -->
+=======
+                                    @can('editar adelanto de proformas')
+>>>>>>> ambientales
                                     <button type="button" 
                                             class="btn"
                                             style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; width: 100%; text-align: center;"
@@ -539,8 +656,14 @@
                                         <i class="fas fa-money-bill-wave me-2"></i>
                                         Editar Adelanto
                                     </button>
+<<<<<<< HEAD
                                     
                                     <!-- Aprobar Proforma -->
+=======
+                                    @endcan
+
+                                    @can('revision de proformas')
+>>>>>>> ambientales
                                     <button type="button" 
                                             class="btn"
                                             style="color: #000000; border: 2px solid #198754; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; width: 100%; text-align: center;"
@@ -552,8 +675,14 @@
                                         <i class="fas fa-check-circle me-2"></i>
                                         Aprobar Proforma
                                     </button>
+<<<<<<< HEAD
                                     
                                     <!-- Rechazar Proforma -->
+=======
+                                    @endcan
+                                    
+                                    @can('revision de proformas')
+>>>>>>> ambientales
                                     <button type="button" 
                                             class="btn"
                                             style="color: #000000; border: 2px solid #dc3545; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; width: 100%; text-align: center;"
@@ -565,6 +694,10 @@
                                         <i class="fas fa-times-circle me-2"></i>
                                         Rechazar Proforma
                                     </button>
+<<<<<<< HEAD
+=======
+                                    @endcan
+>>>>>>> ambientales
                                     
                                 @elseif($proforma->estado == 'APROBADA')
                                     <div class="alert alert-success text-center">
@@ -572,7 +705,10 @@
                                         Proforma aprobada
                                     </div>
                                     
+<<<<<<< HEAD
                                     <!-- Botón para editar SOLO ADELANTO (APROBADA) -->
+=======
+>>>>>>> ambientales
                                     @can('editar adelanto de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -587,7 +723,10 @@
                                     @endcan
                                     
                                     @if($proforma->informe)
+<<<<<<< HEAD
                                         <!-- Ver Informe Asociado -->
+=======
+>>>>>>> ambientales
                                         <a href="{{ route('informes.show', $proforma->informe) }}" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -597,7 +736,11 @@
                                             Ver Informe Asociado
                                         </a>
                                     @else
+<<<<<<< HEAD
                                         <!-- Crear Informe -->
+=======
+                                        @can('crear informes')
+>>>>>>> ambientales
                                         <a href="{{ route('informes.create', ['proforma_id' => $proforma->id]) }}" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #0dcaf0; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -606,6 +749,10 @@
                                             <i class="fas fa-file-medical me-2"></i>
                                             Crear Informe
                                         </a>
+<<<<<<< HEAD
+=======
+                                        @endcan
+>>>>>>> ambientales
                                     @endif
                                     
                                 @elseif($proforma->estado == 'FINALIZADA')
@@ -614,7 +761,10 @@
                                         Proforma finalizada
                                     </div>
                                     
+<<<<<<< HEAD
                                     <!-- FINALIZADA - NO SE PUEDE EDITAR NADA -->
+=======
+>>>>>>> ambientales
                                     <div class="alert alert-info mt-2">
                                         <i class="fas fa-info-circle me-2"></i>
                                         Las proformas finalizadas no pueden ser modificadas.
@@ -637,7 +787,11 @@
                                         Proforma rechazada
                                     </div>
                                     
+<<<<<<< HEAD
                                     <!-- Volver a Borrador -->
+=======
+                                    @can('revision de proformas')
+>>>>>>> ambientales
                                     <button type="button" 
                                             class="btn"
                                             style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; width: 100%; text-align: center;"
@@ -649,10 +803,16 @@
                                         <i class="fas fa-undo me-2"></i>
                                         Volver a Borrador
                                     </button>
+<<<<<<< HEAD
                                 @endif
                                 
                             @endif
                         @endauth
+=======
+                                    @endcan
+                                @endif
+                            @endcanany
+>>>>>>> ambientales
                     </div>
                 </div>
             </div>
@@ -676,7 +836,10 @@
                                     {{ $proforma->informe->estado_texto }}
                                 </span>
                             </p>
+<<<<<<< HEAD
                             <!-- Ver Informe -->
+=======
+>>>>>>> ambientales
                             <a href="{{ route('informes.show', $proforma->informe) }}" 
                                class="btn"
                                style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block;"
@@ -689,6 +852,7 @@
                         <div class="text-center py-3">
                             <i class="fas fa-file-alt text-muted fa-3x mb-3"></i>
                             <p class="text-muted">Esta proforma no tiene un informe asociado</p>
+<<<<<<< HEAD
                             @auth
                                 @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']) && $proforma->estado == 'APROBADA')
                                     <a href="{{ route('informes.create', ['proforma_id' => $proforma->id]) }}" 
@@ -700,6 +864,19 @@
                                     </a>
                                 @endif
                             @endauth
+=======
+                            @if($proforma->estado == 'APROBADA')
+                                @can('crear informes')
+                                <a href="{{ route('informes.create', ['proforma_id' => $proforma->id]) }}" 
+                                   class="btn"
+                                   style="color: #000000; border: 2px solid #0dcaf0; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block;"
+                                   onmouseover="this.style.backgroundColor='#0dcaf0'; this.style.color='#ffffff'; this.style.borderColor='#0dcaf0';"
+                                   onmouseout="this.style.backgroundColor='transparent'; this.style.color='#000000'; this.style.borderColor='#0dcaf0';">
+                                    <i class="fas fa-plus-circle me-1"></i> Generar Informe
+                                </a>
+                                @endcan
+                            @endif
+>>>>>>> ambientales
                         </div>
                     @endif
                 </div>
@@ -709,8 +886,12 @@
 </div>
 
 <!-- Modal para cambiar estado -->
+<<<<<<< HEAD
 @auth
     @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
+=======
+        @can('revision de proformas')
+>>>>>>> ambientales
         <div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -768,7 +949,12 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
         
+=======
+        @endcan
+
+>>>>>>> ambientales
         <!-- Modal para editar SOLO ADELANTO -->
          @can('editar adelanto de proformas')
         <div class="modal fade" id="editarAdelantoModal" tabindex="-1" aria-hidden="true">
@@ -868,7 +1054,11 @@
             // Preview de saldo en modal de adelanto
             const adelantoInput = document.getElementById('nuevo_adelanto');
             const saldoPreview = document.getElementById('saldoPreview');
+<<<<<<< HEAD
             const totalProforma = {{ $proforma->total }}';
+=======
+            const totalProforma = {{ $proforma->total }};
+>>>>>>> ambientales
             
             if (adelantoInput && saldoPreview) {
                 adelantoInput.addEventListener('input', function() {
@@ -877,7 +1067,10 @@
                     
                     saldoPreview.textContent = nuevoSaldo.toFixed(2);
                     
+<<<<<<< HEAD
                     // Cambiar color según el saldo
+=======
+>>>>>>> ambientales
                     const previewElement = document.getElementById('nuevoSaldoPreview').querySelector('p');
                     if (nuevoSaldo > 0) {
                         previewElement.className = 'h5 text-danger';
@@ -893,8 +1086,11 @@
             }
         });
         </script>
+<<<<<<< HEAD
     @endif
 @endauth
+=======
+>>>>>>> ambientales
 
 <style>
 /* ========== ESTILOS ADICIONALES ========== */

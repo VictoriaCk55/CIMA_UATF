@@ -565,29 +565,52 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 
+<<<<<<< HEAD
                                 @if(Auth::user()->role === 'admin')
+=======
+                                @can('crear clientes')
+>>>>>>> ambientales
                                 <li>
                                     <a class="dropdown-item" href="{{ route('clientes.create') }}">
                                         <i class="fas fa-user-plus me-2"></i> Nuevo Cliente
                                     </a>
                                 </li>
+<<<<<<< HEAD
+=======
+                                @endcan
+                                @can('crear parametros')
+>>>>>>> ambientales
                                 <li>
                                     <a class="dropdown-item" href="{{ route('parametros.create') }}">
                                         <i class="fas fa-plus-circle me-2"></i> Nuevo Parámetro
                                     </a>
                                 </li>
+<<<<<<< HEAD
+=======
+                                @endcan
+                                @can('crear proformas')
+>>>>>>> ambientales
                                 <li>
                                     <a class="dropdown-item" href="{{ route('proformas.create') }}">
                                         <i class="fas fa-file-invoice me-2"></i> Nueva Proforma
                                     </a>
                                 </li>
+<<<<<<< HEAD
+=======
+                                @endcan
+                                @can('crear informes')
+>>>>>>> ambientales
                                 <li>
                                     <a class="dropdown-item" href="{{ route('informes.create') }}">
                                         <i class="fas fa-file-medical me-2"></i> Nuevo Informe
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
+<<<<<<< HEAD
                                 @endif
+=======
+                                @endcan
+>>>>>>> ambientales
                                 
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" id="logout-form">

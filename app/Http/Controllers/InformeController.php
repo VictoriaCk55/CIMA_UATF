@@ -461,6 +461,7 @@ class InformeController extends Controller
 
     /**
      * Generar PDF del informe
+<<<<<<< HEAD
      *
      * NOTA: El pie de página ya NO se dibuja con getCanvas() después de
      * $pdf->output(), ni con un <script type="text/php"> embebido, ni
@@ -480,6 +481,8 @@ class InformeController extends Controller
      *    documento una primera vez solo para contarlas, y luego se
      *    renderiza una segunda vez pasándole ese total ya conocido como
      *    variable normal de la vista ($totalPaginas).
+=======
+>>>>>>> ambientales
      */
     public function pdf(Informe $informe)
     {
@@ -493,6 +496,7 @@ class InformeController extends Controller
                 'entregador',
             ]);
 
+<<<<<<< HEAD
             $data = compact('informe');
 
             // 1) Renderizado de conteo (no se muestra al usuario)
@@ -508,6 +512,11 @@ class InformeController extends Controller
 
             // IMPORTANTE: usar stream() para abrir en el navegador
             return $pdf->stream('informe-'.$informe->codigo.'.pdf');
+=======
+            $pdf = Pdf::loadView('informes.pdf.informe', compact('informe'));
+
+            return $pdf->download('informe-'.$informe->codigo.'.pdf');
+>>>>>>> ambientales
 
         } catch (\Exception $e) {
             Log::error('Error al generar PDF de informe: '.$e->getMessage());
@@ -588,4 +597,8 @@ class InformeController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ambientales

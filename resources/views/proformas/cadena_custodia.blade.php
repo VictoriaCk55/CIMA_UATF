@@ -7,7 +7,11 @@
     <style>
 
         @page{
+<<<<<<< HEAD
             size: letter landscape;
+=======
+            size: A4 landscape;
+>>>>>>> ambientales
             margin: 10mm;
         }
 
@@ -46,7 +50,11 @@
         }
         .text-center{
             text-align: center;
+<<<<<<< HEAD
             font-size: 12px;
+=======
+            font-size: 12pt;
+>>>>>>> ambientales
         }
 
         /* =====================================================
@@ -54,8 +62,13 @@
         ====================================================== */
 
         .logo-container{
+<<<<<<< HEAD
             width: 40px;
             height: 40px;
+=======
+            width: 60px;
+            height: 60px;
+>>>>>>> ambientales
             border: 1px solid #aaa;
             margin: auto;
             text-align: center;
@@ -63,23 +76,43 @@
         }
 
         .logo-container img{
+<<<<<<< HEAD
             max-width: 35px;
             max-height: 35px;
+=======
+            max-width: 55px;
+            max-height: 55px;
+>>>>>>> ambientales
             margin-top: 3px;
         }
 
         .titulo-principal{
+<<<<<<< HEAD
             font-size: 16px;
+=======
+            font-size: 14pt;
+>>>>>>> ambientales
             font-weight: bold;
             letter-spacing: 1px;
             color: #1c3d6e;
             margin: 0;
+<<<<<<< HEAD
         }
 
         .codigo-cell{
             font-size: 9px;
             font-weight: bold;
             padding: 3px;
+=======
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .codigo-cell{
+            font-size: 8pt;
+            font-weight: bold;
+            padding: 3px;
+            font-family: 'Times New Roman', Times, serif;
+>>>>>>> ambientales
         }
 
         /* =====================================================
@@ -114,6 +147,14 @@
            ALTURAS
         ====================================================== */
 
+<<<<<<< HEAD
+=======
+        .fila-superior td{
+            font-size: 9pt;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+>>>>>>> ambientales
         .fila-superior{
             height: 7mm;
         }
@@ -143,7 +184,11 @@
         .col-identificacion,
         .col-codigo,
         .col-matriz-principal{
+<<<<<<< HEAD
             font-size: 9px;
+=======
+            font-size: 10pt;
+>>>>>>> ambientales
             font-weight: bold;
             padding: 1px;
             line-height: 1.1;
@@ -325,7 +370,11 @@
             <td colspan="2">{{ $proforma->tipo_muestra }}</td>
 
             <!-- REQUERIMIENTO -->
+<<<<<<< HEAD
             <td colspan="31" rowspan="3" class="text-center">
+=======
+            <td colspan="31" rowspan="3" class="text-center" style="font-size: 12pt; font-family: 'Times New Roman', Times, serif;">
+>>>>>>> ambientales
 
                 <strong>REQUERIMIENTO DE ANALISIS</strong>
 
@@ -347,7 +396,11 @@
             </td>
 
             <!-- ESPACIO GRANDE -->
+<<<<<<< HEAD
             <td colspan="2">{{ $proforma->fecha_emision->format('d/m/Y') }}</td>
+=======
+            <td colspan="2">{{ $proforma->fecha_emision->format('Y/m/d') }}</td>
+>>>>>>> ambientales
 
         </tr>
 
@@ -365,7 +418,11 @@
             </td>
 
             <!-- ESPACIO GRANDE -->
+<<<<<<< HEAD
             <td colspan="2">{{ $proforma->fecha_recepcion->format('d/m/Y') }}</td>
+=======
+            <td colspan="2">{{ $proforma->fecha_recepcion->format('Y/m/d') }}</td>
+>>>>>>> ambientales
 
         </tr>
 
@@ -528,7 +585,11 @@
             </td>
 
             <!-- CODIGO -->
+<<<<<<< HEAD
             <td colspan="1" style="width: 10mm; font-size: 7px; text-align: center; overflow: hidden;">
+=======
+            <td colspan="1" style="width: 10mm; font-size: 9pt; font-family: 'Times New Roman', Times, serif; text-align: center; overflow: hidden;">
+>>>>>>> ambientales
                 @php
                     $numeroProforma = last(explode('-', $proforma->codigo));
                     $partesCodigoLab = explode('-', $proforma->generarCodigoLaboratorio($numMuestra));
@@ -614,7 +675,11 @@
     </table>
         <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
             <tr>
+<<<<<<< HEAD
                 <td style="border:1px solid black; padding:5px; font-size: 12px; background-color: #2c5282; color: #fff">
+=======
+                <td style="border:1px solid black; padding:5px; font-size: 11pt; background-color: rgb(100, 170, 220); color: #000">
+>>>>>>> ambientales
                     <strong>OBSERVACIONES</strong>
                 </td>
             </tr>

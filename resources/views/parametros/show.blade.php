@@ -183,8 +183,12 @@
             </div>
             
             <!-- Acciones -->
+<<<<<<< HEAD
             @auth
                 @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
+=======
+                @canany(['editar parametros', 'eliminar parametros'])
+>>>>>>> ambientales
                     <div class="card">
                         <div class="card-header" style="background-color: #A31800; border-bottom: none;">
                             <h5 class="mb-0 text-white">
@@ -226,7 +230,11 @@
                         </div>
                     </div>
                 @endif
+<<<<<<< HEAD
             @endauth
+=======
+            @endcanany
+>>>>>>> ambientales
         </div>
     </div>
     

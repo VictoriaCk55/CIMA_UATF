@@ -13,9 +13,17 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-list me-2"></i> Roles</span>
+<<<<<<< HEAD
         <a href="{{ route('roles.create') }}" class="btn btn-sm btn-primary">
             <i class="fas fa-plus me-1"></i> Nuevo Rol
         </a>
+=======
+        @can('crear roles')
+        <a href="{{ route('roles.create') }}" class="btn btn-sm btn-primary">
+            <i class="fas fa-plus me-1"></i> Nuevo Rol
+        </a>
+        @endcan
+>>>>>>> ambientales
     </div>
     <div class="card-body">
         @if($roles->count() > 0)
@@ -55,10 +63,20 @@
                             @endif
                         </td>
                         <td>
+<<<<<<< HEAD
                             <a href="{{ route('roles.edit', $role) }}" class="btn btn-sm btn-warning" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
                             @if($role->name !== 'admin')
+=======
+                            @can('editar roles')
+                            <a href="{{ route('roles.edit', $role) }}" class="btn btn-sm btn-warning" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            @endcan
+                            @if($role->name !== 'admin')
+                            @can('eliminar roles')
+>>>>>>> ambientales
                             <form action="{{ route('roles.destroy', $role) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('¿Eliminar el rol &quot;{{ $role->name }}&quot;? Los usuarios con este rol quedarán sin rol.')">
                                 @csrf
                                 @method('DELETE')
@@ -66,6 +84,10 @@
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
+<<<<<<< HEAD
+=======
+                            @endcan
+>>>>>>> ambientales
                             @endif
                         </td>
                     </tr>

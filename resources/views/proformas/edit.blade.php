@@ -313,7 +313,11 @@
                                     id="tipo" name="tipo" required 
                                     onchange="calcularTotalesEstimados()">
                                 <option value="AMBIENTAL" {{ old('tipo', $proforma->tipo) == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
+<<<<<<< HEAD
                                 <option value="ANALISIS QUIMICO" {{ old('tipo', $proforma->tipo) == 'ANALISIS QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
+=======
+                                <option value="ANALISIS_QUIMICO" {{ old('tipo', $proforma->tipo) == 'ANALISIS_QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
+>>>>>>> ambientales
                                 <option value="INVESTIGACION" {{ old('tipo', $proforma->tipo) == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN (20% descuento)</option>
                             </select>
                             @error('tipo')
@@ -669,9 +673,12 @@
                                     </button>
                                 </div>
                             </div>
+<<<<<<< HEAD
 
                             <!-- CAMPO OCULTO PARA GUARDAR EL ORDEN (Tarea 30) -->
                             <input type="hidden" name="parametros[{{ $paramIndex }}][orden]" value="{{ $paramIndex }}">
+=======
+>>>>>>> ambientales
                             
                             <!-- Método de ensayo -->
                             <div class="row mt-2 metodo-container" id="metodo-{{ $paramIndex }}" style="display: {{ $parametro->categoria === 'GASES' ? 'none' : 'block' }};">
@@ -722,7 +729,11 @@
                                         @foreach($logisticasMuestreo as $opt)
                                             <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}"
                                                 {{ $log->id == $opt->id ? 'selected' : '' }}>
+<<<<<<< HEAD
                                                 {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }}) 
+=======
+                                                {{ $opt->categoria }} - {{ $opt->descripcion }}
+>>>>>>> ambientales
                                             </option>
                                         @endforeach
                                     </select>
@@ -741,10 +752,22 @@
                                            name="logisticas[{{ $logIndex }}][cantidad]" value="{{ $log->pivot->cantidad }}" min="1" required>
                                 </div>
                                 <div class="col-md-2 mb-2 mb-md-0">
+<<<<<<< HEAD
                                     <label class="form-label small">Costo Unitario</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Bs.</span>
                                         <input type="text" class="form-control logistica-costo" value="{{ number_format($log->costo, 2) }}" readonly>
+=======
+                                    <label class="form-label small">Precio Unitario (Bs.)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Bs.</span>
+                                        <input type="number" class="form-control logistica-precio"
+                                               name="logisticas[{{ $logIndex }}][precio_unitario]"
+                                               value="{{ old('logisticas.' . $logIndex . '.precio_unitario', $log->pivot->precio_unitario ?? $log->costo) }}"
+                                               step="0.01"
+                                               min="0"
+                                               required>
+>>>>>>> ambientales
                                     </div>
                                 </div>
                                 <div class="col-md-1 text-center">
@@ -766,7 +789,11 @@
                                         <option value="">Seleccionar concepto...</option>
                                         @foreach($logisticasMuestreo as $opt)
                                             <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}">
+<<<<<<< HEAD
                                                 {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }}) 
+=======
+                                                {{ $opt->categoria }} - {{ $opt->descripcion }}
+>>>>>>> ambientales
                                             </option>
                                         @endforeach
                                     </select>
@@ -785,10 +812,22 @@
                                            name="logisticas[0][cantidad]" value="1" min="1" required>
                                 </div>
                                 <div class="col-md-2 mb-2 mb-md-0">
+<<<<<<< HEAD
                                     <label class="form-label small">Costo Unitario</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Bs.</span>
                                         <input type="text" class="form-control logistica-costo" value="0.00" readonly>
+=======
+                                    <label class="form-label small">Precio Unitario (Bs.)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Bs.</span>
+                                        <input type="number" class="form-control logistica-precio"
+                                               name="logisticas[0][precio_unitario]"
+                                               value="0"
+                                               step="0.01"
+                                               min="0"
+                                               required>
+>>>>>>> ambientales
                                     </div>
                                 </div>
                                 <div class="col-md-1 text-center">
@@ -1343,11 +1382,19 @@ $(document).ready(function() {
             $('#logistica-muestreo').show();
             $('.logistica-select').prop('required', true).prop('disabled', false);
             $('.logistica-cantidad').prop('required', true).prop('disabled', false);
+<<<<<<< HEAD
+=======
+            $('.logistica-precio').prop('required', true).prop('disabled', false);
+>>>>>>> ambientales
             $('.logistica-descripcion').prop('disabled', false);
         } else {
             $('#logistica-muestreo').hide();
             $('.logistica-select').prop('required', false).prop('disabled', true);
             $('.logistica-cantidad').prop('required', false).prop('disabled', true);
+<<<<<<< HEAD
+=======
+            $('.logistica-precio').prop('required', false).prop('disabled', true);
+>>>>>>> ambientales
             $('.logistica-descripcion').prop('disabled', true);
         }
     }
@@ -1355,6 +1402,7 @@ $(document).ready(function() {
     toggleLogisticaMuestreo();
 
     // ===== LOGÍSTICA DE MUESTREO - FILAS DINÁMICAS =====
+<<<<<<< HEAD
     function calcularSubtotalesLogistica() {
         $('.logistica-row').each(function() {
             const costo = parseFloat($(this).find('.logistica-costo').val()) || 0;
@@ -1377,6 +1425,27 @@ $(document).ready(function() {
 
     $(document).on('input', '.logistica-cantidad', function() {
         calcularSubtotalesLogistica();
+=======
+    function actualizarLogisticaSelect(row) {
+        const select = row.find('.logistica-select');
+        const selected = select.find('option:selected');
+        if (selected.val()) {
+            const costo = selected.data('costo');
+            const precioInput = row.find('.logistica-precio');
+            // Solo establecer valor si está vacío o es 0
+            if (!precioInput.val() || parseFloat(precioInput.val()) === 0) {
+                precioInput.val(parseFloat(costo).toFixed(2));
+            }
+        }
+    }
+
+    $(document).on('change', '.logistica-select', function() {
+        actualizarLogisticaSelect($(this).closest('.logistica-row'));
+        calcularTotalesEstimados();
+    });
+
+    $(document).on('input', '.logistica-cantidad, .logistica-precio', function() {
+>>>>>>> ambientales
         calcularTotalesEstimados();
     });
 
@@ -1394,7 +1463,12 @@ $(document).ready(function() {
         newRow.find('.logistica-cantidad')
               .attr('name', 'logisticas[' + index + '][cantidad]').val(1);
 
+<<<<<<< HEAD
         newRow.find('.logistica-costo').val('0.00');
+=======
+        newRow.find('.logistica-precio')
+              .attr('name', 'logisticas[' + index + '][precio_unitario]').val(0);
+>>>>>>> ambientales
 
         newRow.find('.logistica-descripcion')
               .attr('name', 'logisticas[' + index + '][descripcion]').val('');
@@ -1414,6 +1488,7 @@ $(document).ready(function() {
                 });
 
         container.append(newRow);
+<<<<<<< HEAD
         calcularTotalesEstimados();
         actualizarDescripcionLogistica();
     });
@@ -1422,16 +1497,24 @@ $(document).ready(function() {
     // Marcar como editado manualmente cuando el usuario escriba
     $(document).on('input', '.logistica-descripcion', function() {
         $(this).attr('data-user-edited', 'true');
+=======
+        actualizarDescripcionLogistica();
+        calcularTotalesEstimados();
+>>>>>>> ambientales
     });
 
     function actualizarDescripcionLogistica() {
         const nombres = [];
+<<<<<<< HEAD
         // Leer servicios agregados dinámicamente (plaintext)
+=======
+>>>>>>> ambientales
         $('.parametro-row:visible .form-control-plaintext').each(function() {
             let t = $(this).text().trim();
             t = t.replace(/\s*\(.*$/, '');
             if (nombres.indexOf(t) === -1) nombres.push(t);
         });
+<<<<<<< HEAD
         // Leer servicios existentes (Select2)
         $('.parametro-row:visible .parametro-select option:selected').each(function() {
             if ($(this).val()) {
@@ -1447,6 +1530,13 @@ $(document).ready(function() {
                     $(this).val(texto);
                 }
             });
+=======
+        if ($('#ambient-gases-list .gas-checkbox:checked').length > 0 && nombres.indexOf('GASES') === -1) {
+            nombres.push('GASES');
+        }
+        if (nombres.length > 0) {
+            $('.logistica-descripcion').val('Logística de Muestreo de: ' + nombres.join(', '));
+>>>>>>> ambientales
         }
     }
 
@@ -1460,8 +1550,15 @@ $(document).ready(function() {
             subtotal += precio * cantidad;
         });
 
+<<<<<<< HEAD
         $('#logistica-muestreo:visible .logistica-costo').each(function() {
             subtotal += parseFloat($(this).val()) || 0;
+=======
+        $('#logistica-muestreo:visible .logistica-precio').each(function() {
+            const precio = parseFloat($(this).val()) || 0;
+            const cantidad = parseInt($(this).closest('.logistica-row').find('.logistica-cantidad').val()) || 0;
+            subtotal += precio * cantidad;
+>>>>>>> ambientales
         });
         
         const tipo = $('#tipo').val();

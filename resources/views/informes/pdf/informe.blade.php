@@ -8,12 +8,20 @@
     <style>
         /* ========== CONFIGURACIÓN BASE ========== */
         @page {
+<<<<<<< HEAD
             margin: 12mm 10mm 30mm 10mm;
+=======
+            margin: 15mm 10mm 15mm 10mm;
+>>>>>>> ambientales
         }
         
         body {
             font-family: "Times New Roman", Times, serif;
+<<<<<<< HEAD
             font-size: 12pt; /* Tamaño letra Times 14 (12pt) */
+=======
+            font-size: 11px;
+>>>>>>> ambientales
             line-height: 1.3;
             color: #000;
             margin: 0;
@@ -25,7 +33,11 @@
         .header-table {
             width: 100%;
             border-collapse: collapse;
+<<<<<<< HEAD
             margin-bottom: 12px;
+=======
+            margin-bottom: 15px;
+>>>>>>> ambientales
         }
         
         .header-table td {
@@ -125,7 +137,11 @@
         /* ========== LÍNEA SEPARADORA ========== */
         .separator {
             border-top: 2px solid #1c3d6e;
+<<<<<<< HEAD
             margin: 8px 0 12px 0;
+=======
+            margin: 8px 0 15px 0;
+>>>>>>> ambientales
             width: 100%;
         }
         
@@ -145,12 +161,20 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 10px;
+<<<<<<< HEAD
             margin-bottom: 8px;
+=======
+            margin-bottom: 10px;
+>>>>>>> ambientales
         }
         
         .data-table th, .data-table td {
             border: 1px solid #999;
+<<<<<<< HEAD
             padding: 4px 6px; /* Reducido para compactar */
+=======
+            padding: 5px 8px;
+>>>>>>> ambientales
             vertical-align: top;
         }
         
@@ -160,26 +184,42 @@
             font-weight: bold;
         }
         
+<<<<<<< HEAD
         /* ========== TABLA DE PARÁMETROS (REESTRUCTURADA) ========== */
+=======
+        /* ========== TABLA DE PARÁMETROS ========== */
+>>>>>>> ambientales
         .params-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 10px;
+<<<<<<< HEAD
             margin-bottom: 12px;
+=======
+            margin-bottom: 15px;
+>>>>>>> ambientales
         }
         
         .params-table thead th {
             background-color: #2c5282;
             color: white;
             text-align: center;
+<<<<<<< HEAD
             padding: 4px;
+=======
+            padding: 6px;
+>>>>>>> ambientales
             border: 1px solid #999;
             font-weight: bold;
         }
         
         .params-table tbody td {
             border: 1px solid #999;
+<<<<<<< HEAD
             padding: 4px 6px;
+=======
+            padding: 5px 6px;
+>>>>>>> ambientales
         }
         
         /* ========== TABLA DE CRONOGRAMA ========== */
@@ -192,7 +232,11 @@
         
         .cronograma-table td {
             border: 1px solid #999;
+<<<<<<< HEAD
             padding: 4px 6px;
+=======
+            padding: 6px 8px;
+>>>>>>> ambientales
             vertical-align: top;
         }
         
@@ -280,7 +324,11 @@
         
         .responsables-table td {
             border: 1px solid #999;
+<<<<<<< HEAD
             padding: 4px 6px;
+=======
+            padding: 6px 8px;
+>>>>>>> ambientales
         }
         
         .responsables-table td:first-child {
@@ -292,7 +340,11 @@
         /* ========== FIRMAS CON TABLA TRADICIONAL ========== */
         .signatures-table {
             width: 100%;
+<<<<<<< HEAD
             margin-top: 40px;
+=======
+            margin-top: 60px;
+>>>>>>> ambientales
             border-collapse: collapse;
         }
         
@@ -306,7 +358,11 @@
         .signature-line {
             border-top: 1px solid #000;
             width: 80%;
+<<<<<<< HEAD
             margin: 40px auto 0 auto;
+=======
+            margin: 50px auto 0 auto;
+>>>>>>> ambientales
             display: block;
         }
         
@@ -326,6 +382,7 @@
         .mt-10 { margin-top: 10px; }
         .mt-30 { margin-top: 30px; }
         
+<<<<<<< HEAD
         /* ========== FOOTER (colofón, solo aparece donde termina el contenido) ========== */
         .footer {
             margin-top: 30px;
@@ -377,6 +434,17 @@
         .num-pagina-actual::after {
             content: counter(page);
         }
+=======
+        /* ========== FOOTER ========== */
+        .footer {
+            margin-top: 40px;
+            font-size: 9px;
+            color: #666;
+            text-align: center;
+            padding-top: 8px;
+            border-top: 1px solid #ccc;
+        }
+>>>>>>> ambientales
         
         /* ========== ESPACIO EN BLANCO PARA FIRMAS ========== */
         .firma-espacio {
@@ -386,6 +454,7 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
 
     <!-- ===== PIE DE PÁGINA (fixed: se repite en cada página) ===== -->
     <!-- El número de página ("Página X de Y") se dibuja aparte, desde
@@ -406,6 +475,8 @@
         </table>
     </div>
 
+=======
+>>>>>>> ambientales
     <!-- ========== ENCABEZADO CON TABLA TRADICIONAL ========== -->
     <table class="header-table">
         <tr>
@@ -527,7 +598,11 @@
         </table>
     </div>
 
+<<<<<<< HEAD
     <!-- ========== SECCIÓN 2: PARÁMETROS SOLICITADOS ========== -->
+=======
+    <!-- ========== SECCIÓN 2: PARÁMETROS SOLICITADOS - SIN EMOTICONS ========== -->
+>>>>>>> ambientales
     @if($informe->proforma->parametros && $informe->proforma->parametros->count() > 0)
     <div class="mb-10">
         <div class="section-title">2.- PARÁMETROS SOLICITADOS</div>
@@ -536,9 +611,14 @@
             <thead>
                 <tr>
                     <th style="width: 5%;" class="align-center">#</th>
+<<<<<<< HEAD
                     <th style="width: 40%;" class="align-left">Parámetro</th>
                     <th style="width: 15%;" class="align-center">Método</th>
                     <th style="width: 15%;" class="align-center">Código POE</th>
+=======
+                    <th style="width: 55%;" class="align-left">Parámetro</th>
+                    <th style="width: 15%;" class="align-center">Método</th>
+>>>>>>> ambientales
                     <th style="width: 10%;" class="align-center">N° Muestras</th>
                     <th style="width: 15%;" class="align-right">Precio Unit. (Bs)</th>
                 </tr>
@@ -549,7 +629,10 @@
                     <td class="align-center">{{ $index + 1 }}</td>
                     <td class="align-left">{{ $parametro->nombre }}</td>
                     <td class="align-center">{{ $parametro->metodo ?? 'N/A' }}</td>
+<<<<<<< HEAD
                     <td class="align-center">{{ $parametro->codigo_poe ?? 'N/A' }}</td>
+=======
+>>>>>>> ambientales
                     <td class="align-center">{{ $parametro->pivot->cantidad_muestras }}</td>
                     <td class="align-right">Bs. {{ number_format($parametro->pivot->precio_unitario, 2) }}</td>
                 </tr>
@@ -560,7 +643,11 @@
     @endif
     @endif
 
+<<<<<<< HEAD
     <!-- ========== SECCIÓN 3: CRONOGRAMA DEL INFORME ========== -->
+=======
+    <!-- ========== SECCIÓN 3: CRONOGRAMA DEL INFORME - SIN EMOTICONS ========== -->
+>>>>>>> ambientales
     <div class="mb-10">
         <div class="section-title">3.- CRONOGRAMA DEL INFORME</div>
         
@@ -632,7 +719,11 @@
     </div>
     @endif
 
+<<<<<<< HEAD
     <!-- ========== SECCIÓN 8: RESPONSABLES ========== -->
+=======
+    <!-- ========== SECCIÓN 8: RESPONSABLES - SIN EMOTICONS, SIN LÍNEAS ========== -->
+>>>>>>> ambientales
     <div class="mb-10">
         <div class="section-title">8.- RESPONSABLES</div>
         
@@ -662,7 +753,11 @@
         </table>
     </div>
 
+<<<<<<< HEAD
     <!-- ========== FIRMAS ========== -->
+=======
+    <!-- ========== FIRMAS - SIN EMOTICONS, ESPACIOS EN BLANCO ========== -->
+>>>>>>> ambientales
     <table class="signatures-table">
         <tr>
             <td>
@@ -691,6 +786,7 @@
         <p><strong>Nota 3:</strong> {{ $cfg->config('nota3', 'Prohibida la reproducción parcial de este informe sin autorización del CIMA.') }}</p>
     </div>
 
+<<<<<<< HEAD
     <!-- ========== FIN DEL INFORME (Solo en la última página) ========== -->
     @if(isset($loop) && $loop->last)
     <div style="margin-top: 50px; text-align: center; font-size: 14pt; font-weight: bold; color: #2c5282; border-top: 2px solid #2c5282; padding-top: 20px;">
@@ -699,6 +795,9 @@
     @endif
 
     <!-- ========== FOOTER (colofón: sale una sola vez, al final del contenido) ========== -->
+=======
+    <!-- ========== FOOTER ========== -->
+>>>>>>> ambientales
     <div class="footer">
         <p><strong>{{ $cfg->config('institucion_nombre') }}</strong></p>
         <p>{{ $cfg->config('footer_direccion') }}</p>

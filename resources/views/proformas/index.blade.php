@@ -228,6 +228,7 @@
                                             {{ $proforma->persona_contacto ?? $proforma->cliente->persona_contacto ?? 'N/A' }}
                                         </small>
                                     </td>
+<<<<<<< HEAD
                                     <td>
                                         <span class="badge rounded-pill 
                                             @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
@@ -242,6 +243,22 @@
                                             {{ $proforma->tipo }}
                                         </span>
                                     </td>
+=======
+                                   <td>
+    <span class="badge rounded-pill 
+        @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
+        @elseif($proforma->tipo == 'ANALISIS_QUIMICO') bg-info text-white
+        @else bg-secondary
+        @endif">
+        <i class="fas 
+            @if($proforma->tipo == 'AMBIENTAL') fa-leaf
+            @elseif($proforma->tipo == 'ANALISIS_QUIMICO') fa-flask
+            @else fa-flask
+            @endif me-1"></i>
+        {{ $proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo }}
+    </span>
+</td>
+>>>>>>> ambientales
                                     <td>
                                         @php
                                             $estado = $proforma->estado;
@@ -283,7 +300,10 @@
                                         @endphp
                                         
                                         <span class="badge rounded-pill {{ $bgColor }}" style="color: {{ $textColor }}; padding: 8px 12px; {{ $estado === 'FINALIZADA' ? 'border: 1px solid #ddd;' : '' }}">
+<<<<<<< HEAD
                                             <!-- <i class="fas {{ $icono }} me-1" style="color: {{ $textColor }};"></i> -->
+=======
+>>>>>>> ambientales
                                             {{ $estado }}
                                         </span>
                                     </td>
@@ -292,7 +312,10 @@
                                     </td>
                                     <td>
                                         <small>
+<<<<<<< HEAD
                                             <!-- <i class="far fa-calendar me-1"></i> -->
+=======
+>>>>>>> ambientales
                                             {{ $proforma->fecha_emision->format('d/m/Y') }}
                                         </small>
                                     </td>
@@ -326,8 +349,13 @@
                                                 </li>
                                                 
                                                 <!-- Editar (solo admin y borrador) -->
+<<<<<<< HEAD
                                                 @auth
                                                     @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']) && $proforma->estado == 'BORRADOR')
+=======
+                                                @canany(['editar proformas', 'eliminar proformas'])
+                                                    @if($proforma->estado == 'BORRADOR')
+>>>>>>> ambientales
                                                         <li>
                                                             @can('editar proformas')
                                                             <a class="dropdown-item" 
@@ -359,7 +387,11 @@
                                                         </li>
                                                         <li><hr class="dropdown-divider"></li>
                                                     @endif
+<<<<<<< HEAD
                                                 @endauth
+=======
+                                                @endcanany
+>>>>>>> ambientales
                                                 
                                                 <!-- Generar PDF -->
                                                 <li>
@@ -381,7 +413,11 @@
                                                 </li>
                                                 @endhasanyrole
                                                 @else
+<<<<<<< HEAD
                                                 <!-- Cadena de Custodia (solo AGUA / INVESTIGACIÓN) -->
+=======
+                                                <!-- Cadena de Custodia (solo ANÁLISIS QUÍMICO / INVESTIGACIÓN) -->
+>>>>>>> ambientales
                                                 @can('generar cadena custodia')
                                                 <li>
                                                     <a class="dropdown-item" 
@@ -394,7 +430,11 @@
                                                 </li>
                                                 @endcan
                                                 
+<<<<<<< HEAD
                                                 <!-- Formulario de resultados (solo AGUA / INVESTIGACIÓN) -->
+=======
+                                                <!-- Formulario de resultados (solo ANÁLISIS QUÍMICO / INVESTIGACIÓN) -->
+>>>>>>> ambientales
                                                 @can('ver resultados')
                                                 <li>
                                                     <a class="dropdown-item" 
@@ -449,6 +489,7 @@
                         @endif
                     </p>
                     
+<<<<<<< HEAD
                     @auth
                         @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
                             <a href="{{ route('proformas.create') }}" class="btn btn-primary" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000; border: none; transition: all 0.3s ease;">
@@ -462,6 +503,19 @@
                             </div>
                         @endif
                     @endauth
+=======
+                    @can('crear proformas')
+                        <a href="{{ route('proformas.create') }}" class="btn btn-primary" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000; border: none; transition: all 0.3s ease;">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            Crear primera proforma
+                        </a>
+                    @else
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Solo el administrador puede crear nuevas proformas.
+                        </div>
+                    @endcan
+>>>>>>> ambientales
                 </div>
             @endif
         </div>
@@ -647,6 +701,7 @@ button[type="submit"]:focus {
         margin-bottom: 10px !important;
     }
 }
+<<<<<<< HEAD
 
 /* ========== CORRECCIÓN DE ESPACIADO PARA MÓVIL Y TABLETS ========== */
 @media (max-width: 992px) {
@@ -656,6 +711,8 @@ button[type="submit"]:focus {
         gap: 12px !important; /* Espacio horizontal entre ellos */
     }
 }
+=======
+>>>>>>> ambientales
 </style>
 
 @push('scripts')

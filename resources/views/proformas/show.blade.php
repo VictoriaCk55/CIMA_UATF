@@ -76,15 +76,15 @@
                             <p class="h5">
                                 <span class="badge 
                                     @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
-                                    @elseif($proforma->tipo == 'AGUA') bg-info
+                                    @elseif($proforma->tipo == 'ANALISIS_QUIMICO') bg-info text-white
                                     @else bg-secondary
                                     @endif">
                                     <i class="fas 
                                         @if($proforma->tipo == 'AMBIENTAL') fa-leaf
-                                        @elseif($proforma->tipo == 'AGUA') fa-tint
+                                        @elseif($proforma->tipo == 'ANALISIS_QUIMICO') fa-flask
                                         @else fa-flask
                                         @endif me-1"></i>
-                                    {{ $proforma->tipo }}
+                                    {{ $proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo }}
                                 </span>
                             </p>
                         </div>
@@ -295,7 +295,7 @@
                                     <td>
                                         <strong>{{ $parametro->categoria === 'RUIDO' ? 'RUIDO' : ($parametro->categoria === 'GASES' ? 'GASES' : $parametro->nombre) }}</strong>
                                     </td>
-                                    <td class="text-center">{{ $proforma->tipo === 'AGUA' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A') }}</td>
+                                    <td class="text-center">{{ $proforma->tipo === 'AMBIENTAL' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A') }}</td>
                                     <td class="text-center">{{ $parametro->pivot->cantidad_muestras }}</td>
                                     <td class="text-end">Bs. {{ number_format($parametro->pivot->precio_unitario, 2) }}</td>
                                     <td class="text-end">Bs. {{ number_format($parametro->pivot->precio_unitario * $parametro->pivot->cantidad_muestras, 2) }}</td>
@@ -339,21 +339,33 @@
                                     <th>Concepto</th>
                                     <th>Descripción</th>
                                     <th class="text-center">Cantidad</th>
-                                    <th class="text-end">Costo Unit.</th>
+                                    <th class="text-end">Precio Unit.</th>
                                     <th class="text-end">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @php $totalLogistica = 0; @endphp
                                 @foreach($proforma->logisticasMuestreo as $log)
+                                @php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $subtotal = $precio * ($log->pivot->cantidad ?? 1);
+                                    $totalLogistica += $subtotal;
+                                @endphp
                                 <tr>
                                     <td>{{ $log->categoria }} - {{ $log->descripcion }}</td>
                                     <td>{{ $log->pivot->descripcion ?? '' }}</td>
-                                    <td class="text-center">{{ $log->pivot->cantidad }}</td>
-                                    <td class="text-end">Bs. {{ number_format($log->costo, 2) }}</td>
-                                    <td class="text-end">Bs. {{ number_format($log->pivot->subtotal, 2) }}</td>
+                                    <td class="text-center">{{ $log->pivot->cantidad ?? 1 }}</td>
+                                    <td class="text-end">Bs. {{ number_format($precio, 2) }}</td>
+                                    <td class="text-end">Bs. {{ number_format($subtotal, 2) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Total Logística:</td>
+                                    <td class="text-end fw-bold">Bs. {{ number_format($totalLogistica, 2) }}</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -373,7 +385,28 @@
                         <table class="table table-sm" style="margin-bottom: 0;">
                             <tbody>
                                 <tr>
-                                    <td class="text-end fw-bold">Total:</td>
+                                    <td class="text-end fw-bold">Subtotal Servicios:</td>
+                                    <td class="text-end">Bs. {{ number_format($proforma->parametros->sum(fn($p) => $p->pivot->precio_unitario * $p->pivot->cantidad_muestras), 2) }}</td>
+                                </tr>
+                                @if($proforma->logisticasMuestreo->count() > 0)
+                                @php $totalLogistica = 0; @endphp
+                                @foreach($proforma->logisticasMuestreo as $log)
+                                @php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $totalLogistica += $precio * ($log->pivot->cantidad ?? 1);
+                                @endphp
+                                @endforeach
+                                <tr>
+                                    <td class="text-end fw-bold">Logística:</td>
+                                    <td class="text-end">Bs. {{ number_format($totalLogistica, 2) }}</td>
+                                </tr>
+                                @endif
+                                <tr>
+                                    <td class="text-end fw-bold">Descuento:</td>
+                                    <td class="text-end text-danger">- Bs. {{ number_format($proforma->descuento, 2) }}</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td class="text-end fw-bold text-success">Total:</td>
                                     <td class="text-end fw-bold text-success">
                                         Bs. {{ number_format($proforma->total, 2) }}
                                     </td>
@@ -460,7 +493,6 @@
                             @endcan
                         @endif
                             @can('generar pdf proformas')
-                                        <!-- PDF - Verde outline con texto negro, hover verde sólido texto blanco -->
                         <a href="{{ route('proformas.pdf', $proforma) }}" 
                            class="btn"
                            style="color: #000000; border: 2px solid #198754; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -476,7 +508,6 @@
                             
                             @if($proforma->estado == 'BORRADOR')
                                     @can('editar proformas')
-                                    <!-- Editar Proforma Completa - Amarillo outline -->
                                     <a href="{{ route('proformas.edit', $proforma) }}" 
                                        class="btn"
                                        style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -487,7 +518,6 @@
                                     </a>
                                     @endcan
                                     
-                                    <!-- ENVIAR A REVISIÓN -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -501,7 +531,6 @@
                                         Enviar a Revisión
                                     </button>
                                     @endcan
-                                    <!-- Rechazar Proforma -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -516,7 +545,6 @@
                                     </button>
                                     @endcan
                                     
-                                    <!-- Eliminar Proforma -->
                                      @can('eliminar proformas')
                                     <form action="{{ route('proformas.destroy', $proforma) }}" 
                                           method="POST" 
@@ -539,7 +567,6 @@
                                         Proforma en revisión
                                     </div>
                                     
-                                    <!-- Botón para editar SOLO ADELANTO (ENVIADA) -->
                                     @can('editar adelanto de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -553,7 +580,6 @@
                                     </button>
                                     @endcan
 
-                                    <!-- Aprobar Proforma -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -568,7 +594,6 @@
                                     </button>
                                     @endcan
                                     
-                                    <!-- Rechazar Proforma -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -589,7 +614,6 @@
                                         Proforma aprobada
                                     </div>
                                     
-                                    <!-- Botón para editar SOLO ADELANTO (APROBADA) -->
                                     @can('editar adelanto de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -604,7 +628,6 @@
                                     @endcan
                                     
                                     @if($proforma->informe)
-                                        <!-- Ver Informe Asociado -->
                                         <a href="{{ route('informes.show', $proforma->informe) }}" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -615,7 +638,6 @@
                                         </a>
                                     @else
                                         @can('crear informes')
-                                        <!-- Crear Informe -->
                                         <a href="{{ route('informes.create', ['proforma_id' => $proforma->id]) }}" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #0dcaf0; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -633,7 +655,6 @@
                                         Proforma finalizada
                                     </div>
                                     
-                                    <!-- FINALIZADA - NO SE PUEDE EDITAR NADA -->
                                     <div class="alert alert-info mt-2">
                                         <i class="fas fa-info-circle me-2"></i>
                                         Las proformas finalizadas no pueden ser modificadas.
@@ -656,7 +677,6 @@
                                         Proforma rechazada
                                     </div>
                                     
-                                    <!-- Volver a Borrador -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -695,7 +715,6 @@
                                     {{ $proforma->informe->estado_texto }}
                                 </span>
                             </p>
-                            <!-- Ver Informe -->
                             <a href="{{ route('informes.show', $proforma->informe) }}" 
                                class="btn"
                                style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block;"
@@ -896,7 +915,6 @@
                     
                     saldoPreview.textContent = nuevoSaldo.toFixed(2);
                     
-                    // Cambiar color según el saldo
                     const previewElement = document.getElementById('nuevoSaldoPreview').querySelector('p');
                     if (nuevoSaldo > 0) {
                         previewElement.className = 'h5 text-danger';

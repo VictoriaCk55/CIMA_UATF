@@ -79,15 +79,15 @@
                             <p class="h5">
                                 <span class="badge 
                                     <?php if($proforma->tipo == 'AMBIENTAL'): ?> bg-warning text-dark
-                                    <?php elseif($proforma->tipo == 'AGUA'): ?> bg-info
+                                    <?php elseif($proforma->tipo == 'ANALISIS_QUIMICO'): ?> bg-info text-white
                                     <?php else: ?> bg-secondary
                                     <?php endif; ?>">
                                     <i class="fas 
                                         <?php if($proforma->tipo == 'AMBIENTAL'): ?> fa-leaf
-                                        <?php elseif($proforma->tipo == 'AGUA'): ?> fa-tint
+                                        <?php elseif($proforma->tipo == 'ANALISIS_QUIMICO'): ?> fa-flask
                                         <?php else: ?> fa-flask
                                         <?php endif; ?> me-1"></i>
-                                    <?php echo e($proforma->tipo); ?>
+                                    <?php echo e($proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo); ?>
 
                                 </span>
                             </p>
@@ -316,7 +316,7 @@
                                     <td>
                                         <strong><?php echo e($parametro->categoria === 'RUIDO' ? 'RUIDO' : ($parametro->categoria === 'GASES' ? 'GASES' : $parametro->nombre)); ?></strong>
                                     </td>
-                                    <td class="text-center"><?php echo e($proforma->tipo === 'AGUA' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A')); ?></td>
+                                    <td class="text-center"><?php echo e($proforma->tipo === 'AMBIENTAL' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A')); ?></td>
                                     <td class="text-center"><?php echo e($parametro->pivot->cantidad_muestras); ?></td>
                                     <td class="text-end">Bs. <?php echo e(number_format($parametro->pivot->precio_unitario, 2)); ?></td>
                                     <td class="text-end">Bs. <?php echo e(number_format($parametro->pivot->precio_unitario * $parametro->pivot->cantidad_muestras, 2)); ?></td>
@@ -361,21 +361,33 @@
                                     <th>Concepto</th>
                                     <th>Descripción</th>
                                     <th class="text-center">Cantidad</th>
-                                    <th class="text-end">Costo Unit.</th>
+                                    <th class="text-end">Precio Unit.</th>
                                     <th class="text-end">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php $totalLogistica = 0; ?>
                                 <?php $__currentLoopData = $proforma->logisticasMuestreo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $subtotal = $precio * ($log->pivot->cantidad ?? 1);
+                                    $totalLogistica += $subtotal;
+                                ?>
                                 <tr>
                                     <td><?php echo e($log->categoria); ?> - <?php echo e($log->descripcion); ?></td>
                                     <td><?php echo e($log->pivot->descripcion ?? ''); ?></td>
-                                    <td class="text-center"><?php echo e($log->pivot->cantidad); ?></td>
-                                    <td class="text-end">Bs. <?php echo e(number_format($log->costo, 2)); ?></td>
-                                    <td class="text-end">Bs. <?php echo e(number_format($log->pivot->subtotal, 2)); ?></td>
+                                    <td class="text-center"><?php echo e($log->pivot->cantidad ?? 1); ?></td>
+                                    <td class="text-end">Bs. <?php echo e(number_format($precio, 2)); ?></td>
+                                    <td class="text-end">Bs. <?php echo e(number_format($subtotal, 2)); ?></td>
                                 </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Total Logística:</td>
+                                    <td class="text-end fw-bold">Bs. <?php echo e(number_format($totalLogistica, 2)); ?></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -395,7 +407,28 @@
                         <table class="table table-sm" style="margin-bottom: 0;">
                             <tbody>
                                 <tr>
-                                    <td class="text-end fw-bold">Total:</td>
+                                    <td class="text-end fw-bold">Subtotal Servicios:</td>
+                                    <td class="text-end">Bs. <?php echo e(number_format($proforma->parametros->sum(fn($p) => $p->pivot->precio_unitario * $p->pivot->cantidad_muestras), 2)); ?></td>
+                                </tr>
+                                <?php if($proforma->logisticasMuestreo->count() > 0): ?>
+                                <?php $totalLogistica = 0; ?>
+                                <?php $__currentLoopData = $proforma->logisticasMuestreo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $totalLogistica += $precio * ($log->pivot->cantidad ?? 1);
+                                ?>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+                                    <td class="text-end fw-bold">Logística:</td>
+                                    <td class="text-end">Bs. <?php echo e(number_format($totalLogistica, 2)); ?></td>
+                                </tr>
+                                <?php endif; ?>
+                                <tr>
+                                    <td class="text-end fw-bold">Descuento:</td>
+                                    <td class="text-end text-danger">- Bs. <?php echo e(number_format($proforma->descuento, 2)); ?></td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td class="text-end fw-bold text-success">Total:</td>
                                     <td class="text-end fw-bold text-success">
                                         Bs. <?php echo e(number_format($proforma->total, 2)); ?>
 
@@ -484,7 +517,6 @@
                             <?php endif; ?>
                         <?php endif; ?>
                             <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar pdf proformas')): ?>
-                                        <!-- PDF - Verde outline con texto negro, hover verde sólido texto blanco -->
                         <a href="<?php echo e(route('proformas.pdf', $proforma)); ?>" 
                            class="btn"
                            style="color: #000000; border: 2px solid #198754; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -500,7 +532,6 @@
                             
                             <?php if($proforma->estado == 'BORRADOR'): ?>
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar proformas')): ?>
-                                    <!-- Editar Proforma Completa - Amarillo outline -->
                                     <a href="<?php echo e(route('proformas.edit', $proforma)); ?>" 
                                        class="btn"
                                        style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -511,7 +542,6 @@
                                     </a>
                                     <?php endif; ?>
                                     
-                                    <!-- ENVIAR A REVISIÓN -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -525,7 +555,6 @@
                                         Enviar a Revisión
                                     </button>
                                     <?php endif; ?>
-                                    <!-- Rechazar Proforma -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -540,7 +569,6 @@
                                     </button>
                                     <?php endif; ?>
                                     
-                                    <!-- Eliminar Proforma -->
                                      <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('eliminar proformas')): ?>
                                     <form action="<?php echo e(route('proformas.destroy', $proforma)); ?>" 
                                           method="POST" 
@@ -563,7 +591,6 @@
                                         Proforma en revisión
                                     </div>
                                     
-                                    <!-- Botón para editar SOLO ADELANTO (ENVIADA) -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar adelanto de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -577,7 +604,6 @@
                                     </button>
                                     <?php endif; ?>
 
-                                    <!-- Aprobar Proforma -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -592,7 +618,6 @@
                                     </button>
                                     <?php endif; ?>
                                     
-                                    <!-- Rechazar Proforma -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -613,7 +638,6 @@
                                         Proforma aprobada
                                     </div>
                                     
-                                    <!-- Botón para editar SOLO ADELANTO (APROBADA) -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar adelanto de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -628,7 +652,6 @@
                                     <?php endif; ?>
                                     
                                     <?php if($proforma->informe): ?>
-                                        <!-- Ver Informe Asociado -->
                                         <a href="<?php echo e(route('informes.show', $proforma->informe)); ?>" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -639,7 +662,6 @@
                                         </a>
                                     <?php else: ?>
                                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear informes')): ?>
-                                        <!-- Crear Informe -->
                                         <a href="<?php echo e(route('informes.create', ['proforma_id' => $proforma->id])); ?>" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #0dcaf0; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -657,7 +679,6 @@
                                         Proforma finalizada
                                     </div>
                                     
-                                    <!-- FINALIZADA - NO SE PUEDE EDITAR NADA -->
                                     <div class="alert alert-info mt-2">
                                         <i class="fas fa-info-circle me-2"></i>
                                         Las proformas finalizadas no pueden ser modificadas.
@@ -680,7 +701,6 @@
                                         Proforma rechazada
                                     </div>
                                     
-                                    <!-- Volver a Borrador -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -720,7 +740,6 @@
 
                                 </span>
                             </p>
-                            <!-- Ver Informe -->
                             <a href="<?php echo e(route('informes.show', $proforma->informe)); ?>" 
                                class="btn"
                                style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block;"
@@ -922,7 +941,6 @@
                     
                     saldoPreview.textContent = nuevoSaldo.toFixed(2);
                     
-                    // Cambiar color según el saldo
                     const previewElement = document.getElementById('nuevoSaldoPreview').querySelector('p');
                     if (nuevoSaldo > 0) {
                         previewElement.className = 'h5 text-danger';
@@ -1020,4 +1038,4 @@
 }
 </style>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\CIMA_UATF-main\resources\views/proformas/show.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/proformas/show.blade.php ENDPATH**/ ?>

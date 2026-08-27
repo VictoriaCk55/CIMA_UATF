@@ -15,10 +15,12 @@
                 </p>
             </div>
             
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 flex-wrap">
                 @auth
                      @can('crear parametros')
-                        <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;">
+                        <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                           onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
+                           onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
                             <i class="fas fa-plus-circle"></i>
                             Nuevo Parámetro
                         </a>
@@ -28,6 +30,18 @@
                         </div>
                     @endcan
                 @endauth
+
+                <!-- BOTÓN NUEVO PARA ACTUALIZAR PRECIOS CON ANIMACIÓN -->
+                @can('editar parametros')
+                    <a href="{{ route('parametros.precios.masivos') }}" 
+                       class="btn" 
+                       style="background-color: #28a745; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                       onmouseover="this.style.backgroundColor='#218838'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(40, 167, 69, 0.3)';"
+                       onmouseout="this.style.backgroundColor='#28a745'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
+                        <i class="fas fa-dollar-sign me-1"></i>
+                        Actualizar Precios
+                    </a>
+                @endcan
             </div>
         </div>
     </div>
@@ -169,36 +183,42 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
-                                            @can('editar parametros')
-                                                <a href="{{ route('parametros.edit', $parametro) }}" 
-                                                   class="btn btn-outline-warning btn-sm"
-                                                   data-bs-toggle="tooltip" 
-                                                   data-bs-placement="top"
-                                                   title="Editar parámetro">
-                                                    <i class="fas fa-edit"></i>
-                                            @endcan
-                                            </a>
-                                            @can('eliminar parametros')
-                                            <button type="button" 
-                                                    class="btn btn-outline-danger btn-sm"
-                                                    data-bs-toggle="tooltip" 
-                                                    data-bs-placement="top"
-                                                    title="Eliminar parámetro"
-                                                    onclick="confirmarEliminacion({{ $parametro->id }}, '{{ $parametro->nombre }}', 'parámetro')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                            @endcan
+                                            @auth
+                                                @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
+                                                    @can('editar parametros')
+                                                        <a href="{{ route('parametros.edit', $parametro) }}" 
+                                                           class="btn btn-outline-warning btn-sm"
+                                                           data-bs-toggle="tooltip" 
+                                                           data-bs-placement="top"
+                                                           title="Editar parámetro">
+                                                            <i class="fas fa-edit"></i>
+                                                    @endcan
+                                                    </a>
+                                                    @can('eliminar parametros')
+                                                    <button type="button" 
+                                                            class="btn btn-outline-danger btn-sm"
+                                                            data-bs-toggle="tooltip" 
+                                                            data-bs-placement="top"
+                                                            title="Eliminar parámetro"
+                                                            onclick="confirmarEliminacion({{ $parametro->id }}, '{{ $parametro->nombre }}', 'parámetro')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                    @endcan
+                                                @endif
+                                            @endauth
                                         </div>
                                         
                                         <!-- Formulario oculto para eliminar -->
-                                        @can('eliminar parametros')
-                                            <form id="delete-form-{{ $parametro->id }}" 
-                                                  action="{{ route('parametros.destroy', $parametro) }}" 
-                                                  method="POST" class="d-none">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                        @endcan
+                                        @auth
+                                            @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
+                                                <form id="delete-form-{{ $parametro->id }}" 
+                                                      action="{{ route('parametros.destroy', $parametro) }}" 
+                                                      method="POST" class="d-none">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            @endif
+                                        @endauth
                                     </td>
                                 </tr>
                             @endforeach
@@ -245,24 +265,28 @@
                         @endif
                     </p>
                     
-                    @can('crear parametros')
-                        @if(request('search'))
-                            <a href="{{ route('parametros.index') }}" class="btn btn-outline-secondary" style="border-radius: 30px; padding: 10px 25px;">
-                                <i class="fas fa-times me-2"></i>
-                                Limpiar búsqueda
-                            </a>
+                    @auth
+                        @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
+                            @if(request('search'))
+                                <a href="{{ route('parametros.index') }}" class="btn btn-outline-secondary" style="border-radius: 30px; padding: 10px 25px;">
+                                    <i class="fas fa-times me-2"></i>
+                                    Limpiar búsqueda
+                                </a>
+                            @else
+                                <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                                   onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
+                                   onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
+                                    <i class="fas fa-plus-circle me-2"></i>
+                                    Crear primer parámetro
+                                </a>
+                            @endif
                         @else
-                            <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;">
-                                <i class="fas fa-plus-circle me-2"></i>
-                                Crear primer parámetro
-                            </a>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Solo el administrador puede crear nuevos parámetros.
+                            </div>
                         @endif
-                    @else
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Solo el administrador puede crear nuevos parámetros.
-                        </div>
-                    @endcan
+                    @endauth
                 </div>
             @endif
         </div>

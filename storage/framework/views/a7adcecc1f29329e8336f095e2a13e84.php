@@ -803,4 +803,4 @@
     </script>
     <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
-</html><?php /**PATH D:\CIMA_UATF-main\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/layouts/app.blade.php ENDPATH**/ ?>

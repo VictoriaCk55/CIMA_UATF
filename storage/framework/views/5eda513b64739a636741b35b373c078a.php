@@ -62,7 +62,7 @@
                     </div>
                     <small class="text-muted mt-1 d-block">
                         <i class="fas fa-info-circle me-1"></i>
-                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, AGUA, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
+                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, ANÁLISIS QUÍMICO, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
                     </small>
                 </div>
                 
@@ -236,21 +236,21 @@
 
                                         </small>
                                     </td>
-                                    <td>
-                                        <span class="badge rounded-pill 
-                                            <?php if($proforma->tipo == 'AMBIENTAL'): ?> bg-warning text-dark
-                                            <?php elseif($proforma->tipo == 'AGUA'): ?> bg-info
-                                            <?php else: ?> bg-secondary
-                                            <?php endif; ?>">
-                                            <i class="fas 
-                                                <?php if($proforma->tipo == 'AMBIENTAL'): ?> fa-leaf
-                                                <?php elseif($proforma->tipo == 'AGUA'): ?> fa-tint
-                                                <?php else: ?> fa-flask
-                                                <?php endif; ?> me-1"></i>
-                                            <?php echo e($proforma->tipo); ?>
+                                   <td>
+    <span class="badge rounded-pill 
+        <?php if($proforma->tipo == 'AMBIENTAL'): ?> bg-warning text-dark
+        <?php elseif($proforma->tipo == 'ANALISIS_QUIMICO'): ?> bg-info text-white
+        <?php else: ?> bg-secondary
+        <?php endif; ?>">
+        <i class="fas 
+            <?php if($proforma->tipo == 'AMBIENTAL'): ?> fa-leaf
+            <?php elseif($proforma->tipo == 'ANALISIS_QUIMICO'): ?> fa-flask
+            <?php else: ?> fa-flask
+            <?php endif; ?> me-1"></i>
+        <?php echo e($proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo); ?>
 
-                                        </span>
-                                    </td>
+    </span>
+</td>
                                     <td>
                                         <?php
                                             $estado = $proforma->estado;
@@ -292,7 +292,6 @@
                                         ?>
                                         
                                         <span class="badge rounded-pill <?php echo e($bgColor); ?>" style="color: <?php echo e($textColor); ?>; padding: 8px 12px; <?php echo e($estado === 'FINALIZADA' ? 'border: 1px solid #ddd;' : ''); ?>">
-                                            <!-- <i class="fas <?php echo e($icono); ?> me-1" style="color: <?php echo e($textColor); ?>;"></i> -->
                                             <?php echo e($estado); ?>
 
                                         </span>
@@ -302,7 +301,6 @@
                                     </td>
                                     <td>
                                         <small>
-                                            <!-- <i class="far fa-calendar me-1"></i> -->
                                             <?php echo e($proforma->fecha_emision->format('d/m/Y')); ?>
 
                                         </small>
@@ -394,7 +392,7 @@
                                                 </li>
                                                 <?php endif; ?>
                                                 <?php else: ?>
-                                                <!-- Cadena de Custodia (solo AGUA / INVESTIGACIÓN) -->
+                                                <!-- Cadena de Custodia (solo ANÁLISIS QUÍMICO / INVESTIGACIÓN) -->
                                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar cadena custodia')): ?>
                                                 <li>
                                                     <a class="dropdown-item" 
@@ -407,7 +405,7 @@
                                                 </li>
                                                 <?php endif; ?>
                                                 
-                                                <!-- Formulario de resultados (solo AGUA / INVESTIGACIÓN) -->
+                                                <!-- Formulario de resultados (solo ANÁLISIS QUÍMICO / INVESTIGACIÓN) -->
                                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver resultados')): ?>
                                                 <li>
                                                     <a class="dropdown-item" 
@@ -693,4 +691,4 @@ button[type="submit"]:focus {
 </script>
 <?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\CIMA_UATF-main\resources\views/proformas/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/proformas/index.blade.php ENDPATH**/ ?>

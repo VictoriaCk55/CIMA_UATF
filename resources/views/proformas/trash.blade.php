@@ -73,7 +73,15 @@
                                 <tr>
                                     <td><span class="badge bg-secondary">{{ $proforma->codigo }}</span></td>
                                     <td>{{ $proforma->cliente->razon_social ?? 'N/A' }}</td>
-                                    <td>{{ $proforma->tipo }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
+                                            @elseif($proforma->tipo == 'ANALISIS_QUIMICO') bg-info text-white
+                                            @else bg-secondary
+                                            @endif">
+                                            {{ $proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo }}
+                                        </span>
+                                    </td>
                                     <td>{{ $proforma->fecha_emision->format('d/m/Y') }}</td>
                                     <td class="fw-bold">Bs. {{ number_format($proforma->total, 2) }}</td>
                                     <td>

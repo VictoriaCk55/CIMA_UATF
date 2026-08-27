@@ -64,7 +64,7 @@
                     </div>
                     <small class="text-muted mt-1 d-block">
                         <i class="fas fa-info-circle me-1"></i>
-                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, AGUA, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
+                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, ANÁLISIS QUÍMICO, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
                     </small>
                 </div>
                 
@@ -228,20 +228,20 @@
                                             {{ $proforma->persona_contacto ?? $proforma->cliente->persona_contacto ?? 'N/A' }}
                                         </small>
                                     </td>
-                                    <td>
-                                        <span class="badge rounded-pill 
-                                            @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
-                                            @elseif($proforma->tipo == 'AGUA') bg-info
-                                            @else bg-secondary
-                                            @endif">
-                                            <i class="fas 
-                                                @if($proforma->tipo == 'AMBIENTAL') fa-leaf
-                                                @elseif($proforma->tipo == 'AGUA') fa-tint
-                                                @else fa-flask
-                                                @endif me-1"></i>
-                                            {{ $proforma->tipo }}
-                                        </span>
-                                    </td>
+                                   <td>
+    <span class="badge rounded-pill 
+        @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
+        @elseif($proforma->tipo == 'ANALISIS_QUIMICO') bg-info text-white
+        @else bg-secondary
+        @endif">
+        <i class="fas 
+            @if($proforma->tipo == 'AMBIENTAL') fa-leaf
+            @elseif($proforma->tipo == 'ANALISIS_QUIMICO') fa-flask
+            @else fa-flask
+            @endif me-1"></i>
+        {{ $proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo }}
+    </span>
+</td>
                                     <td>
                                         @php
                                             $estado = $proforma->estado;
@@ -283,7 +283,6 @@
                                         @endphp
                                         
                                         <span class="badge rounded-pill {{ $bgColor }}" style="color: {{ $textColor }}; padding: 8px 12px; {{ $estado === 'FINALIZADA' ? 'border: 1px solid #ddd;' : '' }}">
-                                            <!-- <i class="fas {{ $icono }} me-1" style="color: {{ $textColor }};"></i> -->
                                             {{ $estado }}
                                         </span>
                                     </td>
@@ -292,7 +291,6 @@
                                     </td>
                                     <td>
                                         <small>
-                                            <!-- <i class="far fa-calendar me-1"></i> -->
                                             {{ $proforma->fecha_emision->format('d/m/Y') }}
                                         </small>
                                     </td>
@@ -381,7 +379,7 @@
                                                 </li>
                                                 @endhasanyrole
                                                 @else
-                                                <!-- Cadena de Custodia (solo AGUA / INVESTIGACIÓN) -->
+                                                <!-- Cadena de Custodia (solo ANÁLISIS QUÍMICO / INVESTIGACIÓN) -->
                                                 @can('generar cadena custodia')
                                                 <li>
                                                     <a class="dropdown-item" 
@@ -394,7 +392,7 @@
                                                 </li>
                                                 @endcan
                                                 
-                                                <!-- Formulario de resultados (solo AGUA / INVESTIGACIÓN) -->
+                                                <!-- Formulario de resultados (solo ANÁLISIS QUÍMICO / INVESTIGACIÓN) -->
                                                 @can('ver resultados')
                                                 <li>
                                                     <a class="dropdown-item" 

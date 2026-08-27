@@ -194,7 +194,7 @@ class ProformaController extends Controller
 
         $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'tipo' => 'required|in:AMBIENTAL,AGUA,INVESTIGACION',
+            'tipo' => 'required|in:AMBIENTAL,ANALISIS_QUIMICO,INVESTIGACION',
             'tipo_muestra' => 'required|string|max:255',
             'unidad' => 'nullable|string|in:UIA,UAQ',
             'fecha_emision' => 'required|date',
@@ -222,6 +222,7 @@ class ProformaController extends Controller
             'logisticas.*.id' => 'required_with:logisticas|exists:logisticas_muestreo,id',
             'logisticas.*.cantidad' => 'required_with:logisticas|integer|min:1',
             'logisticas.*.descripcion' => 'nullable|string|max:500',
+            'logisticas.*.precio_unitario' => 'nullable|numeric|min:0',
         ]);
 
         // ===== VALIDACIÓN ESTRICTA DE PARÁMETROS DUPLICADOS (STORE) =====
@@ -253,8 +254,6 @@ class ProformaController extends Controller
             DB::beginTransaction();
 
             // ===== GENERAR CÓDIGO CON NUEVO FORMATO =====
-            // Formato: {unidad}-{tipo}-{numero}
-            // Ejemplo: UIA-INV-001, UAQ-AMB-002
             $codigo = Proforma::generarCodigo($request->unidad, $request->tipo);
 
             // Crear proforma
@@ -304,18 +303,22 @@ class ProformaController extends Controller
                 }
             }
 
-            // Guardar logística de muestreo
+            // Guardar logística de muestreo con precio editable
             $totalLogistica = 0;
-            if ($request->has('logisticas') && $request->tipo === 'AMBIENTAL') {
+            if ($request->has('logisticas')) {
                 foreach ($request->logisticas as $logData) {
                     if (isset($logData['id']) && isset($logData['cantidad'])) {
                         $logistica = LogisticaMuestreo::find($logData['id']);
+                        $precioUnitario = $logData['precio_unitario'] ?? $logistica->costo ?? 0;
+                        $subtotal = $precioUnitario * $logData['cantidad'];
+                        
                         $proforma->logisticasMuestreo()->attach($logData['id'], [
                             'cantidad' => $logData['cantidad'],
-                            'subtotal' => $logistica->costo,
+                            'subtotal' => $subtotal,
                             'descripcion' => $logData['descripcion'] ?? null,
+                            'precio_unitario' => $precioUnitario,
                         ]);
-                        $totalLogistica += $logistica->costo;
+                        $totalLogistica += $subtotal;
                     }
                 }
             }
@@ -422,7 +425,7 @@ class ProformaController extends Controller
 
         $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'tipo' => 'required|in:AMBIENTAL,AGUA,INVESTIGACION',
+            'tipo' => 'required|in:AMBIENTAL,ANALISIS_QUIMICO,INVESTIGACION',
             'tipo_muestra' => 'required|string|max:255',
             'unidad' => 'nullable|string|in:UIA,UAQ',
             'fecha_emision' => 'required|date',
@@ -450,6 +453,7 @@ class ProformaController extends Controller
             'logisticas.*.id' => 'required_with:logisticas|exists:logisticas_muestreo,id',
             'logisticas.*.cantidad' => 'required_with:logisticas|integer|min:1',
             'logisticas.*.descripcion' => 'nullable|string|max:500',
+            'logisticas.*.precio_unitario' => 'nullable|numeric|min:0',
             'justificacion_modificacion' => 'nullable|string',
         ]);
 
@@ -517,12 +521,10 @@ class ProformaController extends Controller
 
             // SI HUBO MODIFICACIÓN DE PARÁMETROS
             if ($parametrosModificados) {
-                // Verificar si se proporcionó justificación
                 if (empty($request->justificacion_modificacion)) {
                     throw new \Exception('Debe proporcionar una justificación para modificar los parámetros.');
                 }
 
-                // Actualizar campos de modificación
                 $proforma->parametros_modificados = true;
                 $proforma->justificacion_modificacion = $request->justificacion_modificacion;
                 $proforma->modificado_por = Auth::id();
@@ -550,17 +552,21 @@ class ProformaController extends Controller
 
             // Actualizar logística de muestreo
             $totalLogistica = 0;
-            if ($request->has('logisticas') && $request->tipo === 'AMBIENTAL') {
+            if ($request->has('logisticas')) {
                 $logisticasSync = [];
                 foreach ($request->logisticas as $logData) {
                     if (isset($logData['id']) && isset($logData['cantidad'])) {
                         $logistica = LogisticaMuestreo::find($logData['id']);
+                        $precioUnitario = $logData['precio_unitario'] ?? $logistica->costo ?? 0;
+                        $subtotal = $precioUnitario * $logData['cantidad'];
+                        
                         $logisticasSync[$logData['id']] = [
                             'cantidad' => $logData['cantidad'],
-                            'subtotal' => $logistica->costo,
+                            'subtotal' => $subtotal,
                             'descripcion' => $logData['descripcion'] ?? null,
+                            'precio_unitario' => $precioUnitario,
                         ];
-                        $totalLogistica += $logistica->costo;
+                        $totalLogistica += $subtotal;
                     }
                 }
                 $proforma->logisticasMuestreo()->sync($logisticasSync);
@@ -626,7 +632,7 @@ class ProformaController extends Controller
         try {
             DB::beginTransaction();
 
-            $proforma->delete(); // Soft delete (conserva la relación con parámetros)
+            $proforma->delete();
 
             DB::commit();
 
@@ -713,7 +719,6 @@ class ProformaController extends Controller
             ];
 
             $pdf = Pdf::loadView('proformas.pdf', $data);
-            // CONFIGURAR ORIENTACION DEL DOCUMENTO
             $pdf->setPaper('letter', 'portrait');
 
             return $pdf->stream("proforma-{$proforma->codigo}.pdf");
@@ -731,10 +736,8 @@ class ProformaController extends Controller
     public function pdfCadenaCustodia(Proforma $proforma)
     {
         try {
-            // NO cargar 'muestras' porque no existe la relación
             $proforma->load(['cliente', 'parametros', 'usuarioModificacion']);
 
-            // Calcular total en letras
             $entero = intval($proforma->total);
             $decimal = round(($proforma->total - $entero) * 100);
 
@@ -777,10 +780,8 @@ class ProformaController extends Controller
             $letras = $numeroEnLetras($entero);
             $totalEnLetras = 'SON: '.strtoupper($letras).' '.str_pad($decimal, 2, '0', STR_PAD_LEFT).'/100 BOLIVIANOS';
 
-            // Agrupar parámetros por método analítico
             $parametrosAgrupados = $this->agruparParametrosCadena($proforma->parametros ?? collect());
 
-            // Crear datos de muestra a partir de los campos de la proforma
             $muestraData = (object) [
                 'tipo_muestra' => $proforma->tipo_muestra ?? 'No especificado',
                 'identificacion' => $proforma->codigo ?? 'M-001',
@@ -811,11 +812,9 @@ class ProformaController extends Controller
                 'muestreadoPorOpciones' => $this->muestreadoPorOpciones,
             ];
 
-            // Importante: Usar la vista de CADENA DE CUSTODIA
             $pdf = Pdf::loadView('proformas.cadena_custodia', $data);
             $pdf->setPaper('a4', 'landscape');
 
-            // DESCARGAR PDF
             return $pdf->download("cadena-de-custodia-{$proforma->codigo}.pdf");
 
         } catch (\Exception $e) {
@@ -869,7 +868,6 @@ class ProformaController extends Controller
 
     /**
      * Actualizar solo el adelanto de la proforma
-     * Permite editar el adelanto en estados ENVIADA y APROBADA
      */
     public function actualizarAdelanto(Request $request, Proforma $proforma)
     {
@@ -878,7 +876,6 @@ class ProformaController extends Controller
                 ->with('error', '⛔ Acceso denegado. Solo el administrador puede actualizar proformas.');
         }
 
-        // Permitir solo en estados ENVIADA y APROBADA
         if (! in_array($proforma->estado, ['ENVIADA', 'APROBADA'])) {
             return redirect()->route('proformas.show', $proforma)
                 ->with('error', "❌ Solo se puede actualizar el adelanto en proformas ENVIADA o APROBADA. Estado actual: {$proforma->estado}");
@@ -893,19 +890,12 @@ class ProformaController extends Controller
 
             $adelantoAnterior = $proforma->adelanto;
             $nuevoAdelanto = $request->adelanto;
-
-            // Calcular el monto pagado (si aumentó el adelanto)
             $montoPagado = $nuevoAdelanto - $adelantoAnterior;
 
-            // Actualizar adelanto
             $proforma->adelanto = $nuevoAdelanto;
-
-            // Recalcular saldo
             $proforma->saldo = $proforma->total - $proforma->adelanto;
-
             $proforma->save();
 
-            // ===== REGISTRAR MOVIMIENTO FINANCIERO SI HUBO PAGO =====
             if ($montoPagado > 0) {
                 $this->registrarMovimiento(
                     $proforma,
@@ -917,12 +907,11 @@ class ProformaController extends Controller
                     "Nuevo adelanto: Bs. {$nuevoAdelanto} (anterior: Bs. {$adelantoAnterior})"
                 );
             } elseif ($montoPagado < 0) {
-                // Si se redujo el adelanto (reembolso), registrar como ajuste
                 $this->registrarMovimiento(
                     $proforma,
                     $proforma->cliente_id,
                     'AJUSTE',
-                    $montoPagado, // Valor negativo
+                    $montoPagado,
                     "Reducción de adelanto para proforma {$proforma->codigo}",
                     $proforma->codigo,
                     "Nuevo adelanto: Bs. {$nuevoAdelanto} (anterior: Bs. {$adelantoAnterior})"

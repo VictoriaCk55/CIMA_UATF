@@ -77,7 +77,7 @@ class Proforma extends Model
     // ========== TIPOS DE PROFORMA ==========
     public const TIPOS = [
         'AMBIENTAL' => 'AMB',
-        'AGUA' => 'AGUA',
+        'ANALISIS_QUIMICO' => 'AQ',
         'INVESTIGACION' => 'INV',
     ];
 
@@ -114,7 +114,7 @@ class Proforma extends Model
 
     /**
      * Generar código de proforma en formato: {unidad}-{tipo}-{numero}
-     * Ejemplos: UIA-INV-001, UAQ-AMB-002, UAQ-AGUA-003
+     * Ejemplos: UIA-INV-001, UAQ-AQ-002, UAQ-AMB-003
      */
     public static function generarCodigo($unidad, $tipo)
     {
@@ -125,7 +125,6 @@ class Proforma extends Model
         $unidadAbr = $unidad ?? 'GEN';
 
         // Buscar el último número para esta combinación unidad-tipo
-        // Buscar en formato nuevo: {unidad}-{tipo}-{numero}
         $ultimo = self::withTrashed()->where('codigo', 'LIKE', $unidadAbr.'-'.$tipoAbr.'-%')
             ->orderBy('id', 'desc')
             ->first();
@@ -136,14 +135,12 @@ class Proforma extends Model
             $nuevoNumero = $ultimoNumero + 1;
         } else {
             // Si no hay códigos con el nuevo formato, buscar en formato antiguo
-            // Formato antiguo: {numero}-{tipo} (ejemplo: 001-INV)
             $ultimoAntiguo = self::withTrashed()->where('codigo', 'LIKE', '%-'.$tipoAbr)
                 ->where('codigo', 'NOT LIKE', '%-%-%')
                 ->orderBy('id', 'desc')
                 ->first();
 
             if ($ultimoAntiguo) {
-                // Extraer el número del formato antiguo
                 $partes = explode('-', $ultimoAntiguo->codigo);
                 $ultimoNumero = intval($partes[0]);
                 $nuevoNumero = $ultimoNumero + 1;
@@ -165,95 +162,26 @@ class Proforma extends Model
      */
     public function generarCodigoLaboratorio($numeroMuestra = 1)
     {
-
-        /*
-        |--------------------------------------------------------------------------
-        | UNIDAD
-        |--------------------------------------------------------------------------
-        */
-
         $unidad = $this->unidad ?? 'NULL';
-
-        /*
-        |--------------------------------------------------------------------------
-        | TIPO DE MUESTRA
-        |--------------------------------------------------------------------------
-        | 1 = AGUA (natural, residual, de mina, industrial, vida ambiental, bacteriologia)
-        | 2 = SUELO O SEDIMENTO
-        | 3 = MINERALES
-        | 4 = VEGETALES
-        | 5 = SALMUERAS
-        | 6 = POLVOS
-        |
-        */
-
         $tipoMuestra = strtoupper($this->tipo_muestra);
 
-        if (
-            str_contains($tipoMuestra, 'AGUA')
-        ) {
-
+        if (str_contains($tipoMuestra, 'AGUA') || str_contains($tipoMuestra, 'ANALISIS')) {
             $tipoCodigo = 1;
-
-        } elseif (
-
-            str_contains($tipoMuestra, 'SUELO') || str_contains($tipoMuestra, 'SEDIMENTO')
-
-        ) {
-
+        } elseif (str_contains($tipoMuestra, 'SUELO') || str_contains($tipoMuestra, 'SEDIMENTO')) {
             $tipoCodigo = 2;
-
-        } elseif (
-
-            str_contains($tipoMuestra, 'MINERAL')
-
-        ) {
-
+        } elseif (str_contains($tipoMuestra, 'MINERAL')) {
             $tipoCodigo = 3;
-
-        } elseif (
-
-            str_contains($tipoMuestra, 'VEGETAL')
-
-        ) {
-
+        } elseif (str_contains($tipoMuestra, 'VEGETAL')) {
             $tipoCodigo = 4;
-
-        } elseif (
-
-            str_contains($tipoMuestra, 'SALMUERA')
-
-        ) {
-
+        } elseif (str_contains($tipoMuestra, 'SALMUERA')) {
             $tipoCodigo = 5;
-
-        } elseif (
-
-            str_contains($tipoMuestra, 'POLVO')
-
-        ) {
-
+        } elseif (str_contains($tipoMuestra, 'POLVO')) {
             $tipoCodigo = 6;
-
         } else {
-
             $tipoCodigo = 1;
-
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | NUMERO RECEPCION
-        |--------------------------------------------------------------------------
-        */
-
         $recepcion = $this->numero_recepcion ?? str_pad($this->id, 3, '0', STR_PAD_LEFT);
-
-        /*
-        |--------------------------------------------------------------------------
-        | CODIGO FINAL
-        |--------------------------------------------------------------------------
-        */
 
         return $unidad
             .'-'
@@ -312,7 +240,7 @@ class Proforma extends Model
     public function logisticasMuestreo()
     {
         return $this->belongsToMany(LogisticaMuestreo::class, 'proforma_logisticas')
-            ->withPivot('cantidad', 'subtotal', 'descripcion')
+            ->withPivot('cantidad', 'subtotal', 'descripcion', 'precio_unitario')
             ->withTimestamps();
     }
 

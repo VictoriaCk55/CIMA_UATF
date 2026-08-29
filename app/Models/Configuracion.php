@@ -29,8 +29,43 @@ class Configuracion extends Model
         'firma_path',
     ];
 
+    /**
+     * Obtener la configuración única del sistema
+     */
     public static function obtener()
     {
         return static::first() ?? new static;
+    }
+
+    /**
+     * Obtener el logo de la institución
+     */
+    public function getLogoUrlAttribute()
+    {
+        if ($this->logo_path) {
+            return asset('storage/' . $this->logo_path);
+        }
+        return null;
+    }
+
+    /**
+     * Obtener la firma
+     */
+    public function getFirmaUrlAttribute()
+    {
+        if ($this->firma_path) {
+            return asset('storage/' . $this->firma_path);
+        }
+        return null;
+    }
+
+    /**
+     * Obtener el nombre completo de la institución
+     */
+    public function getInstitucionCompletaAttribute()
+    {
+        $nombre = $this->institucion_nombre ?? 'CIMA-UATF';
+        $sigla = $this->institucion_sigla ?? '';
+        return $sigla ? $nombre . ' (' . $sigla . ')' : $nombre;
     }
 }

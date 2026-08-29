@@ -24,24 +24,11 @@ class ProformaController extends Controller
     ];
 
     /**
-<<<<<<< HEAD
-     * Verificar si el usuario tiene permisos de administración
-     */
-    private function esAdmin()
-    {
-        if (!Auth::check()) {
-            return false;
-        }
-
-        $user = Auth::user();
-        return in_array($user->role ?? $user->tipo ?? 'usuario', ['admin', 'tecnico', 'analista']);
-=======
      * Verificar si el usuario es administrador
      */
     private function esAdmin()
     {
         return Auth::check() && Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']);
->>>>>>> ambientales
     }
 
     /**
@@ -81,10 +68,7 @@ class ProformaController extends Controller
             $query->where('estado', $request->estado);
         }
 
-<<<<<<< HEAD
-=======
         // Obtener años disponibles para el filtro
->>>>>>> ambientales
         $añosDisponibles = Proforma::selectRaw('DISTINCT EXTRACT(YEAR FROM fecha_emision) as año')
             ->orderBy('año', 'desc')
             ->pluck('año')
@@ -153,19 +137,13 @@ class ProformaController extends Controller
         try {
             $proforma = Proforma::onlyTrashed()->findOrFail($id);
 
-<<<<<<< HEAD
-=======
             // Verificar si tiene informe asociado
->>>>>>> ambientales
             if ($proforma->informe) {
                 return redirect()->route('proformas.trash')
                     ->with('error', '❌ No se puede eliminar permanentemente una proforma que tiene un informe asociado.');
             }
 
-<<<<<<< HEAD
-=======
             // Eliminar relaciones primero
->>>>>>> ambientales
             $proforma->parametros()->detach();
             $proforma->forceDelete();
 
@@ -216,11 +194,7 @@ class ProformaController extends Controller
 
         $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-<<<<<<< HEAD
-            'tipo' => 'required|in:AMBIENTAL,ANALISIS QUIMICO,INVESTIGACION',
-=======
             'tipo' => 'required|in:AMBIENTAL,ANALISIS_QUIMICO,INVESTIGACION',
->>>>>>> ambientales
             'tipo_muestra' => 'required|string|max:255',
             'unidad' => 'nullable|string|in:UIA,UAQ',
             'fecha_emision' => 'required|date',
@@ -248,16 +222,10 @@ class ProformaController extends Controller
             'logisticas.*.id' => 'required_with:logisticas|exists:logisticas_muestreo,id',
             'logisticas.*.cantidad' => 'required_with:logisticas|integer|min:1',
             'logisticas.*.descripcion' => 'nullable|string|max:500',
-<<<<<<< HEAD
-        ]);
-
-        // ===== VALIDACIÓN ESTRICTA DE PARÁMETROS DUPLICADOS =====
-=======
             'logisticas.*.precio_unitario' => 'nullable|numeric|min:0',
         ]);
 
         // ===== VALIDACIÓN ESTRICTA DE PARÁMETROS DUPLICADOS (STORE) =====
->>>>>>> ambientales
         $parametroIds = collect($request->parametros)->pluck('id')->toArray();
         $parametrosUnicos = array_unique($parametroIds);
 
@@ -285,16 +253,10 @@ class ProformaController extends Controller
         try {
             DB::beginTransaction();
 
-<<<<<<< HEAD
-            // ===== GENERAR CÓDIGO =====
-            $codigo = Proforma::generarCodigo($request->unidad, $request->tipo);
-
-=======
             // ===== GENERAR CÓDIGO CON NUEVO FORMATO =====
             $codigo = Proforma::generarCodigo($request->unidad, $request->tipo);
 
             // Crear proforma
->>>>>>> ambientales
             $proforma = Proforma::create([
                 'codigo' => $codigo,
                 'codigo_cliente' => $request->codigo_cliente,
@@ -306,11 +268,6 @@ class ProformaController extends Controller
                 'unidad' => $request->unidad,
                 'fecha_emision' => $request->fecha_emision,
                 'fecha_recepcion' => $request->fecha_recepcion,
-<<<<<<< HEAD
-                'fecha_inicio_ensayo' => $request->fecha_recepcion,
-                'fecha_conclusion_ensayo' => now()->addDays(15)->format('Y-m-d'),
-=======
->>>>>>> ambientales
                 'hora_recepcion' => now()->format('H:i'),
                 'persona_contacto' => $request->persona_contacto,
                 'telefono_contacto' => $request->telefono_contacto,
@@ -346,20 +303,6 @@ class ProformaController extends Controller
                 }
             }
 
-<<<<<<< HEAD
-            // Logística
-            $totalLogistica = 0;
-            if ($request->has('logisticas') && $request->tipo === 'AMBIENTAL') {
-                foreach ($request->logisticas as $logData) {
-                    if (isset($logData['id']) && isset($logData['cantidad'])) {
-                        $logistica = LogisticaMuestreo::find($logData['id']);
-                        $proforma->logisticasMuestreo()->attach($logData['id'], [
-                            'cantidad' => $logData['cantidad'],
-                            'subtotal' => $logistica->costo,
-                            'descripcion' => $logData['descripcion'] ?? null,
-                        ]);
-                        $totalLogistica += $logistica->costo;
-=======
             // Guardar logística de muestreo con precio editable
             $totalLogistica = 0;
             if ($request->has('logisticas')) {
@@ -368,7 +311,7 @@ class ProformaController extends Controller
                         $logistica = LogisticaMuestreo::find($logData['id']);
                         $precioUnitario = $logData['precio_unitario'] ?? $logistica->costo ?? 0;
                         $subtotal = $precioUnitario * $logData['cantidad'];
-                        
+
                         $proforma->logisticasMuestreo()->attach($logData['id'], [
                             'cantidad' => $logData['cantidad'],
                             'subtotal' => $subtotal,
@@ -376,7 +319,6 @@ class ProformaController extends Controller
                             'precio_unitario' => $precioUnitario,
                         ]);
                         $totalLogistica += $subtotal;
->>>>>>> ambientales
                     }
                 }
             }
@@ -399,11 +341,7 @@ class ProformaController extends Controller
             $proforma->saldo = $saldo;
             $proforma->save();
 
-<<<<<<< HEAD
-            // Registrar movimiento financiero
-=======
             // ===== REGISTRAR MOVIMIENTO FINANCIERO =====
->>>>>>> ambientales
             $this->registrarMovimiento(
                 $proforma,
                 $proforma->cliente_id,
@@ -487,11 +425,7 @@ class ProformaController extends Controller
 
         $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-<<<<<<< HEAD
-            'tipo' => 'required|in:AMBIENTAL,ANALISIS QUIMICO,INVESTIGACION',
-=======
             'tipo' => 'required|in:AMBIENTAL,ANALISIS_QUIMICO,INVESTIGACION',
->>>>>>> ambientales
             'tipo_muestra' => 'required|string|max:255',
             'unidad' => 'nullable|string|in:UIA,UAQ',
             'fecha_emision' => 'required|date',
@@ -519,18 +453,11 @@ class ProformaController extends Controller
             'logisticas.*.id' => 'required_with:logisticas|exists:logisticas_muestreo,id',
             'logisticas.*.cantidad' => 'required_with:logisticas|integer|min:1',
             'logisticas.*.descripcion' => 'nullable|string|max:500',
-<<<<<<< HEAD
-            'justificacion_modificacion' => 'nullable|string',
-        ]);
-
-        // ===== VALIDACIÓN DUPLICADOS =====
-=======
             'logisticas.*.precio_unitario' => 'nullable|numeric|min:0',
             'justificacion_modificacion' => 'nullable|string',
         ]);
 
         // ===== VALIDACIÓN ESTRICTA DE PARÁMETROS DUPLICADOS =====
->>>>>>> ambientales
         $parametroIds = collect($request->parametros)->pluck('id')->toArray();
         $parametrosUnicos = array_unique($parametroIds);
 
@@ -558,24 +485,16 @@ class ProformaController extends Controller
         try {
             DB::beginTransaction();
 
-<<<<<<< HEAD
-            $parametrosActuales = $proforma->parametros()->pluck('parametros.id')->toArray();
-            $parametrosNuevos = collect($request->parametros)->pluck('id')->toArray();
-=======
             // OBTENER PARÁMETROS ACTUALES ANTES DE MODIFICAR
             $parametrosActuales = $proforma->parametros()->pluck('parametros.id')->toArray();
             $parametrosNuevos = collect($request->parametros)->pluck('id')->toArray();
 
             // DETECTAR CAMBIOS EN PARÁMETROS
->>>>>>> ambientales
             $parametrosAgregados = array_diff($parametrosNuevos, $parametrosActuales);
             $parametrosEliminados = array_diff($parametrosActuales, $parametrosNuevos);
             $parametrosModificados = ! empty($parametrosAgregados) || ! empty($parametrosEliminados);
 
-<<<<<<< HEAD
-=======
             // Actualizar datos básicos
->>>>>>> ambientales
             $proforma->update([
                 'cliente_id' => $request->cliente_id,
                 'tipo' => $request->tipo,
@@ -583,11 +502,6 @@ class ProformaController extends Controller
                 'unidad' => $request->unidad,
                 'fecha_emision' => $request->fecha_emision,
                 'fecha_recepcion' => $request->fecha_recepcion,
-<<<<<<< HEAD
-                'fecha_inicio_ensayo' => $request->fecha_recepcion,
-                'fecha_conclusion_ensayo' => now()->addDays(15)->format('Y-m-d'),
-=======
->>>>>>> ambientales
                 'codigo_cliente' => $request->codigo_cliente,
                 'numero_recepcion' => $request->numero_recepcion,
                 'hora_recepcion' => now()->format('H:i'),
@@ -605,10 +519,7 @@ class ProformaController extends Controller
                 'observaciones' => $request->observaciones,
             ]);
 
-<<<<<<< HEAD
-=======
             // SI HUBO MODIFICACIÓN DE PARÁMETROS
->>>>>>> ambientales
             if ($parametrosModificados) {
                 if (empty($request->justificacion_modificacion)) {
                     throw new \Exception('Debe proporcionar una justificación para modificar los parámetros.');
@@ -620,10 +531,7 @@ class ProformaController extends Controller
                 $proforma->save();
             }
 
-<<<<<<< HEAD
-=======
             // Actualizar parámetros
->>>>>>> ambientales
             $parametrosSync = [];
             foreach ($request->parametros as $parametroData) {
                 if (isset($parametroData['id']) && isset($parametroData['cantidad'])) {
@@ -642,29 +550,16 @@ class ProformaController extends Controller
             $proforma->parametros()->sync($parametrosSync);
             $proforma->load('parametros');
 
-<<<<<<< HEAD
-            $totalLogistica = 0;
-            if ($request->has('logisticas') && $request->tipo === 'AMBIENTAL') {
-=======
             // Actualizar logística de muestreo
             $totalLogistica = 0;
             if ($request->has('logisticas')) {
->>>>>>> ambientales
                 $logisticasSync = [];
                 foreach ($request->logisticas as $logData) {
                     if (isset($logData['id']) && isset($logData['cantidad'])) {
                         $logistica = LogisticaMuestreo::find($logData['id']);
-<<<<<<< HEAD
-                        $logisticasSync[$logData['id']] = [
-                            'cantidad' => $logData['cantidad'],
-                            'subtotal' => $logistica->costo,
-                            'descripcion' => $logData['descripcion'] ?? null,
-                        ];
-                        $totalLogistica += $logistica->costo;
-=======
                         $precioUnitario = $logData['precio_unitario'] ?? $logistica->costo ?? 0;
                         $subtotal = $precioUnitario * $logData['cantidad'];
-                        
+
                         $logisticasSync[$logData['id']] = [
                             'cantidad' => $logData['cantidad'],
                             'subtotal' => $subtotal,
@@ -672,7 +567,6 @@ class ProformaController extends Controller
                             'precio_unitario' => $precioUnitario,
                         ];
                         $totalLogistica += $subtotal;
->>>>>>> ambientales
                     }
                 }
                 $proforma->logisticasMuestreo()->sync($logisticasSync);
@@ -680,10 +574,7 @@ class ProformaController extends Controller
                 $proforma->logisticasMuestreo()->detach();
             }
 
-<<<<<<< HEAD
-=======
             // Calcular totales
->>>>>>> ambientales
             $subtotal = 0;
             foreach ($proforma->parametros as $parametro) {
                 $subtotal += $parametro->pivot->cantidad_muestras * $parametro->pivot->precio_unitario;
@@ -733,21 +624,15 @@ class ProformaController extends Controller
                 ->with('error', "❌ No se puede eliminar una proforma en estado {$proforma->estado}");
         }
 
-<<<<<<< HEAD
-        if ($proforma->informe && !$this->esAdmin()) {
-            return redirect()->route('proformas.show', $proforma)
-                ->with('error', '❌ Solo el administrador puede eliminar proformas con informes asociados.');
-=======
         if ($proforma->informe) {
             return redirect()->route('proformas.show', $proforma)
                 ->with('error', '❌ No se puede eliminar una proforma que tiene un informe asociado.');
->>>>>>> ambientales
         }
 
         try {
             DB::beginTransaction();
 
-            $proforma->delete();
+            $proforma->delete(); // Soft delete (conserva la relación con parámetros)
 
             DB::commit();
 
@@ -805,17 +690,135 @@ class ProformaController extends Controller
     }
 
     /**
-     * Genera PDF de la proforma
-<<<<<<< HEAD
+     * Convierte un número entero (0 a 999,999,999) a su representación
+     * en letras, en español, en mayúsculas.
      *
-     * NOTA: El pie de página (dirección, teléfono y numeración) ya NO se dibuja
-     * aquí con page_script/canvas. Se maneja íntegramente por CSS dentro de la
-     * vista "proformas.pdf" usando "position: fixed" y los contadores
-     * counter(page)/counter(pages), que DomPDF soporta de forma nativa y
-     * repite automáticamente en cada página, sin depender del orden de
-     * ejecución de loadView/setPaper/getCanvas.
-=======
->>>>>>> ambientales
+     * Reemplaza la antigua tabla $mapaNumeros que solo cubría valores
+     * sueltos (0-9, decenas y centenas exactas) y no sabía combinar
+     * miles ni unidades intermedias — por eso números como 2107
+     * terminaban mostrándose tal cual en number_format() en vez de en
+     * letras.
+     *
+     * Usa "UN" (no "UNO") de forma consistente, ya que el resultado
+     * siempre antecede a "BOLIVIANOS" (apócope estándar en documentos
+     * legales/financieros: "VEINTIUN BOLIVIANOS", no "VEINTIUNO").
+     */
+    private function numeroALetras(int $numero): string
+    {
+        if ($numero === 0) {
+            return 'CERO';
+        }
+
+        if ($numero < 0) {
+            return 'MENOS '.$this->numeroALetras(abs($numero));
+        }
+
+        $unidades = [
+            '', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO',
+            'SEIS', 'SIETE', 'OCHO', 'NUEVE',
+        ];
+
+        $especiales10a19 = [
+            10 => 'DIEZ', 11 => 'ONCE', 12 => 'DOCE', 13 => 'TRECE', 14 => 'CATORCE',
+            15 => 'QUINCE', 16 => 'DIECISÉIS', 17 => 'DIECISIETE', 18 => 'DIECIOCHO', 19 => 'DIECINUEVE',
+        ];
+
+        $especiales20a29 = [
+            20 => 'VEINTE', 21 => 'VEINTIUN', 22 => 'VEINTIDÓS', 23 => 'VEINTITRÉS',
+            24 => 'VEINTICUATRO', 25 => 'VEINTICINCO', 26 => 'VEINTISÉIS',
+            27 => 'VEINTISIETE', 28 => 'VEINTIOCHO', 29 => 'VEINTINUEVE',
+        ];
+
+        $decenas = [
+            30 => 'TREINTA', 40 => 'CUARENTA', 50 => 'CINCUENTA',
+            60 => 'SESENTA', 70 => 'SETENTA', 80 => 'OCHENTA', 90 => 'NOVENTA',
+        ];
+
+        $centenas = [
+            200 => 'DOSCIENTOS', 300 => 'TRESCIENTOS', 400 => 'CUATROCIENTOS',
+            500 => 'QUINIENTOS', 600 => 'SEISCIENTOS', 700 => 'SETECIENTOS',
+            800 => 'OCHOCIENTOS', 900 => 'NOVECIENTOS',
+        ];
+
+        // Convierte un número de 0 a 999
+        $convertirGrupo = function (int $n) use ($unidades, $especiales10a19, $especiales20a29, $decenas, $centenas) {
+            if ($n === 0) {
+                return '';
+            }
+
+            $texto = '';
+            $c = intdiv($n, 100) * 100;
+            $resto = $n % 100;
+
+            if ($c > 0) {
+                if ($c === 100) {
+                    // CIEN exacto, pero CIENTO cuando le sigue algo (CIENTO SIETE, CIENTO UNO...)
+                    $texto .= ($resto === 0) ? 'CIEN' : 'CIENTO';
+                } else {
+                    $texto .= $centenas[$c];
+                }
+            }
+
+            if ($resto > 0) {
+                if ($texto !== '') {
+                    $texto .= ' ';
+                }
+
+                if ($resto < 10) {
+                    $texto .= $unidades[$resto];
+                } elseif ($resto < 20) {
+                    $texto .= $especiales10a19[$resto];
+                } elseif ($resto < 30) {
+                    $texto .= $especiales20a29[$resto];
+                } else {
+                    $d = intdiv($resto, 10) * 10;
+                    $u = $resto % 10;
+                    $texto .= $decenas[$d];
+                    if ($u > 0) {
+                        $texto .= ' Y '.$unidades[$u];
+                    }
+                }
+            }
+
+            return $texto;
+        };
+
+        $millones = intdiv($numero, 1000000);
+        $resto1 = $numero % 1000000;
+        $miles = intdiv($resto1, 1000);
+        $resto2 = $resto1 % 1000;
+
+        $partes = [];
+
+        if ($millones > 0) {
+            $partes[] = ($millones === 1)
+                ? 'UN MILLÓN'
+                : $convertirGrupo($millones).' MILLONES';
+        }
+
+        if ($miles > 0) {
+            $partes[] = ($miles === 1)
+                ? 'MIL'
+                : $convertirGrupo($miles).' MIL';
+        }
+
+        if ($resto2 > 0) {
+            $partes[] = $convertirGrupo($resto2);
+        }
+
+        return trim(implode(' ', $partes));
+    }
+
+    /**
+     * Genera PDF de la proforma - DESCARGA DIRECTA
+     *
+     * NOTA SOBRE EL NÚMERO TOTAL DE PÁGINAS:
+     * dompdf soporta counter(page) de forma nativa (número de página actual),
+     * pero counter(pages) (total de páginas) tiene un bug conocido y devuelve
+     * siempre 0. Por eso aquí se renderiza el PDF dos veces:
+     *   1) Un render "silencioso" solo para obtener el total real de páginas.
+     *   2) El render final, pasando ese total ya calculado a la vista como
+     *      la variable $totalPaginas, que el Blade usa en el footer.
      */
     public function pdf(Proforma $proforma)
     {
@@ -825,288 +828,55 @@ class ProformaController extends Controller
             $entero = intval($proforma->total);
             $decimal = round(($proforma->total - $entero) * 100);
 
-            $mapaNumeros = [
-                0 => 'CERO', 1 => 'UN', 2 => 'DOS', 3 => 'TRES', 4 => 'CUATRO',
-                5 => 'CINCO', 6 => 'SEIS', 7 => 'SIETE', 8 => 'OCHO', 9 => 'NUEVE',
-<<<<<<< HEAD
-                10 => 'DIEZ', 11 => 'ONCE', 12 => 'DOCE', 13 => 'TRECE', 14 => 'CATORCE',
-                15 => 'QUINCE', 16 => 'DIECISÉIS', 17 => 'DIECISIETE', 18 => 'DIECIOCHO',
-                19 => 'DIECINUEVE', 20 => 'VEINTE', 21 => 'VEINTIUN', 22 => 'VEINTIDOS',
-                23 => 'VEINTITRES', 24 => 'VEINTICUATRO', 25 => 'VEINTICINCO',
-                26 => 'VEINTISÉIS', 27 => 'VEINTISIETE', 28 => 'VEINTIOCHO', 29 => 'VEINTINUEVE',
-                30 => 'TREINTA', 40 => 'CUARENTA', 50 => 'CINCUENTA', 60 => 'SESENTA',
-                70 => 'SETENTA', 80 => 'OCHENTA', 90 => 'NOVENTA',
-                100 => 'CIEN', 200 => 'DOSCIENTOS', 300 => 'TRESCIENTOS', 400 => 'CUATROCIENTOS',
-                500 => 'QUINIENTOS', 600 => 'SEISCIENTOS', 700 => 'SETECIENTOS', 800 => 'OCHOCIENTOS',
-                900 => 'NOVECIENTOS',
-            ];
-
-            $numeroEnLetras = function ($numero) use (&$numeroEnLetras, $mapaNumeros) {
-                if ($numero <= 29) {
-                    return $mapaNumeros[$numero];
-                } elseif ($numero < 100) {
-                    $decena = (int) floor($numero / 10) * 10;
-                    $unidad = $numero % 10;
-                    if ($unidad == 0) {
-                        return $mapaNumeros[$decena];
-                    } else {
-                        return $mapaNumeros[$decena].' Y '.$mapaNumeros[$unidad];
-                    }
-                } elseif ($numero < 1000) {
-                    $centena = (int) floor($numero / 100) * 100;
-                    $resto = $numero % 100;
-                    if ($resto == 0) {
-                        return $mapaNumeros[$centena];
-                    } else {
-                        return $mapaNumeros[$centena].' '.$numeroEnLetras($resto);
-                    }
-                } elseif ($numero < 1000000) {
-                    $miles = (int) floor($numero / 1000);
-                    $resto = $numero % 1000;
-                    if ($resto == 0) {
-                        return $numeroEnLetras($miles).' MIL';
-                    } else {
-                        return $numeroEnLetras($miles).' MIL '.$numeroEnLetras($resto);
-                    }
-                }
-
-                return number_format($numero, 0);
-            };
-
-            $letras = $numeroEnLetras($entero);
-            $totalEnLetras = 'SON: '.strtoupper($letras).' '.str_pad($decimal, 2, '0', STR_PAD_LEFT).'/100 BOLIVIANOS';
-
-            $cfg = \App\Models\Documento::whereSlug($proforma->tipo === 'AMBIENTAL' ? 'solicitud-ensayo-ambiental' : 'solicitud-ensayo')->first() ?? new \App\Models\Documento;
-
-            $data = [
-                'proforma' => $proforma,
-                'totalEnLetras' => $totalEnLetras,
-                'cfg' => $cfg,
-            ];
-
-            // ===== NUMERACIÓN "Página X de Y" (enfoque de doble renderizado) =====
-            // Tanto counter(pages) en CSS, como $canvas->page_script(), como
-            // $canvas->page_text() con tokens {PAGE_NUM}/{PAGE_COUNT}
-            // demostraron ser poco confiables en este entorno (total
-            // incorrecto y/o no se repiten en todas las páginas).
-            //
-            // Este enfoque es determinístico y no depende de ningún
-            // mecanismo especial de DomPDF para el TOTAL:
-            //   1) Se renderiza el documento una vez, sin mostrarlo, solo
-            //      para contar cuántas páginas tiene realmente.
-            //   2) Se renderiza una segunda vez pasándole ese total ya
-            //      conocido como un dato normal de la vista ($totalPaginas).
-            // El número de página ACTUAL sí se obtiene con CSS
-            // "counter(page)", que en este entorno funciona correctamente
-            // (fue "counter(pages)", el total, el que fallaba).
-            $pdfConteo = Pdf::loadView('proformas.pdf', $data + ['totalPaginas' => 1]);
-            $pdfConteo->setPaper('A4', 'portrait');
-            $dompdfConteo = $pdfConteo->getDomPDF();
-            $dompdfConteo->render();
-            $totalPaginas = $dompdfConteo->getCanvas()->get_page_count();
-
-            $pdf = Pdf::loadView('proformas.pdf', $data + ['totalPaginas' => $totalPaginas]);
-            $pdf->setPaper('A4', 'portrait');
-=======
-                10 => 'DIEZ', 20 => 'VEINTE', 30 => 'TREINTA', 40 => 'CUARENTA',
-                50 => 'CINCUENTA', 60 => 'SESENTA', 70 => 'SETENTA', 80 => 'OCHENTA',
-                90 => 'NOVENTA', 100 => 'CIEN', 200 => 'DOSCIENTOS', 300 => 'TRESCIENTOS',
-                400 => 'CUATROCIENTOS', 500 => 'QUINIENTOS', 600 => 'SEISCIENTOS',
-                700 => 'SETECIENTOS', 800 => 'OCHOCIENTOS', 900 => 'NOVECIENTOS',
-            ];
-
-            $letras = $mapaNumeros[$entero] ?? number_format($entero, 0);
-            $totalEnLetras = 'SON: '.strtoupper($letras).' '.str_pad($decimal, 2, '0', STR_PAD_LEFT).'/100 BOLIVIANOS';
+            $totalEnLetras = 'SON: '.$this->numeroALetras($entero).' '.str_pad($decimal, 2, '0', STR_PAD_LEFT).'/100 BOLIVIANOS';
 
             $data = [
                 'proforma' => $proforma,
                 'totalEnLetras' => $totalEnLetras,
             ];
 
-            $pdf = Pdf::loadView('proformas.pdf', $data);
-            $pdf->setPaper('letter', 'portrait');
->>>>>>> ambientales
+            // 1) Render "silencioso" solo para calcular el total real de páginas
+            $pdfConteo = Pdf::loadView('proformas.pdf', $data);
+            $pdfConteo->setPaper('a4', 'portrait');
+            $pdfConteo->render();
+            $totalPaginas = $pdfConteo->getDomPDF()->getCanvas()->get_page_count();
 
-            return $pdf->stream("proforma-{$proforma->codigo}.pdf");
+            // 2) Render final, ahora con el total de páginas ya incluido
+            $pdf = Pdf::loadView('proformas.pdf', array_merge($data, [
+                'totalPaginas' => $totalPaginas,
+            ]));
+            $pdf->setPaper('a4', 'portrait');
+
+            return $pdf->download("proforma-{$proforma->codigo}.pdf");
 
         } catch (\Exception $e) {
             Log::error('Error al generar PDF: '.$e->getMessage());
-
-<<<<<<< HEAD
-            return back()->with('error', '❌ Error al generar PDF: '.$e->getMessage());
-=======
             return back()->with('error', '❌ Error al generar PDF');
->>>>>>> ambientales
         }
     }
 
     /**
-     * GENERAR PDF2- CADENA DE CUSTODIA
-<<<<<<< HEAD
-     *
-     * NOTA: igual que en pdf(), el pie de página se maneja por CSS
-     * (position: fixed + counter(page)/counter(pages)) dentro de la vista
-     * "proformas.cadena_custodia". Si aún no lo tiene, agrega el mismo
-     * bloque .pie-pagina que se usó en "proformas.pdf".
-=======
->>>>>>> ambientales
+     * GENERAR PDF - CADENA DE CUSTODIA (DESCARGA DIRECTA)
      */
     public function pdfCadenaCustodia(Proforma $proforma)
     {
         try {
             $proforma->load(['cliente', 'parametros', 'usuarioModificacion']);
 
-            $entero = intval($proforma->total);
-            $decimal = round(($proforma->total - $entero) * 100);
-
-            $mapaNumeros = [
-                0 => 'CERO', 1 => 'UN', 2 => 'DOS', 3 => 'TRES', 4 => 'CUATRO',
-                5 => 'CINCO', 6 => 'SEIS', 7 => 'SIETE', 8 => 'OCHO', 9 => 'NUEVE',
-                10 => 'DIEZ', 11 => 'ONCE', 12 => 'DOCE', 13 => 'TRECE', 14 => 'CATORCE',
-                15 => 'QUINCE', 16 => 'DIECISÉIS', 17 => 'DIECISIETE', 18 => 'DIECIOCHO',
-                19 => 'DIECINUEVE', 20 => 'VEINTE', 30 => 'TREINTA', 40 => 'CUARENTA',
-                50 => 'CINCUENTA', 60 => 'SESENTA', 70 => 'SETENTA', 80 => 'OCHENTA',
-                90 => 'NOVENTA', 100 => 'CIEN', 200 => 'DOSCIENTOS', 300 => 'TRESCIENTOS',
-                400 => 'CUATROCIENTOS', 500 => 'QUINIENTOS', 600 => 'SEISCIENTOS',
-                700 => 'SETECIENTOS', 800 => 'OCHOCIENTOS', 900 => 'NOVECIENTOS',
-            ];
-
-            $numeroEnLetras = function ($numero) use (&$numeroEnLetras, $mapaNumeros) {
-                if ($numero <= 20) {
-                    return $mapaNumeros[$numero];
-                } elseif ($numero < 100) {
-<<<<<<< HEAD
-                    $decena = (int) floor($numero / 10) * 10;
-=======
-                    $decena = floor($numero / 10) * 10;
->>>>>>> ambientales
-                    $unidad = $numero % 10;
-                    if ($unidad == 0) {
-                        return $mapaNumeros[$decena];
-                    } else {
-                        return $mapaNumeros[$decena].' Y '.$mapaNumeros[$unidad];
-                    }
-                } elseif ($numero < 1000) {
-<<<<<<< HEAD
-                    $centena = (int) floor($numero / 100) * 100;
-=======
-                    $centena = floor($numero / 100) * 100;
->>>>>>> ambientales
-                    $resto = $numero % 100;
-                    if ($resto == 0) {
-                        return $mapaNumeros[$centena];
-                    } else {
-                        return $mapaNumeros[$centena].' '.$numeroEnLetras($resto);
-                    }
-                }
-
-                return number_format($numero, 0);
-            };
-
-            $letras = $numeroEnLetras($entero);
-            $totalEnLetras = 'SON: '.strtoupper($letras).' '.str_pad($decimal, 2, '0', STR_PAD_LEFT).'/100 BOLIVIANOS';
-
-            $parametrosAgrupados = $this->agruparParametrosCadena($proforma->parametros ?? collect());
-
-            $muestraData = (object) [
-                'tipo_muestra' => $proforma->tipo_muestra ?? 'No especificado',
-                'identificacion' => $proforma->codigo ?? 'M-001',
-                'codigo' => $proforma->codigo,
-                'codigo_lab' => 'LAB-'.str_pad($proforma->id ?? '1', 4, '0', STR_PAD_LEFT),
-                'campo_id' => $proforma->procedencia ?? 'Campo',
-                'fecha_muestreo' => $proforma->fecha_recepcion,
-                'fecha_recepcion' => $proforma->fecha_emision,
-                'hora_muestreo' => null,
-                'punto_muestreo' => $proforma->coordenadas ?? 'No especificado',
-                'muestreado_por' => $proforma->muestreado_por ?? 'No especificado',
-                'observaciones' => $proforma->observaciones,
-                'procedencia' => $proforma->procedencia,
-                'coordenadas' => $proforma->coordenadas,
-                'persona_contacto' => $proforma->persona_contacto,
-                'telefono_contacto' => $proforma->telefono_contacto,
-            ];
-
             $data = [
                 'proforma' => $proforma,
-                'totalEnLetras' => $totalEnLetras,
-                'fechaActual' => now()->format('d/m/Y H:i'),
-                'numeroContrato' => $proforma->codigo ?? 'S/N',
-                'fechaContrato' => $proforma->fecha_emision?->format('Y-m-d') ?? now()->format('Y-m-d'),
-                'fechaRecepcion' => $proforma->fecha_recepcion?->format('Y-m-d') ?? 'No registrada',
-                'parametrosAgrupados' => $parametrosAgrupados,
-                'muestra' => $muestraData,
-                'muestreadoPorOpciones' => $this->muestreadoPorOpciones,
+                'observacion' => $proforma->observaciones ?? '',
             ];
 
-<<<<<<< HEAD
-            // ===== NUMERACIÓN "Página X de Y" (mismo mecanismo que en pdf()) =====
-            $pdfConteo = Pdf::loadView('proformas.cadena_custodia', $data + ['totalPaginas' => 1]);
-            $pdfConteo->setPaper('letter', 'landscape');
-            $dompdfConteo = $pdfConteo->getDomPDF();
-            $dompdfConteo->render();
-            $totalPaginas = $dompdfConteo->getCanvas()->get_page_count();
-
-            $pdf = Pdf::loadView('proformas.cadena_custodia', $data + ['totalPaginas' => $totalPaginas]);
-            $pdf->setPaper('letter', 'landscape');
-
-            return $pdf->stream("cadena-custodia-{$proforma->codigo}.pdf");
-=======
             $pdf = Pdf::loadView('proformas.cadena_custodia', $data);
             $pdf->setPaper('a4', 'landscape');
 
             return $pdf->download("cadena-de-custodia-{$proforma->codigo}.pdf");
->>>>>>> ambientales
 
         } catch (\Exception $e) {
             Log::error('Error al generar Cadena de Custodia PDF: '.$e->getMessage());
-
             return back()->with('error', '❌ Error al generar Cadena de Custodia: '.$e->getMessage());
         }
-    }
-
-<<<<<<< HEAD
-=======
-    /**
-     * Agrupa los parámetros según las categorías de la tabla para Cadena de Custodia
-     */
->>>>>>> ambientales
-    private function agruparParametrosCadena($parametros)
-    {
-        $categorias = [
-            'volumetria' => [],
-            'ionometria' => [],
-            'uv_visible' => [],
-            'gravimetria' => [],
-            'potenciometria' => [],
-            'espectrofotometria' => [],
-            'cromatografia' => [],
-            'microbiologia' => [],
-            'otros' => [],
-        ];
-
-        $metodos = [
-            'Volumetria' => 'volumetria',
-            'Ionometria' => 'ionometria',
-            'UV - Visible' => 'uv_visible',
-            'Gravimetria' => 'gravimetria',
-            'Potenciometria' => 'potenciometria',
-            'Espectrofotometria' => 'espectrofotometria',
-            'Cromatografia' => 'cromatografia',
-            'Microbiologia' => 'microbiologia',
-        ];
-
-        foreach ($parametros as $parametro) {
-            $metodo = $parametro->metodo ?? $parametro->metodo_analitico ?? 'Otros';
-            $categoriaClave = $metodos[$metodo] ?? 'otros';
-            $categorias[$categoriaClave][] = [
-                'nombre' => $parametro->nombre ?? $parametro->parametro ?? 'N/A',
-                'unidad' => $parametro->unidad ?? '',
-                'metodo' => $metodo,
-                'precio' => $parametro->precio_unitario ?? 0,
-            ];
-        }
-
-        return $categorias;
     }
 
     /**
@@ -1119,6 +889,7 @@ class ProformaController extends Controller
                 ->with('error', '⛔ Acceso denegado. Solo el administrador puede actualizar proformas.');
         }
 
+        // Permitir solo en estados ENVIADA y APROBADA
         if (! in_array($proforma->estado, ['ENVIADA', 'APROBADA'])) {
             return redirect()->route('proformas.show', $proforma)
                 ->with('error', "❌ Solo se puede actualizar el adelanto en proformas ENVIADA o APROBADA. Estado actual: {$proforma->estado}");
@@ -1133,12 +904,19 @@ class ProformaController extends Controller
 
             $adelantoAnterior = $proforma->adelanto;
             $nuevoAdelanto = $request->adelanto;
+
+            // Calcular el monto pagado (si aumentó el adelanto)
             $montoPagado = $nuevoAdelanto - $adelantoAnterior;
 
+            // Actualizar adelanto
             $proforma->adelanto = $nuevoAdelanto;
+
+            // Recalcular saldo
             $proforma->saldo = $proforma->total - $proforma->adelanto;
+
             $proforma->save();
 
+            // ===== REGISTRAR MOVIMIENTO FINANCIERO SI HUBO PAGO =====
             if ($montoPagado > 0) {
                 $this->registrarMovimiento(
                     $proforma,
@@ -1150,11 +928,12 @@ class ProformaController extends Controller
                     "Nuevo adelanto: Bs. {$nuevoAdelanto} (anterior: Bs. {$adelantoAnterior})"
                 );
             } elseif ($montoPagado < 0) {
+                // Si se redujo el adelanto (reembolso), registrar como ajuste
                 $this->registrarMovimiento(
                     $proforma,
                     $proforma->cliente_id,
                     'AJUSTE',
-                    $montoPagado,
+                    $montoPagado, // Valor negativo
                     "Reducción de adelanto para proforma {$proforma->codigo}",
                     $proforma->codigo,
                     "Nuevo adelanto: Bs. {$nuevoAdelanto} (anterior: Bs. {$adelantoAnterior})"

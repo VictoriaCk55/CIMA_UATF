@@ -460,29 +460,15 @@ class InformeController extends Controller
     }
 
     /**
-     * Generar PDF del informe
-<<<<<<< HEAD
+     * Generar PDF del informe - DESCARGA DIRECTA
      *
-     * NOTA: El pie de página ya NO se dibuja con getCanvas() después de
-     * $pdf->output(), ni con un <script type="text/php"> embebido, ni
-     * envolviendo todo en $canvas->page_script(), ni con
-     * $canvas->page_text() y tokens {PAGE_NUM}/{PAGE_COUNT}. Ninguno de
-     * esos mecanismos calculaba/repetía el total de páginas de forma
-     * confiable en este entorno.
-     *
-     * Enfoque actual (determinístico, no depende de mecanismos internos
-     * de DomPDF para el total de páginas):
-     *  - La dirección/línea (contenido fijo) se dibuja con CSS
-     *    "position: fixed" en la vista "informes.pdf.informe" — repite
-     *    correctamente en todas las páginas.
-     *  - El número de página ACTUAL se obtiene con CSS "counter(page)"
-     *    (esto sí funciona bien en este entorno).
-     *  - El TOTAL de páginas se calcula aquí, en PHP, renderizando el
-     *    documento una primera vez solo para contarlas, y luego se
-     *    renderiza una segunda vez pasándole ese total ya conocido como
-     *    variable normal de la vista ($totalPaginas).
-=======
->>>>>>> ambientales
+     * NOTA SOBRE EL NÚMERO TOTAL DE PÁGINAS:
+     * dompdf soporta counter(page) de forma nativa (número de página actual),
+     * pero counter(pages) (total de páginas) tiene un bug conocido y devuelve
+     * siempre 0. Por eso aquí se renderiza el PDF dos veces:
+     *   1) Un render "silencioso" solo para obtener el total real de páginas.
+     *   2) El render final, pasando ese total ya calculado a la vista como
+     *      la variable $totalPaginas, que el Blade usa en el footer.
      */
     public function pdf(Informe $informe)
     {
@@ -496,31 +482,24 @@ class InformeController extends Controller
                 'entregador',
             ]);
 
-<<<<<<< HEAD
             $data = compact('informe');
 
-            // 1) Renderizado de conteo (no se muestra al usuario)
-            $pdfConteo = Pdf::loadView('informes.pdf.informe', $data + ['totalPaginas' => 1]);
-            $pdfConteo->setPaper('A4', 'portrait');
-            $dompdfConteo = $pdfConteo->getDomPDF();
-            $dompdfConteo->render();
-            $totalPaginas = $dompdfConteo->getCanvas()->get_page_count();
+            // 1) Render "silencioso" solo para calcular el total real de páginas
+            $pdfConteo = Pdf::loadView('informes.pdf.informe', $data);
+            $pdfConteo->setPaper('a4', 'portrait');
+            $pdfConteo->render();
+            $totalPaginas = $pdfConteo->getDomPDF()->getCanvas()->get_page_count();
 
-            // 2) Renderizado definitivo, ya con el total real
-            $pdf = Pdf::loadView('informes.pdf.informe', $data + ['totalPaginas' => $totalPaginas]);
-            $pdf->setPaper('A4', 'portrait');
-
-            // IMPORTANTE: usar stream() para abrir en el navegador
-            return $pdf->stream('informe-'.$informe->codigo.'.pdf');
-=======
-            $pdf = Pdf::loadView('informes.pdf.informe', compact('informe'));
+            // 2) Render final, ahora con el total de páginas ya incluido
+            $pdf = Pdf::loadView('informes.pdf.informe', array_merge($data, [
+                'totalPaginas' => $totalPaginas,
+            ]));
+            $pdf->setPaper('a4', 'portrait');
 
             return $pdf->download('informe-'.$informe->codigo.'.pdf');
->>>>>>> ambientales
 
         } catch (\Exception $e) {
             Log::error('Error al generar PDF de informe: '.$e->getMessage());
-
             return back()->with('error', '❌ Error al generar PDF: '.$e->getMessage());
         }
     }
@@ -597,8 +576,4 @@ class InformeController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> ambientales

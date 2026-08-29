@@ -18,6 +18,18 @@
 .doc-nav i { width: 20px; text-align: center; color: #94a3b8; }
 .doc-nav li.active i { color: #ffc107; }
 
+/* Badge de categoría */
+.doc-badge {
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 8px;
+}
+.doc-badge.proforma { background: #fff3cd; color: #856404; }
+.doc-badge.resultados { background: #cce5ff; color: #004085; }
+.doc-badge.informes { background: #d4edda; color: #155724; }
+.doc-badge.custodia { background: #f8d7da; color: #721c24; }
+
 @media (max-width: 991.98px) {
     .config-layout { flex-direction: column; }
     .config-sidebar { width: 100%; min-width: auto; position: static; }
@@ -51,11 +63,30 @@
             <div class="card-body p-0">
                 <ul class="doc-nav">
                     @foreach($documentos as $doc)
+                        @php
+                            $categoria = match($doc->slug) {
+                                'solicitud-ensayo', 'solicitud-ensayo-ambiental' => 'proforma',
+                                'informe-resultados' => 'resultados',
+                                'informe-final' => 'informes',
+                                'cadena-custodia' => 'custodia',
+                                default => 'otros'
+                            };
+                            $categoriaLabel = match($categoria) {
+                                'proforma' => '📋 Proforma',
+                                'resultados' => '📊 Resultados',
+                                'informes' => '📄 Informes',
+                                'custodia' => '🔗 Custodia',
+                                default => '📁 Otros'
+                            };
+                        @endphp
                         <li class="{{ $doc->id === $documento->id ? 'active' : '' }}">
                             <a href="{{ route('configuraciones.index', $doc->slug) }}">
                                 <i class="fas fa-file-alt"></i>
                                 <div>
-                                    <div>{{ $doc->nombre }}</div>
+                                    <div>
+                                        {{ $doc->nombre }}
+                                        <span class="doc-badge {{ $categoria }}">{{ $categoriaLabel }}</span>
+                                    </div>
                                     @if($doc->codigo_documento)
                                         <div class="doc-code">{{ $doc->codigo_documento }} / V{{ $doc->version ?? '?' }}</div>
                                     @endif
@@ -73,9 +104,9 @@
                 @csrf
                 @method('PUT')
                 @php
-                    $esProforma = in_array($documento->slug, ['solicitud-ensayo', 'solicitud-ensayo-ambiental']);
-                    $conExtras = $esProforma || in_array($documento->slug, ['informe-final', 'informe-resultados']);
-                    $conCabecera = $documento->slug === 'informe-resultados';
+                    $esProforma = $documento->isProforma();
+                    $conExtras = $documento->hasExtras();
+                    $conCabecera = $documento->hasCabecera();
                 @endphp
 
                 <div class="row g-4">
@@ -107,8 +138,8 @@
                         </div>
                     </div>
 
+                    {{-- CABECERA (solo informe-resultados) --}}
                     @if($conCabecera)
-                    {{-- CABECERA --}}
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
@@ -142,8 +173,8 @@
                     </div>
                     @endif
 
-                    @if($conExtras)
                     {{-- PIE DE PÁGINA --}}
+                    @if($conExtras)
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
@@ -237,6 +268,43 @@
                         </div>
                     </div>
                     @endif
+
+                    {{-- LOGO Y FIRMA --}}
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-image me-2"></i> Logo y Firma
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Logo de la institución</label>
+                                        @if($documento->config('logo_path'))
+                                            <div class="mb-2">
+                                                <img src="{{ asset('storage/' . $documento->config('logo_path')) }}" 
+                                                     alt="Logo" 
+                                                     style="max-height: 80px; border: 1px solid #ddd; padding: 5px; border-radius: 4px;">
+                                            </div>
+                                        @endif
+                                        <input type="file" name="logo" class="form-control" accept="image/*">
+                                        <small class="text-muted">Formatos: JPG, JPEG, PNG. Máximo 2MB</small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Firma</label>
+                                        @if($documento->config('firma_path'))
+                                            <div class="mb-2">
+                                                <img src="{{ asset('storage/' . $documento->config('firma_path')) }}" 
+                                                     alt="Firma" 
+                                                     style="max-height: 60px; border: 1px solid #ddd; padding: 5px; border-radius: 4px;">
+                                            </div>
+                                        @endif
+                                        <input type="file" name="firma" class="form-control" accept="image/*">
+                                        <small class="text-muted">Formatos: JPG, JPEG, PNG. Máximo 2MB</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     {{-- VISTA PREVIA --}}
                     <div class="col-12">
@@ -339,7 +407,7 @@
                         </div>
                     </div>
 
-                    {{-- BOTONES EDICIÓN / VISTA PREVIA / GUARDAR --}}
+                    {{-- BOTONES --}}
                     @can('editar configuraciones')
                     <div class="col-12 text-end mb-4">
                         <button type="button" id="btnEditar" class="btn btn-outline-primary btn-lg px-4 me-2">

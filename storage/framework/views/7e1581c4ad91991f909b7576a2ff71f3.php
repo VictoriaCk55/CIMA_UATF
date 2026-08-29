@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>PROFORMA {{ $proforma->codigo }}</title>
+    <title>PROFORMA <?php echo e($proforma->codigo); ?></title>
 
     <style>
         /* ====================================================== */
@@ -159,7 +159,7 @@
         /* ====================================================== */
         /* COLORES POR TIPO DE PROFORMA */
         /* ====================================================== */
-        @if($proforma->tipo === 'AMBIENTAL')
+        <?php if($proforma->tipo === 'AMBIENTAL'): ?>
             .section-title {
                 background-color: #B0E68E;
                 color: #1a3a1a;
@@ -194,7 +194,7 @@
                 background-color: #e8f5e0;
                 font-weight: bold;
             }
-        @else
+        <?php else: ?>
             .section-title {
                 background-color: #2c5282;
                 color: white;
@@ -229,7 +229,7 @@
                 background-color: #f0f4f8;
                 font-weight: bold;
             }
-        @endif
+        <?php endif; ?>
 
         .data-table {
             width: 100%;
@@ -494,7 +494,7 @@
 </head>
 <body>
 
-    @php
+    <?php
         $docSlug = match($proforma->tipo) {
             'AMBIENTAL' => 'solicitud-ensayo-ambiental',
             'ANALISIS_QUIMICO', 'INVESTIGACION' => 'solicitud-ensayo',
@@ -503,7 +503,7 @@
         $cfg = \App\Models\Documento::whereSlug($docSlug)->first() ?? new \App\Models\Documento;
         $global = \App\Models\Configuracion::obtener();
         $logoPath = $cfg->config('logo_path') ?? $global->logo_path;
-    @endphp
+    ?>
 
     <!-- ====================================================== -->
     <!-- HEADER -->
@@ -513,47 +513,52 @@
             <tr>
                 <td class="logo-cell">
                     <div class="logo-container">
-                        @if($logoPath && file_exists(storage_path('app/public/' . $logoPath)))
-                            <img src="{{ storage_path('app/public/' . $logoPath) }}" alt="Logo">
-                        @elseif(file_exists(public_path('images/logo-cima.jpg')))
-                            <img src="{{ public_path('images/logo-cima.jpg') }}" alt="Logo CIMA">
-                        @elseif(file_exists(public_path('images/logo-cima.png')))
-                            <img src="{{ public_path('images/logo-cima.png') }}" alt="Logo CIMA">
-                        @else
+                        <?php if($logoPath && file_exists(storage_path('app/public/' . $logoPath))): ?>
+                            <img src="<?php echo e(storage_path('app/public/' . $logoPath)); ?>" alt="Logo">
+                        <?php elseif(file_exists(public_path('images/logo-cima.jpg'))): ?>
+                            <img src="<?php echo e(public_path('images/logo-cima.jpg')); ?>" alt="Logo CIMA">
+                        <?php elseif(file_exists(public_path('images/logo-cima.png'))): ?>
+                            <img src="<?php echo e(public_path('images/logo-cima.png')); ?>" alt="Logo CIMA">
+                        <?php else: ?>
                             <div style="width: 65px; height: 65px; background: #2c5282; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold;">
-                                {{ $cfg->config('institucion_sigla', 'CIMA') }}
+                                <?php echo e($cfg->config('institucion_sigla', 'CIMA')); ?>
+
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </td>
                 <td class="center-cell">
                     <div class="titulo">PROFORMA DE SERVICIOS</div>
-                    <div class="subtitulo">{{ strtoupper($cfg->config('laboratorio_nombre') ?? $global->laboratorio_nombre ?? 'CENTRO DE INVESTIGACIÓN MINERO AMBIENTAL') }}</div>
+                    <div class="subtitulo"><?php echo e(strtoupper($cfg->config('laboratorio_nombre') ?? $global->laboratorio_nombre ?? 'CENTRO DE INVESTIGACIÓN MINERO AMBIENTAL')); ?></div>
                     <div class="institucion">
-                        @if($proforma->unidad == 'UIA')
+                        <?php if($proforma->unidad == 'UIA'): ?>
                             Unidad de Investigación Ambiental "UIA"
-                        @elseif($proforma->unidad == 'UAQ')
+                        <?php elseif($proforma->unidad == 'UAQ'): ?>
                             Unidad de Análisis Químico "UAQ"
-                        @else
-                            {{ $cfg->config('footer_texto') }}
-                        @endif
+                        <?php else: ?>
+                            <?php echo e($cfg->config('footer_texto')); ?>
+
+                        <?php endif; ?>
                     </div>
                     <div class="sigla">
-                        {{ $cfg->config('institucion_sigla') ?? $global->institucion_sigla ?? 'CIMA-UATF' }}
+                        <?php echo e($cfg->config('institucion_sigla') ?? $global->institucion_sigla ?? 'CIMA-UATF'); ?>
+
                     </div>
-                    @if($proforma->unidad)
+                    <?php if($proforma->unidad): ?>
                         <div style="font-size: 8px; font-weight: bold; color: #2c5282; margin-top: 2px;">
-                            {{ $proforma->unidad == 'UIA' ? 'Unidad de Investigación Ambiental' : 'Unidad de Análisis Químico' }}
+                            <?php echo e($proforma->unidad == 'UIA' ? 'Unidad de Investigación Ambiental' : 'Unidad de Análisis Químico'); ?>
+
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </td>
                 <td class="codigo-cell">
                     <div class="codigo-box">
-                        <div><span class="label">{{ $cfg->codigo_documento ?? 'PO01-FR02' }}</span></div>
-                        <div><span class="label">VERSIÓN:</span> {{ $cfg->version ?? '06' }}</div>
-                        <div><span class="label">FECHA:</span> {{ $cfg->fecha_documento ?? $proforma->fecha_emision->format('Y-m-d') }}</div>
+                        <div><span class="label"><?php echo e($cfg->codigo_documento ?? 'PO01-FR02'); ?></span></div>
+                        <div><span class="label">VERSIÓN:</span> <?php echo e($cfg->version ?? '06'); ?></div>
+                        <div><span class="label">FECHA:</span> <?php echo e($cfg->fecha_documento ?? $proforma->fecha_emision->format('Y-m-d')); ?></div>
                         <div class="codigo-proforma">
-                            <span class="label">CÓDIGO:</span> {{ $proforma->codigo }}
+                            <span class="label">CÓDIGO:</span> <?php echo e($proforma->codigo); ?>
+
                         </div>
                     </div>
                 </td>
@@ -568,14 +573,16 @@
     <div class="page-content">
 
         <!-- DATOS DE RECEPCIÓN -->
-        @php $numRecepcion = explode('-', $proforma->codigo)[2] ?? $proforma->numero_recepcion; @endphp
+        <?php $numRecepcion = explode('-', $proforma->codigo)[2] ?? $proforma->numero_recepcion; ?>
         <table class="data-table" style="margin-bottom: 4px;">
             <tr>
                 <td style="width: 50%; text-align: left; border: 1px solid #999; padding: 3px 5px;">
-                    <strong>Fecha de recepción:</strong> {{ $proforma->fecha_recepcion->format('d/m/Y') }}
+                    <strong>Fecha de recepción:</strong> <?php echo e($proforma->fecha_recepcion->format('d/m/Y')); ?>
+
                 </td>
                 <td style="width: 50%; text-align: right; border: 1px solid #999; padding: 3px 5px;">
-                    <strong>Nro. Recepción:</strong> {{ $numRecepcion }}
+                    <strong>Nro. Recepción:</strong> <?php echo e($numRecepcion); ?>
+
                 </td>
             </tr>
         </table>
@@ -588,19 +595,19 @@
             <table class="data-table">
                 <tr>
                     <td class="label" style="width: 25%;">Nombre/Razón Social:</td>
-                    <td style="width: 75%;" colspan="3">{{ $proforma->cliente->razon_social }}</td>
+                    <td style="width: 75%;" colspan="3"><?php echo e($proforma->cliente->razon_social); ?></td>
                 </tr>
                 <tr>
                     <td class="label">Persona en contacto:</td>
-                    <td style="width: 25%;">{{ $proforma->persona_contacto ?? $proforma->cliente->persona_contacto }}</td>
+                    <td style="width: 25%;"><?php echo e($proforma->persona_contacto ?? $proforma->cliente->persona_contacto); ?></td>
                     <td class="label" style="width: 20%;">Teléfono/Celular:</td>
-                    <td style="width: 30%;">{{ $proforma->telefono_contacto ?? $proforma->cliente->telefono ?? 'N/A' }}</td>
+                    <td style="width: 30%;"><?php echo e($proforma->telefono_contacto ?? $proforma->cliente->telefono ?? 'N/A'); ?></td>
                 </tr>
                 <tr>
                     <td class="label">NIT:</td>
-                    <td>{{ $proforma->cliente->nit ?? 'N/A' }}</td>
+                    <td><?php echo e($proforma->cliente->nit ?? 'N/A'); ?></td>
                     <td class="label">Dirección:</td>
-                    <td>{{ $proforma->cliente->direccion ?? 'N/A' }}</td>
+                    <td><?php echo e($proforma->cliente->direccion ?? 'N/A'); ?></td>
                 </tr>
             </table>
         </div>
@@ -613,22 +620,22 @@
             <table class="data-table">
                 <tr>
                     <td class="label" style="width: 25%;">Tipo de muestra:</td>
-                    <td style="width: 25%;">{{ $proforma->tipo_muestra }}</td>
+                    <td style="width: 25%;"><?php echo e($proforma->tipo_muestra); ?></td>
                     <td class="label" style="width: 25%;">Muestreado por:</td>
-                    <td style="width: 25%;">{{ $proforma->muestreado_por ?? 'N/A' }}</td>
+                    <td style="width: 25%;"><?php echo e($proforma->muestreado_por ?? 'N/A'); ?></td>
                 </tr>
                 <tr>
                     <td class="label">Fecha de muestreo:</td>
-                    <td>{{ $proforma->fecha_emision->format('d/m/Y') }}</td>
+                    <td><?php echo e($proforma->fecha_emision->format('d/m/Y')); ?></td>
                     <td class="label">Hora recepción:</td>
-                    <td>{{ $proforma->hora_recepcion ?? 'N/A' }}</td>
+                    <td><?php echo e($proforma->hora_recepcion ?? 'N/A'); ?></td>
                 </tr>
                 <tr>
                     <td class="label">Procedencia:</td>
-                    <td>{{ $proforma->procedencia ?? 'N/A' }}</td>
+                    <td><?php echo e($proforma->procedencia ?? 'N/A'); ?></td>
                     <td class="label">Coordenadas:</td>
                     <td>
-                        @php
+                        <?php
                             $coords = [];
                             if ($proforma->punto_cardinal_1 && $proforma->valor_cardinal_1) {
                                 $coords[] = $proforma->punto_cardinal_1 . ': ' . $proforma->valor_cardinal_1;
@@ -636,13 +643,14 @@
                             if ($proforma->punto_cardinal_2 && $proforma->valor_cardinal_2) {
                                 $coords[] = $proforma->punto_cardinal_2 . ': ' . $proforma->valor_cardinal_2;
                             }
-                        @endphp
-                        {{ !empty($coords) ? implode(' | ', $coords) : 'N/A' }}
+                        ?>
+                        <?php echo e(!empty($coords) ? implode(' | ', $coords) : 'N/A'); ?>
+
                     </td>
                 </tr>
                 <tr>
                     <td class="label">Código de Cliente:</td>
-                    <td colspan="3">{{ implode(', ', $proforma->codigo_cliente ?? []) ?: 'N/A' }}</td>
+                    <td colspan="3"><?php echo e(implode(', ', $proforma->codigo_cliente ?? []) ?: 'N/A'); ?></td>
                 </tr>
             </table>
         </div>
@@ -651,7 +659,7 @@
         <!-- SECCIÓN 3: PARÁMETROS A ANALIZAR (SIEMPRE VISIBLE)    -->
         <!-- ====================================================== -->
         <div class="mb-10">
-            <div class="section-title">3.- PARÁMETROS A ANALIZAR - MUESTRAS DE {{ strtoupper($proforma->tipo_muestra) }}</div>
+            <div class="section-title">3.- PARÁMETROS A ANALIZAR - MUESTRAS DE <?php echo e(strtoupper($proforma->tipo_muestra)); ?></div>
             <table class="params-table">
                 <thead>
                     <tr>
@@ -664,9 +672,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if($proforma->parametros->count() > 0)
-                        @foreach($proforma->parametros as $index => $parametro)
-                        @php
+                    <?php if($proforma->parametros->count() > 0): ?>
+                        <?php $__currentLoopData = $proforma->parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $parametro): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $nombreParam = $parametro->nombre;
                             if ($parametro->categoria === 'RUIDO') {
                                 $nombreParam = 'RUIDO';
@@ -676,21 +684,21 @@
                             $metodo = $proforma->tipo === 'AMBIENTAL' && $parametro->categoria === 'GASES'
                                 ? ($parametro->pivot->metodo ?? '')
                                 : ($proforma->tipo === 'AMBIENTAL' ? ($parametro->metodo ?? '') : ($parametro->tecnica ?: ($parametro->codigo_poe ?? '')));
-                        @endphp
+                        ?>
                         <tr>
-                            <td class="align-center">{{ $index + 1 }}</td>
-                            <td class="align-left">{{ $nombreParam }}</td>
-                            <td class="align-center">{{ $metodo ?: '---' }}</td>
-                            <td class="align-center">{{ $parametro->pivot->cantidad_muestras }}</td>
-                            <td class="align-right">Bs. {{ number_format($parametro->pivot->precio_unitario, 2) }}</td>
-                            <td class="align-right">Bs. {{ number_format($parametro->pivot->precio_unitario * $parametro->pivot->cantidad_muestras, 2) }}</td>
+                            <td class="align-center"><?php echo e($index + 1); ?></td>
+                            <td class="align-left"><?php echo e($nombreParam); ?></td>
+                            <td class="align-center"><?php echo e($metodo ?: '---'); ?></td>
+                            <td class="align-center"><?php echo e($parametro->pivot->cantidad_muestras); ?></td>
+                            <td class="align-right">Bs. <?php echo e(number_format($parametro->pivot->precio_unitario, 2)); ?></td>
+                            <td class="align-right">Bs. <?php echo e(number_format($parametro->pivot->precio_unitario * $parametro->pivot->cantidad_muestras, 2)); ?></td>
                         </tr>
-                        @endforeach
-                    @else
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php else: ?>
                         <tr>
                             <td colspan="6" class="align-center">No hay parámetros asignados</td>
                         </tr>
-                    @endif
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -698,7 +706,7 @@
         <!-- ====================================================== -->
         <!-- SECCIÓN 4: LOGÍSTICA DE MUESTREO (SOLO AMBIENTAL)     -->
         <!-- ====================================================== -->
-        @if($proforma->tipo === 'AMBIENTAL' && $proforma->logisticasMuestreo->count() > 0)
+        <?php if($proforma->tipo === 'AMBIENTAL' && $proforma->logisticasMuestreo->count() > 0): ?>
         <div class="mb-10">
             <div class="section-title">4.- LOGÍSTICA DE MUESTREO</div>
             <table class="logistica-table">
@@ -713,115 +721,120 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php $logIndex = 0; @endphp
-                    @foreach($proforma->logisticasMuestreo as $logistica)
-                    @php
+                    <?php $logIndex = 0; ?>
+                    <?php $__currentLoopData = $proforma->logisticasMuestreo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $logistica): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php
                         $logIndex++;
                         $precioUnitario = $logistica->pivot->precio_unitario ?? $logistica->costo ?? 0;
                         $cantidad = $logistica->pivot->cantidad ?? 1;
                         $subtotal = $precioUnitario * $cantidad;
                         $descripcion = $logistica->pivot->descripcion ?? $logistica->descripcion ?? '';
                         $categoria = $logistica->categoria ?? '';
-                    @endphp
+                    ?>
                     <tr>
-                        <td class="align-center">{{ $logIndex }}</td>
-                        <td class="align-left">{{ $categoria }}</td>
-                        <td class="align-left">{{ $descripcion }}</td>
-                        <td class="align-center">{{ $cantidad }}</td>
-                        <td class="align-right">Bs. {{ number_format($precioUnitario, 2) }}</td>
-                        <td class="align-right">Bs. {{ number_format($subtotal, 2) }}</td>
+                        <td class="align-center"><?php echo e($logIndex); ?></td>
+                        <td class="align-left"><?php echo e($categoria); ?></td>
+                        <td class="align-left"><?php echo e($descripcion); ?></td>
+                        <td class="align-center"><?php echo e($cantidad); ?></td>
+                        <td class="align-right">Bs. <?php echo e(number_format($precioUnitario, 2)); ?></td>
+                        <td class="align-right">Bs. <?php echo e(number_format($subtotal, 2)); ?></td>
                     </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="5" class="align-right">TOTAL LOGÍSTICA:</td>
                         <td class="align-right">
-                            Bs. {{ number_format($proforma->logisticasMuestreo->sum(fn($l) => ($l->pivot->precio_unitario ?? $l->costo ?? 0) * ($l->pivot->cantidad ?? 1)), 2) }}
+                            Bs. <?php echo e(number_format($proforma->logisticasMuestreo->sum(fn($l) => ($l->pivot->precio_unitario ?? $l->costo ?? 0) * ($l->pivot->cantidad ?? 1)), 2)); ?>
+
                         </td>
                     </tr>
                 </tfoot>
             </table>
         </div>
-        @endif
+        <?php endif; ?>
 
         <!-- ALERTA DE MODIFICACIÓN DE PARÁMETROS -->
-        @if($proforma->parametros_modificados && $proforma->justificacion_modificacion)
+        <?php if($proforma->parametros_modificados && $proforma->justificacion_modificacion): ?>
         <div class="alert-modification">
             <div class="alert-modification-title">
                 <strong>!! MODIFICACIÓN DE PARÁMETROS BAJO CONTRATO ¡¡</strong>
             </div>
             <div style="font-size: 8px; color: #856404;">
-                <strong>Justificación:</strong> {{ $proforma->justificacion_modificacion }}
+                <strong>Justificación:</strong> <?php echo e($proforma->justificacion_modificacion); ?>
+
             </div>
-            @if($proforma->usuarioModificacion)
+            <?php if($proforma->usuarioModificacion): ?>
             <div style="font-size: 7px; color: #856404; margin-top: 2px; border-top: 1px dashed #ffc107; padding-top: 2px;">
-                Modificado por: {{ $proforma->usuarioModificacion->name }} |
-                Fecha: {{ $proforma->updated_at->format('d/m/Y H:i:s') }}
+                Modificado por: <?php echo e($proforma->usuarioModificacion->name); ?> |
+                Fecha: <?php echo e($proforma->updated_at->format('d/m/Y H:i:s')); ?>
+
             </div>
-            @endif
+            <?php endif; ?>
         </div>
-        @endif
+        <?php endif; ?>
 
         <!-- TOTAL EN LETRAS -->
         <div class="total-in-words">
-            <strong>{{ $totalEnLetras }}</strong>
+            <strong><?php echo e($totalEnLetras); ?></strong>
         </div>
 
         <!-- ====================================================== -->
         <!-- RESUMEN FINANCIERO -->
         <!-- ====================================================== -->
-        @php
+        <?php
             $subtotalCalculado = $proforma->parametros->sum(fn($p) => $p->pivot->cantidad_muestras * $p->pivot->precio_unitario);
             if ($proforma->tipo === 'AMBIENTAL') {
                 $subtotalCalculado += $proforma->logisticasMuestreo->sum(fn($l) => ($l->pivot->precio_unitario ?? $l->costo ?? 0) * ($l->pivot->cantidad ?? 1));
             }
-        @endphp
+        ?>
         <div class="financial-summary">
             <div class="summary-title">RESUMEN FINANCIERO</div>
             <div class="summary-line">
                 <span class="bold">Subtotal:</span>
-                <span>Bs. {{ number_format($subtotalCalculado, 2) }}</span>
+                <span>Bs. <?php echo e(number_format($subtotalCalculado, 2)); ?></span>
             </div>
-            @if($proforma->descuento > 0)
+            <?php if($proforma->descuento > 0): ?>
             <div class="summary-line">
                 <span class="bold">Descuento Institucional (20%):</span>
-                <span class="text-danger">- Bs. {{ number_format($proforma->descuento, 2) }}</span>
+                <span class="text-danger">- Bs. <?php echo e(number_format($proforma->descuento, 2)); ?></span>
             </div>
-            @endif
+            <?php endif; ?>
             <div class="summary-line total">
                 <span class="bold">TOTAL:</span>
-                <span class="text-success">Bs. {{ number_format($proforma->total, 2) }}</span>
+                <span class="text-success">Bs. <?php echo e(number_format($proforma->total, 2)); ?></span>
             </div>
-            @if($proforma->adelanto > 0)
+            <?php if($proforma->adelanto > 0): ?>
             <div class="summary-line" style="margin-top: 4px;">
                 <span class="bold">Adelanto recibido:</span>
-                <span>Bs. {{ number_format($proforma->adelanto, 2) }}</span>
+                <span>Bs. <?php echo e(number_format($proforma->adelanto, 2)); ?></span>
             </div>
             <div class="summary-line" style="border-top: 1px dashed #999; padding-top: 3px;">
                 <span class="bold">Saldo pendiente:</span>
-                <span class="{{ $proforma->saldo > 0 ? 'text-danger' : 'text-success' }}">
-                    Bs. {{ number_format($proforma->saldo, 2) }}
+                <span class="<?php echo e($proforma->saldo > 0 ? 'text-danger' : 'text-success'); ?>">
+                    Bs. <?php echo e(number_format($proforma->saldo, 2)); ?>
+
                 </span>
             </div>
-            @endif
+            <?php endif; ?>
         </div>
 
         <!-- OBSERVACIONES -->
-        @if($proforma->observaciones)
+        <?php if($proforma->observaciones): ?>
         <div class="mb-10">
             <div class="section-title">OBSERVACIONES</div>
             <div class="observacion-box">
-                {!! nl2br(e($proforma->observaciones)) !!}
+                <?php echo nl2br(e($proforma->observaciones)); ?>
+
             </div>
         </div>
-        @endif
+        <?php endif; ?>
 
         <!-- NOTAS -->
         <div class="nota-box">
-            <p><strong>Nota 1:</strong> {{ $cfg->config('nota1', 'Para realizar el análisis se debe dejar cancelado el 100% del monto total.') }}</p>
-            <p><strong>Nota 2:</strong> {{ $cfg->config('nota2', 'El laboratorio no realiza declaraciones de conformidad sobre los resultados que se reportan.') }}</p>
-            <p><strong>Nota 3:</strong> {{ $cfg->config('nota3', 'Los resultados estarán disponibles dentro de los plazos establecidos según el tipo de análisis.') }}</p>
+            <p><strong>Nota 1:</strong> <?php echo e($cfg->config('nota1', 'Para realizar el análisis se debe dejar cancelado el 100% del monto total.')); ?></p>
+            <p><strong>Nota 2:</strong> <?php echo e($cfg->config('nota2', 'El laboratorio no realiza declaraciones de conformidad sobre los resultados que se reportan.')); ?></p>
+            <p><strong>Nota 3:</strong> <?php echo e($cfg->config('nota3', 'Los resultados estarán disponibles dentro de los plazos establecidos según el tipo de análisis.')); ?></p>
         </div>
 
         <!-- FIN DEL INFORME -->
@@ -841,15 +854,15 @@
                 <td>
                     <div class="firma-linea"></div>
                     <div class="firma-texto">
-                        <div class="nombre">{{ $cfg->config('responsable_nombre') ?? $global->responsable_nombre ?? 'Lic. Mayra Anghela Calderón Rosas' }}</div>
-                        <div>{{ $cfg->config('responsable_cargo') ?? $global->responsable_cargo ?? 'RESPONSABLE - UAQ' }}</div>
+                        <div class="nombre"><?php echo e($cfg->config('responsable_nombre') ?? $global->responsable_nombre ?? 'Lic. Mayra Anghela Calderón Rosas'); ?></div>
+                        <div><?php echo e($cfg->config('responsable_cargo') ?? $global->responsable_cargo ?? 'RESPONSABLE - UAQ'); ?></div>
                     </div>
                 </td>
                 <td>
                     <div class="firma-linea"></div>
                     <div class="firma-texto">
-                        <div class="nombre">{{ $cfg->config('director_nombre') ?? $global->director_nombre ?? 'M.Sc. Ing. Elva Fernández I.' }}</div>
-                        <div>{{ $cfg->config('director_cargo') ?? $global->director_cargo ?? 'DIRECTOR(A) CIMA - UATF' }}</div>
+                        <div class="nombre"><?php echo e($cfg->config('director_nombre') ?? $global->director_nombre ?? 'M.Sc. Ing. Elva Fernández I.'); ?></div>
+                        <div><?php echo e($cfg->config('director_cargo') ?? $global->director_cargo ?? 'DIRECTOR(A) CIMA - UATF'); ?></div>
                     </div>
                 </td>
             </tr>
@@ -872,13 +885,14 @@
             </tr>
             <tr>
                 <td colspan="3" class="pagina">
-                    {{-- $totalPaginas se calcula en el controlador con un pre-render      --}}
-                    {{-- y se pasa a esta vista. counter(pages) NO se usa: en dompdf       --}}
-                    {{-- siempre devuelve 0 (bug conocido del motor).                      --}}
-                    Página <span class="pagenum"></span> de {{ $totalPaginas ?? '?' }}
+                    
+                    
+                    
+                    Página <span class="pagenum"></span> de <?php echo e($totalPaginas ?? '?'); ?>
+
                 </td>
             </tr>
         </table>
     </footer>
 </body>
-</html>
+</html><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/proformas/pdf.blade.php ENDPATH**/ ?>

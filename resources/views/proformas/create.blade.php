@@ -64,7 +64,6 @@
     color: #ff0000;
 }
 
-/* Estilo para el botón de guardar */
 .btn[style*="background-color: #ffc107"] {
     transition: all 0.3s ease !important;
 }
@@ -193,7 +192,6 @@
     transform: translateY(-2px);
 }
 
-/* Estilo para errores de validación */
 .alert-duplicado-frontend {
     background-color: #f8d7da;
     border: 1px solid #f5c6cb;
@@ -210,8 +208,36 @@
     color: #dc3545;
 }
 
-/* Reforzar color del icono de proformas */
 .fa-file-invoice-dollar {
+    color: #ffc107 !important;
+}
+
+/* Estilos para los inputs de fecha con ícono */
+.input-fecha {
+    position: relative;
+}
+
+.input-fecha .form-control {
+    padding-right: 40px !important;
+}
+
+.input-fecha .flatpickr-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+    pointer-events: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    z-index: 5;
+}
+
+.input-fecha .form-control:focus + .flatpickr-icon {
+    color: #ffc107 !important;
+}
+
+.input-fecha .form-control:hover + .flatpickr-icon {
     color: #ffc107 !important;
 }
 
@@ -271,7 +297,6 @@
         </div>
     </div>
 
-    <!-- Mensajes de error -->
     @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-triangle me-2"></i>
@@ -285,7 +310,6 @@
         </div>
     @endif
 
-    <!-- Formulario principal -->
     <div class="card">
         <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
             <h5 class="mb-0" style="color: #000000;">
@@ -345,11 +369,7 @@
                                     id="tipo" name="tipo" required onchange="calcularTotalesEstimados()">
                                 <option value="">Seleccionar tipo...</option>
                                 <option value="AMBIENTAL" {{ old('tipo') == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
-<<<<<<< HEAD
-                                <option value="AGUA" {{ old('tipo') == 'AGUA' ? 'selected' : '' }}>AGUA</option>
-=======
-                                <option value="ANALISIS QUIMICO" {{ old('tipo') == 'ANALISIS QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
->>>>>>> actualizacion
+                                <option value="ANALISIS_QUIMICO" {{ old('tipo') == 'ANALISIS_QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
                                 <option value="INVESTIGACION" {{ old('tipo') == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN (20% descuento)</option>
                             </select>
                             @error('tipo')
@@ -373,7 +393,6 @@
                         </div>
                     </div>
                     
-                    <!-- CAMPO UNIDAD - NUEVO -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="unidad" class="form-label">Unidad (Opcional)</label>
@@ -390,11 +409,13 @@
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label for="fecha_emision" class="form-label">Fecha de Emisión *</label>
-                            <input type="date" class="form-control @error('fecha_emision') is-invalid @enderror" 
-                                   id="fecha_emision" name="fecha_emision" 
-                                   value="{{ old('fecha_emision', date('Y-m-d')) }}" required>
-                            @error('fecha_emision')
+                            <label for="fecha_recepcion" class="form-label">Fecha de Recepción *</label>
+                            <div class="input-fecha">
+                                <input type="text" class="form-control @error('fecha_recepcion') is-invalid @enderror" 
+                                       id="fecha_recepcion" name="fecha_recepcion" 
+                                       value="{{ old('fecha_recepcion', date('Y-m-d')) }}" autocomplete="off" required>
+                            </div>
+                            @error('fecha_recepcion')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
@@ -402,25 +423,16 @@
                     
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="fecha_recepcion" class="form-label">Fecha de Recepción *</label>
-                            <input type="date" class="form-control @error('fecha_recepcion') is-invalid @enderror" 
-                                   id="fecha_recepcion" name="fecha_recepcion" 
-                                   value="{{ old('fecha_recepcion', date('Y-m-d')) }}" required>
-                            @error('fecha_recepcion')
+                            <label for="fecha_muestreo" class="form-label">Fecha de Muestreo *</label>
+                            <div class="input-fecha">
+                                <input type="text" class="form-control @error('fecha_muestreo') is-invalid @enderror" 
+                                       id="fecha_muestreo" name="fecha_muestreo" 
+                                       value="{{ old('fecha_muestreo', date('Y-m-d')) }}" autocomplete="off" required>
+                            </div>
+                            @error('fecha_muestreo')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        <!-- <div class="col-md-4 mb-3">
-                            <label for="numero_recepcion" class="form-label">Nro. de Recepción</label>
-                            <input type="text" class="form-control @error('numero_recepcion') is-invalid @enderror" 
-                                   id="numero_recepcion" name="numero_recepcion" 
-                                   value="{{ old('numero_recepcion') }}"
-                                   placeholder="Ej: 001">
-                            @error('numero_recepcion')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div> -->
                     </div>
                     
                     <div class="row">
@@ -616,7 +628,6 @@
                         Parámetros a Analizar
                     </h6>
 
-                    <!-- Selector de categoría para AMBIENTAL -->
                     <div id="ambient-categoria-wrapper" style="display: none;" class="mb-3">
                         <label class="form-label">Categoría del parámetro</label>
                         <div class="d-flex gap-2">
@@ -631,7 +642,6 @@
                             </button>
                         </div>
                         <div id="ambient-params-picker" style="display: none;" class="mt-2">
-                            <!-- Selector único para AIRE / RUIDO -->
                             <div id="ambient-single-select" class="row">
                                 <div class="col-md-10">
                                     <select id="ambient-param-select" class="form-select">
@@ -644,7 +654,6 @@
                                     </button>
                                 </div>
                             </div>
-                            <!-- Checkboxes para GASES -->
                             <div id="ambient-gases-checkbox" style="display: none;">
                                 <div id="ambient-gases-list" class="d-flex flex-wrap gap-3 mb-2"></div>
                                 <button type="button" id="add-ambient-gases" class="btn btn-success">
@@ -655,7 +664,6 @@
                     </div>
                     
                     <div id="parametros-container">
-                        <!-- Parámetro inicial -->
                         <div class="parametro-row mb-3 border p-3 rounded" id="parametro-row-0">
                             <div class="row align-items-center">
                                 <div class="col-md-5 mb-2 mb-md-0">
@@ -691,7 +699,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Método de ensayo -->
                             <div class="row mt-2 metodo-container" id="metodo-0" style="display: none;">
                                 <div class="col-12">
                                     <small class="text-muted">
@@ -701,7 +708,6 @@
                                 </div>
                             </div>
 
-                            <!-- Método editable para GASES -->
                             <div class="row mt-2 metodo-gas-container" id="metodo-gas-0" style="display: none;">
                                 <div class="col-md-6">
                                     <label class="form-label small">Método (equipo utilizado) *</label>
@@ -718,7 +724,7 @@
                     </button>
                 </div>
 
-                <!-- SECCIÓN 6: LOGÍSTICA DE MUESTREO (solo AMBIENTAL) -->
+                <!-- SECCIÓN 6: LOGÍSTICA DE MUESTREO -->
                 <div class="mb-4" id="logistica-muestreo" style="display: none;">
                     <h6 class="border-bottom pb-2 mb-3">
                         <i class="fas fa-truck me-2" style="color: #ffc107;"></i>
@@ -733,11 +739,7 @@
                                         <option value="">Seleccionar concepto...</option>
                                         @foreach($logisticasMuestreo as $log)
                                             <option value="{{ $log->id }}" data-costo="{{ $log->costo }}" data-categoria="{{ $log->categoria }}">
-<<<<<<< HEAD
-                                                {{ $log->categoria }} - {{ $log->descripcion }} (Bs. {{ number_format($log->costo, 2) }})
-=======
-                                                {{ $log->categoria }} - {{ $log->descripcion }} (Bs. {{ number_format($log->costo, 2) }}) 
->>>>>>> actualizacion
+                                                {{ $log->categoria }} - {{ $log->descripcion }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -756,10 +758,15 @@
                                            name="logisticas[0][cantidad]" value="1" min="1" required>
                                 </div>
                                 <div class="col-md-2 mb-2 mb-md-0">
-                                    <label class="form-label small">Costo Unitario</label>
+                                    <label class="form-label small">Precio Unitario (Bs.)</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Bs.</span>
-                                        <input type="text" class="form-control logistica-costo" value="0.00" readonly>
+                                        <input type="number" class="form-control logistica-precio"
+                                               name="logisticas[0][precio_unitario]" 
+                                               value="0" 
+                                               step="0.01" 
+                                               min="0"
+                                               required>
                                     </div>
                                 </div>
                                 <div class="col-md-1 text-center">
@@ -893,6 +900,11 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<!-- Flatpickr para formato de fecha AAAA-MM-DD -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+
 <style>
 .select2-container--default .select2-selection--single {
     height: 38px;
@@ -919,22 +931,200 @@
     color: #000000 !important;
 }
 
-/* Estilo para el mensaje de búsqueda */
 .select2-container--default .select2-search--dropdown .select2-search__field::placeholder {
     color: #999;
     font-style: italic;
 }
 
-/* Mensaje personalizado en el placeholder */
 .select2-selection__placeholder {
     color: #6c757d !important;
     font-style: italic;
+}
+
+/* ===== ESTILOS PARA FLATPICKR ===== */
+.flatpickr-calendar {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
+    border: none !important;
+    font-family: "Segoe UI", Roboto, sans-serif !important;
+}
+
+.flatpickr-calendar .flatpickr-months {
+    background: #ffc107 !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 8px 0 !important;
+}
+
+.flatpickr-calendar .flatpickr-months .flatpickr-prev-month,
+.flatpickr-calendar .flatpickr-months .flatpickr-next-month {
+    color: #000 !important;
+    fill: #000 !important;
+}
+
+.flatpickr-calendar .flatpickr-months .flatpickr-prev-month:hover,
+.flatpickr-calendar .flatpickr-months .flatpickr-next-month:hover {
+    background: rgba(0,0,0,0.1) !important;
+    border-radius: 50% !important;
+}
+
+.flatpickr-calendar .flatpickr-current-month {
+    color: #000 !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+}
+
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
+    color: #000 !important;
+    font-weight: 600 !important;
+    background: transparent !important;
+}
+
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper {
+    color: #000 !important;
+}
+
+.flatpickr-calendar .flatpickr-weekdays {
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #e9ecef !important;
+}
+
+.flatpickr-calendar .flatpickr-weekday {
+    color: #495057 !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+}
+
+.flatpickr-calendar .flatpickr-day {
+    border-radius: 50% !important;
+    transition: all 0.2s ease !important;
+    color: #333 !important;
+    font-weight: 500 !important;
+    margin: 2px !important;
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+}
+
+.flatpickr-calendar .flatpickr-day:hover {
+    background: #ffc107 !important;
+    color: #000 !important;
+    transform: scale(1.05) !important;
+}
+
+.flatpickr-calendar .flatpickr-day.selected {
+    background: #ffc107 !important;
+    color: #000 !important;
+    border-color: #ffc107 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4) !important;
+}
+
+.flatpickr-calendar .flatpickr-day.selected:hover {
+    background: #e6a800 !important;
+    border-color: #e6a800 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.today {
+    border-color: #ffc107 !important;
+    color: #ffc107 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.today:hover {
+    background: #ffc107 !important;
+    color: #000 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.inRange,
+.flatpickr-calendar .flatpickr-day.startRange,
+.flatpickr-calendar .flatpickr-day.endRange {
+    background: rgba(255, 193, 7, 0.2) !important;
+    border-color: #ffc107 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.inRange.selected {
+    background: #ffc107 !important;
+    color: #000 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.flatpickr-disabled {
+    color: #ccc !important;
+}
+
+.flatpickr-calendar .flatpickr-day.flatpickr-disabled:hover {
+    background: transparent !important;
+    transform: none !important;
+}
+
+.flatpickr-calendar .flatpickr-time {
+    border-top: 1px solid #e9ecef !important;
+    border-radius: 0 0 12px 12px !important;
+}
+
+.flatpickr-calendar .flatpickr-time input {
+    color: #333 !important;
+    font-weight: 500 !important;
+}
+
+.flatpickr-calendar .flatpickr-time input:hover {
+    background: #f8f9fa !important;
+}
+
+.flatpickr-calendar .flatpickr-time .flatpickr-time-separator {
+    color: #333 !important;
+    font-weight: 700 !important;
+}
+
+.flatpickr-calendar .flatpickr-am-pm {
+    color: #333 !important;
+    font-weight: 600 !important;
+}
+
+/* Animación del calendario */
+.flatpickr-calendar.open {
+    animation: flatpickrFadeIn 0.25s ease-out;
+}
+
+@keyframes flatpickrFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 </style>
 
 <script>
 $(document).ready(function() {
     console.log('Documento listo - iniciando Select2');
+    
+    // ===== FLATPICKR: formato AAAA-MM-DD =====
+    const flatpickrConfig = {
+        dateFormat: "Y-m-d",
+        locale: "es",
+        allowInput: true,
+        disableMobile: true,
+        placeholder: "YYYY-MM-DD",
+        monthSelectorType: "dropdown",
+        prevArrow: "<i class='fas fa-chevron-left'></i>",
+        nextArrow: "<i class='fas fa-chevron-right'></i>",
+        onReady: function(selectedDates, dateStr, instance) {
+            // Agregar ícono al input
+            const input = instance.input;
+            const wrapper = input.parentElement;
+            if (!wrapper.querySelector('.flatpickr-icon')) {
+                wrapper.classList.add('input-fecha');
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-calendar-alt flatpickr-icon';
+                wrapper.appendChild(icon);
+            }
+        }
+    };
+
+    flatpickr("#fecha_recepcion", flatpickrConfig);
+    flatpickr("#fecha_muestreo", flatpickrConfig);
     
     // Array para IDs seleccionados (evitar duplicados)
     let parametrosSeleccionados = [];
@@ -1001,13 +1191,11 @@ $(document).ready(function() {
                 processResults: function(data) {
                     console.log('Parámetros recibidos:', data);
                     
-                    // Filtrar parámetros ya seleccionados
                     let resultadosFiltrados = data.filter(item => {
                         return !parametrosSeleccionados.includes(item.id);
                     });
                     
                     console.log('Parámetros disponibles:', resultadosFiltrados);
-                    
                     return { results: resultadosFiltrados };
                 }
             }
@@ -1016,18 +1204,15 @@ $(document).ready(function() {
             const row = $(this).closest('.parametro-row');
             const rowId = row.attr('id').split('-')[2];
             
-            // Verificar si ya está seleccionado
             if (parametrosSeleccionados.includes(data.id)) {
                 alert('⚠️ Este parámetro ya ha sido seleccionado. Por favor, elija otro parámetro.');
                 $(this).val(null).trigger('change');
                 return;
             }
             
-            // Agregar ID a la lista de seleccionados
             parametrosSeleccionados.push(data.id);
             console.log('Parámetros seleccionados:', parametrosSeleccionados);
             
-            // Actualizar precio y método
             $('#precio-' + rowId).val(parseFloat(data.precio_unitario).toFixed(2));
             
             const metodoText = row.find('.metodo-text');
@@ -1039,7 +1224,6 @@ $(document).ready(function() {
             calcularTotalesEstimados();
         });
     }
-    
     
     // ===== BOTÓN AGREGAR PARÁMETRO =====
     $('#add-parametro').click(function() {
@@ -1096,7 +1280,6 @@ $(document).ready(function() {
             const row = $(btn).closest('.parametro-row');
             const select = row.find('.parametro-select');
             
-            // Obtener el ID del parámetro seleccionado para removerlo de la lista
             const selectedId = select.val();
             if (selectedId) {
                 const idNum = parseInt(selectedId);
@@ -1106,7 +1289,6 @@ $(document).ready(function() {
                 }
             }
             
-            // Destruir Select2 antes de eliminar
             if (select.data('select2')) {
                 select.select2('destroy');
             }
@@ -1118,16 +1300,10 @@ $(document).ready(function() {
         }
     };
 
-    // ===== AMBIENTAL: DATOS DE PARÁMETROS POR CATEGORÍA =====
-    
     // ===== VALIDACIÓN FINAL ANTES DE ENVIAR =====
     $('#proformaForm').on('submit', function(e) {
-        console.log('Validando formulario antes de enviar...');
-        
-        // Obtener todos los IDs de parámetros seleccionados
         let parametrosEnFormulario = [];
         let duplicados = false;
-        let mensajeError = '';
         
         $('.parametro-select').each(function() {
             const valor = $(this).val();
@@ -1135,8 +1311,6 @@ $(document).ready(function() {
                 const idNum = parseInt(valor);
                 if (parametrosEnFormulario.includes(idNum)) {
                     duplicados = true;
-                    mensajeError = '❌ Error: Hay parámetros duplicados en el formulario.';
-                    console.error('Parámetro duplicado encontrado:', idNum);
                 } else {
                     parametrosEnFormulario.push(idNum);
                 }
@@ -1146,10 +1320,9 @@ $(document).ready(function() {
         if (duplicados) {
             e.preventDefault();
             
-            // Mostrar mensaje de error
             const alertDiv = $('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
                 '<i class="fas fa-exclamation-triangle me-2"></i>' +
-                mensajeError + ' Por favor, revise que todos los parámetros sean únicos.' +
+                '❌ Error: Hay parámetros duplicados en el formulario. Por favor, revise que todos los parámetros sean únicos.' +
                 '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
                 '</div>');
             
@@ -1162,7 +1335,6 @@ $(document).ready(function() {
             return false;
         }
         
-        console.log('Validación exitosa - No hay duplicados');
         return true;
     });
     
@@ -1176,8 +1348,10 @@ $(document).ready(function() {
             subtotal += precio * cantidad;
         });
 
-        $('#logistica-muestreo:visible .logistica-costo').each(function() {
-            subtotal += parseFloat($(this).val()) || 0;
+        $('#logistica-muestreo:visible .logistica-precio').each(function() {
+            const precio = parseFloat($(this).val()) || 0;
+            const cantidad = parseInt($(this).closest('.logistica-row').find('.logistica-cantidad').val()) || 0;
+            subtotal += precio * cantidad;
         });
         
         const tipo = $('#tipo').val();
@@ -1194,62 +1368,44 @@ $(document).ready(function() {
     }
     
     // ===== EVENTOS =====
-    // ===== TOGGLE LOGÍSTICA DE MUESTREO =====
     function toggleLogisticaMuestreo() {
         const tipo = $('#tipo').val();
         if (tipo === 'AMBIENTAL') {
             $('#logistica-muestreo').show();
             $('.logistica-select').prop('required', true).prop('disabled', false);
             $('.logistica-cantidad').prop('required', true).prop('disabled', false);
+            $('.logistica-precio').prop('required', true).prop('disabled', false);
             $('.logistica-descripcion').prop('disabled', false);
         } else {
             $('#logistica-muestreo').hide();
             $('.logistica-select').prop('required', false).prop('disabled', true);
             $('.logistica-cantidad').prop('required', false).prop('disabled', true);
+            $('.logistica-precio').prop('required', false).prop('disabled', true);
             $('.logistica-descripcion').prop('disabled', true);
         }
     }
     $('#tipo').on('change', toggleLogisticaMuestreo);
     toggleLogisticaMuestreo();
 
-    // ===== LOGÍSTICA DE MUESTREO - FILAS DINÁMICAS =====
-    function calcularSubtotalesLogistica() {
-        // Recalcula internamente cuando cambia cantidad (sin UI de subtotal)
-    }
-
-    function actualizarDescripcionLogistica() {
-        const nombres = [];
-        $('.parametro-row:visible .form-control-plaintext').each(function() {
-            let t = $(this).text().trim();
-            t = t.replace(/\s*\(Bs\..*$/, '');
-            if (nombres.indexOf(t) === -1) nombres.push(t);
-        });
-        if ($('#ambient-gases-list .gas-checkbox:checked').length > 0 && nombres.indexOf('GASES') === -1) {
-            nombres.push('GASES');
-        }
-        if (nombres.length > 0) {
-            $('.logistica-descripcion').val('Logística de Muestreo de: ' + nombres.join(', '));
-        }
-    }
-
     function actualizarLogisticaSelect(row) {
         const select = row.find('.logistica-select');
         const selected = select.find('option:selected');
         if (selected.val()) {
             const costo = selected.data('costo');
-            row.find('.logistica-costo').val(parseFloat(costo).toFixed(2));
-        } else {
-            row.find('.logistica-costo').val('0.00');
+            const precioInput = row.find('.logistica-precio');
+            if (!precioInput.val() || parseFloat(precioInput.val()) === 0) {
+                precioInput.val(parseFloat(costo).toFixed(2));
+            }
         }
-        calcularSubtotalesLogistica();
     }
 
     $(document).on('change', '.logistica-select', function() {
         actualizarLogisticaSelect($(this).closest('.logistica-row'));
+        calcularTotalesEstimados();
     });
 
-    $(document).on('input', '.logistica-cantidad', function() {
-        calcularSubtotalesLogistica();
+    $(document).on('input', '.logistica-cantidad, .logistica-precio', function() {
+        calcularTotalesEstimados();
     });
 
     $('#add-logistica').click(function() {
@@ -1266,7 +1422,8 @@ $(document).ready(function() {
         newRow.find('.logistica-cantidad')
               .attr('name', 'logisticas[' + index + '][cantidad]').val(1);
 
-        newRow.find('.logistica-costo').val('0.00');
+        newRow.find('.logistica-precio')
+              .attr('name', 'logisticas[' + index + '][precio_unitario]').val(0);
 
         newRow.find('.logistica-descripcion')
               .attr('name', 'logisticas[' + index + '][descripcion]').val('');
@@ -1281,18 +1438,33 @@ $(document).ready(function() {
                     }
                     if (confirm('¿Eliminar este concepto logístico?')) {
                         $(this).closest('.logistica-row').remove();
-                        calcularSubtotalesLogistica();
+                        calcularTotalesEstimados();
                     }
                 });
 
         container.append(newRow);
         actualizarDescripcionLogistica();
+        calcularTotalesEstimados();
     });
+
+    function actualizarDescripcionLogistica() {
+        const nombres = [];
+        $('.parametro-row:visible .form-control-plaintext').each(function() {
+            let t = $(this).text().trim();
+            t = t.replace(/\s*\(Bs\..*$/, '');
+            if (nombres.indexOf(t) === -1) nombres.push(t);
+        });
+        if ($('#ambient-gases-list .gas-checkbox:checked').length > 0 && nombres.indexOf('GASES') === -1) {
+            nombres.push('GASES');
+        }
+        if (nombres.length > 0) {
+            $('.logistica-descripcion').val('Logística de Muestreo de: ' + nombres.join(', '));
+        }
+    }
 
     $('#tipo, #adelanto').on('change keyup', calcularTotalesEstimados);
     $(document).on('input', '.muestra-input', calcularTotalesEstimados);
     
-    // Calcular totales inicial
     calcularTotalesEstimados();
     
     // ===== MODAL CLIENTE =====
@@ -1398,7 +1570,6 @@ $(document).ready(function() {
         $('.categoria-btn').removeClass('active btn-primary').addClass('btn-outline-primary');
     }
 
-    // Category button click
     $(document).on('click', '.categoria-btn', function() {
         $('.categoria-btn').removeClass('active btn-primary').addClass('btn-outline-primary');
         $(this).addClass('active btn-primary').removeClass('btn-outline-primary');
@@ -1409,7 +1580,6 @@ $(document).ready(function() {
         });
 
         if (ambientCategoria === 'GASES') {
-            // Mostrar checkboxes
             $('#ambient-single-select').hide();
             $('#ambient-gases-checkbox').show();
             const list = $('#ambient-gases-list');
@@ -1419,7 +1589,6 @@ $(document).ready(function() {
             });
             list.find('.gas-checkbox').on('change', actualizarDescripcionLogistica);
         } else {
-            // Mostrar select único
             $('#ambient-single-select').show();
             $('#ambient-gases-checkbox').hide();
             $('#ambient-gases-list').empty();
@@ -1433,7 +1602,6 @@ $(document).ready(function() {
         $('#ambient-params-picker').show();
     });
 
-    // Add single param (AIRE / RUIDO)
     $('#add-ambient-param').click(function() {
         const select = $('#ambient-param-select');
         const selected = select.find('option:selected');
@@ -1465,7 +1633,6 @@ $(document).ready(function() {
         select.val('');
     });
 
-    // Helper: agrega una fila de parámetro ambiental
     function agregarFilaAmbient(id, nombre, precio, metodo, esGas) {
         const container = $('#parametros-container');
         const index = container.find('.parametro-row:visible').length;
@@ -1518,7 +1685,6 @@ $(document).ready(function() {
         actualizarDescripcionLogistica();
     }
 
-    // Add multiple gases — single GASES row with combined names
     $('#add-ambient-gases').click(function() {
         const checked = $('#ambient-gases-list .gas-checkbox:checked');
         if (checked.length === 0) {
@@ -1557,7 +1723,6 @@ $(document).ready(function() {
     });
     setupAmbientUI();
 
-    // Restaurar parámetros desde old input (tras error de validación)
     if (oldParametros.length > 0 && $('#tipo').val() === 'AMBIENTAL') {
         oldParametros.forEach(function(p) {
             const param = parametrosAmbientales.find(function(pa) { return pa.id == p.id; });

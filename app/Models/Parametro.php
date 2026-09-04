@@ -22,8 +22,8 @@ class Parametro extends Model
         'matriz',
         'tecnica',
         'precio_unitario',
-        'tipo',
-        'categoria',
+        'tipo',        // AMBIENTAL, AGUA, INVESTIGACION → ahora se muestra como "Categoría"
+        'categoria',   // AIRE, RUIDO, GASES, AGUA, SUELO, OTROS → ahora se muestra como "Tipo de Análisis"
         'tipo_medicion',
     ];
 

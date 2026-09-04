@@ -2,27 +2,21 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @php $cfg = \App\Models\Documento::whereSlug($proforma->tipo === 'AMBIENTAL' ? 'solicitud-ensayo-ambiental' : 'solicitud-ensayo')->first() ?? new \App\Models\Documento; @endphp
-    <title>PROFORMA {{ $proforma->codigo }} - {{ $cfg->config('institucion_sigla', 'CIMA') }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>PROFORMA {{ $proforma->codigo }}</title>
+
     <style>
-        /* CONFIGURACIÓN BASE */
+        /* ====================================================== */
+        /* CONFIGURACIÓN DE PÁGINA A4 */
+        /* ====================================================== */
         @page {
-            margin: 15mm 10mm 32mm 10mm;
+            size: A4;
+            margin: 36mm 10mm 50mm 10mm;
         }
 
-        @page horizontal {
-            size: letter landscape;
-        }
-
-        .horizontal-page {
-            page: horizontal;
-        }
-
-        
         body {
             font-family: "Times New Roman", Times, serif;
-            font-size: 11px;
+            font-size: 10px;
             line-height: 1.3;
             color: #000;
             margin: 0;
@@ -30,748 +24,921 @@
             background-color: white;
         }
 
-        /* ===== PIE DE PÁGINA (se repite en TODAS las páginas) =====
-           Contenido fijo dibujado con "position: fixed" (confirmado que
-           se repite correctamente en todas las páginas). El número de
-           página ACTUAL usa "counter(page)" en CSS (funciona bien en
-           este proyecto). El TOTAL de páginas ($totalPaginas) llega ya
-           calculado desde ProformaController::pdf()/pdfCadenaCustodia(),
-           que renderiza el documento dos veces: una para contar páginas
-           reales y otra, la definitiva, con ese total ya conocido. */
-        .pie-pagina {
-            position: fixed;
-            left: 10mm;
-            right: 10mm;
-            bottom: -24mm;
-            padding-top: 4px;
-            border-top: 0.75pt solid #999;
-        }
-        .pie-pagina table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .pie-pagina td {
-            border: none;
-            padding: 0;
-            font-size: 8px;
-            line-height: 1.35;
-            color: #666;
-            vertical-align: top;
-        }
-        .pie-izquierda {
-            width: 75%;
-            text-align: left;
-        }
-        .pie-derecha {
-            width: 25%;
-            text-align: right;
-            white-space: nowrap;
-        }
-        .num-pagina-actual::after {
+        /* ====================================================== */
+        /* NUMERACIÓN DE PÁGINA ACTUAL (esta sí funciona en dompdf) */
+        /* El TOTAL de páginas ya NO se calcula con counter(pages) */
+        /* (bug conocido de dompdf que siempre devuelve 0), sino   */
+        /* que se pasa desde el controlador como $totalPaginas.    */
+        /* ====================================================== */
+        .pagenum:before {
             content: counter(page);
         }
-        
-        /* ENCABEZADO */
+
+        /* ====================================================== */
+        /* HEADER */
+        /* ====================================================== */
+        header {
+            position: fixed;
+            top: -30mm;
+            left: 0;
+            right: 0;
+            padding: 0;
+            background: white;
+            z-index: 1000;
+        }
+
         .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 3px;
         }
-        
+
         .header-table td {
-            vertical-align: top;
-            padding: 0;
+            vertical-align: middle;
+            padding: 2px 0;
         }
-        
+
         .logo-cell {
             width: 100px;
+            text-align: center;
         }
-        
+
         .logo-container {
-            width: 90px;
-            height: 90px;
+            width: 70px;
+            height: 70px;
             border: 1px solid #ccc;
-            display: block;
+            display: inline-block;
             background-color: #f9f9f9;
             overflow: hidden;
             text-align: center;
+            padding: 2px;
         }
-        
+
         .logo-container img {
-            max-width: 85px;
-            max-height: 85px;
+            max-width: 65px;
+            max-height: 65px;
             margin-top: 2px;
         }
-        
+
         .center-cell {
             text-align: center;
             padding: 0 10px;
         }
-        
-        .center-cell h1 {
-            font-size: 16px;
+
+        .center-cell .titulo {
+            font-size: 14px;
             font-weight: bold;
-            margin: 0 0 3px 0;
             text-transform: uppercase;
             color: #1c3d6e;
+            margin: 0;
+            letter-spacing: 1px;
         }
-        
-        .center-cell h2 {
-            font-size: 13px;
-            margin: 0 0 2px 0;
-            color: #2c5282;
+
+        .center-cell .subtitulo {
+            font-size: 10px;
             font-weight: 600;
+            color: #2c5282;
+            margin: 2px 0;
         }
-        
-        .center-cell h3 {
-            font-size: 11px;
-            margin: 0 0 4px 0;
+
+        .center-cell .institucion {
+            font-size: 9px;
             color: #4a5568;
             font-style: italic;
+            margin: 2px 0;
         }
-        
-        /* Unidad de la proforma */
-        .unidad-badge {
-            background-color: #2c5282;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 15px;
+
+        .center-cell .sigla {
             font-size: 9px;
             font-weight: bold;
-            display: inline-block;
-            margin-top: 5px;
+            color: #1c3d6e;
+            margin: 2px 0;
         }
-        
-        .document-subtitle {
-            font-size: 10px;
-            font-weight: bold;
-            color: #333;
-            margin: 5px 0;
-        }
-        
-        .document-options {
-            margin: 8px 0 0 0;
-            font-size: 10px;
-        }
-        
-        .doc-option {
-            display: inline-block;
-            margin: 0 4px;
-            padding: 2px 6px;
-            border: 1px solid #666;
-            border-radius: 2px;
-            background-color: #f8f9fa;
-        }
-        
-        .doc-option.selected.proforma {
-            background-color: #2c5282;
-            color: white;
-            border-color: #2c5282;
-            font-weight: bold;
-        }
-        
-        .doc-option.selected.cotizacion {
-            background-color: #28a745;
-            color: white;
-            border-color: #28a745;
-            font-weight: bold;
-        }
-        
-        .doc-option.selected.contrato {
-            background-color: #fd7e14;
-            color: white;
-            border-color: #fd7e14;
-            font-weight: bold;
-        }
-        
-        .doc-option.selected.contrato-modificado {
-            background-color: #dc3545;
-            color: white;
-            border-color: #dc3545;
-            font-weight: bold;
-        }
-        
+
         .codigo-cell {
             width: 120px;
             text-align: right;
+            vertical-align: middle;
         }
-        
+
         .codigo-box {
             border: 1px solid #000;
-            padding: 5px;
-            font-size: 9px;
+            padding: 4px 6px;
+            font-size: 8px;
             background-color: #f8f9fa;
             text-align: center;
             display: inline-block;
+            line-height: 1.3;
         }
-        
-        /* LÍNEA SEPARADORA */
+
+        .codigo-box .label {
+            font-weight: bold;
+        }
+
+        .codigo-box .codigo-proforma {
+            margin-top: 3px;
+            padding-top: 3px;
+            border-top: 1px solid #ccc;
+            font-weight: bold;
+            font-size: 9px;
+        }
+
+        /* ====================================================== */
+        /* BADGE DE TIPO DE DOCUMENTO (PROFORMA/COTIZACIÓN/etc.)  */
+        /* Se repite en cada página porque vive dentro de header  */
+        /* ====================================================== */
+        .badge-tipo-documento-row td {
+            text-align: center;
+            padding-top: 2px;
+            padding-bottom: 0;
+        }
+
+        .badge-tipo-documento {
+            display: inline-block;
+            padding: 2px 10px;
+            margin: 0 3px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
+
+        .badge-proforma            { background-color: #2c5282; }
+        .badge-cotizacion          { background-color: #b7791f; }
+        .badge-contrato            { background-color: #276749; }
+        .badge-contrato-modificado { background-color: #9b2c2c; }
+
         .separator {
             border-top: 2px solid #1c3d6e;
-            margin: 8px 0 15px 0;
+            margin: 3px 0 6px 0;
             width: 100%;
         }
-        
-        /* SECCIONES */
-        .section-title {
-            background-color: #2c5282;
-            color: white;
-            font-weight: bold;
-            padding: 5px 10px;
-            margin-bottom: 8px;
-            font-size: 11px;
-            border-radius: 3px;
+
+        /* ====================================================== */
+        /* CONTENIDO */
+        /* ====================================================== */
+        .page-content {
+            padding-top: 5px;
         }
-        
-        /* TABLAS DE DATOS */
+
+        /* ====================================================== */
+        /* COLORES POR TIPO DE PROFORMA */
+        /* ====================================================== */
+        @if($proforma->tipo === 'AMBIENTAL')
+            .section-title {
+                background-color: #B0E68E;
+                color: #1a3a1a;
+                font-weight: bold;
+                padding: 3px 8px;
+                margin-bottom: 4px;
+                font-size: 10px;
+                border-radius: 2px;
+            }
+
+            .params-table thead th {
+                background-color: #B0E68E;
+                color: #1a3a1a;
+                text-align: center;
+                padding: 3px;
+                border: 1px solid #999;
+                font-weight: bold;
+                font-size: 8px;
+            }
+
+            .logistica-table thead th {
+                background-color: #B0E68E;
+                color: #1a3a1a;
+                text-align: center;
+                padding: 3px;
+                border: 1px solid #999;
+                font-weight: bold;
+                font-size: 8px;
+            }
+
+            .logistica-table tfoot {
+                background-color: #e8f5e0;
+                font-weight: bold;
+            }
+        @else
+            .section-title {
+                background-color: #2c5282;
+                color: white;
+                font-weight: bold;
+                padding: 3px 8px;
+                margin-bottom: 4px;
+                font-size: 10px;
+                border-radius: 2px;
+            }
+
+            .params-table thead th {
+                background-color: #2c5282;
+                color: white;
+                text-align: center;
+                padding: 3px;
+                border: 1px solid #999;
+                font-weight: bold;
+                font-size: 8px;
+            }
+
+            .logistica-table thead th {
+                background-color: #2c5282;
+                color: white;
+                text-align: center;
+                padding: 3px;
+                border: 1px solid #999;
+                font-weight: bold;
+                font-size: 8px;
+            }
+
+            .logistica-table tfoot {
+                background-color: #f0f4f8;
+                font-weight: bold;
+            }
+        @endif
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10px;
-            margin-bottom: 10px;
+            font-size: 9px;
+            margin-bottom: 6px;
         }
-        
-        .data-table th, .data-table td {
+
+        .data-table td {
             border: 1px solid #999;
-            padding: 5px 8px;
-            vertical-align: top;
+            padding: 3px 5px;
+            vertical-align: middle;
         }
-        
-        .data-table th {
-            background-color: #e0e0e0;
-            text-align: left;
+
+        .data-table .label {
+            background-color: #f0f4f8;
             font-weight: bold;
+            width: 25%;
         }
-        
-        /* TABLA DE PARÁMETROS */
+
         .params-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10px;
-            margin-bottom: 15px;
+            font-size: 8px;
+            margin-bottom: 8px;
         }
-        
+
         .params-table thead th {
-            background-color: #2c5282;
-            color: white;
             text-align: center;
-            padding: 6px;
+            padding: 3px;
             border: 1px solid #999;
             font-weight: bold;
+            font-size: 8px;
         }
-        
+
         .params-table tbody td {
             border: 1px solid #999;
-            padding: 5px 6px;
+            padding: 2px 3px;
+            font-size: 8px;
         }
-        
-        .align-right {
-            text-align: right;
-        }
-        
-        .align-center {
-            text-align: center;
-        }
-        
-        .align-left {
-            text-align: left;
-        }
-        
-        .bold {
-            font-weight: bold;
-        }
-        
-        /* ALERTA DE MODIFICACIÓN DE PARÁMETROS */
-        .alert-modification {
-            background-color: #fff3cd;
-            border: 1px solid #ffc107;
-            border-left: 5px solid #ffc107;
-            padding: 12px;
-            margin: 15px 0;
-            border-radius: 5px;
-            font-size: 10px;
-        }
-        
-        .alert-modification-title {
-            font-weight: bold;
-            color: #856404;
+
+        .logistica-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8px;
             margin-bottom: 8px;
-            font-size: 11px;
         }
-        
-        .alert-modification-text {
-            color: #856404;
-            margin-bottom: 5px;
-        }
-        
-        .alert-modification-detail {
-            font-style: italic;
-            margin-top: 5px;
-            padding-top: 5px;
-            border-top: 1px dashed #ffc107;
-            color: #6c757d;
-        }
-        
-        /* RESUMEN FINANCIERO */
-        .financial-summary {
-            border: 2px solid #2c5282;
-            padding: 12px;
-            margin: 20px 0;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-        }
-        
-        .summary-title {
-            font-size: 12px;
-            font-weight: bold;
-            color: #2c5282;
-            margin-bottom: 10px;
+
+        .logistica-table thead th {
             text-align: center;
-            text-transform: uppercase;
-        }
-        
-        .summary-line {
-            margin: 6px 0;
-            font-size: 11px;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .summary-line.total {
-            font-size: 13px;
+            padding: 3px;
+            border: 1px solid #999;
             font-weight: bold;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 2px solid #2c5282;
+            font-size: 8px;
         }
-        
-        .summary-label {
-            font-weight: bold;
+
+        .logistica-table tbody td {
+            border: 1px solid #999;
+            padding: 2px 3px;
+            font-size: 8px;
         }
-        
-        .summary-value {
-            font-weight: bold;
+
+        .logistica-table tfoot td {
+            border: 1px solid #999;
+            padding: 2px 3px;
+            font-size: 8px;
         }
-        
-        .summary-value.text-success {
-            color: #28a745;
-        }
-        
-        .summary-value.text-danger {
-            color: #dc3545;
-        }
-        
+
+        .align-right { text-align: right; }
+        .align-center { text-align: center; }
+        .align-left { text-align: left; }
+        .bold { font-weight: bold; }
+
         .total-in-words {
             font-style: italic;
-            margin: 15px 0;
+            margin: 8px 0;
             text-align: center;
-            font-size: 11px;
-            padding: 10px;
+            font-size: 10px;
+            padding: 6px;
             background-color: #f0f7ff;
             border: 1px solid #cce5ff;
             border-radius: 4px;
             color: #004085;
         }
-        
-        /* FIRMAS */
-        .signatures-table {
-            width: 100%;
-            margin-top: 60px;
-            border-collapse: collapse;
+
+        .financial-summary {
+            border: 2px solid #2c5282;
+            padding: 8px 12px;
+            margin: 10px 0;
+            background-color: #f8f9fa;
+            border-radius: 4px;
         }
-        
-        .signatures-table td {
-            width: 50%;
+
+        .summary-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #2c5282;
+            margin-bottom: 6px;
             text-align: center;
-            vertical-align: top;
-            padding: 0 20px;
+            text-transform: uppercase;
         }
-        
-        .signature-line {
-            border-top: 1px solid #000;
-            width: 80%;
-            margin: 50px auto 0 auto;
-            display: block;
-        }
-        
-        .signature-text {
-            margin-top: 5px;
+
+        .summary-line {
+            margin: 3px 0;
             font-size: 10px;
-            color: #333;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .summary-line.total {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 6px;
+            padding-top: 5px;
+            border-top: 2px solid #2c5282;
+        }
+
+        .text-success { color: #28a745; }
+        .text-danger { color: #dc3545; }
+
+        /* ====================================================== */
+        /* ALERTA */
+        /* ====================================================== */
+        .alert-modification {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-left: 4px solid #ffc107;
+            padding: 6px 8px;
+            margin: 8px 0;
+            border-radius: 4px;
+            font-size: 8px;
+        }
+
+        .alert-modification-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 2px;
+            font-size: 9px;
+        }
+
+        .nota-box {
+            font-size: 8px;
+            margin-top: 8px;
+            padding: 5px 8px;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+            border-left: 3px solid #2c5282;
+        }
+
+        .nota-box p {
+            margin: 2px 0;
+        }
+
+        .observacion-box {
+            padding: 5px 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 3px;
+            font-size: 8px;
+            background-color: #fffde7;
             line-height: 1.4;
         }
-        
-        /* FOOTER (colofón institucional: sale una sola vez, al final del contenido) */
-        .footer {
-            margin-top: 30px;
-            font-size: 9px;
-            color: #666;
+
+        /* ====================================================== */
+        /* FIN DEL INFORME */
+        /* ====================================================== */
+        .fin-informe {
             text-align: center;
-            padding-top: 8px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 20px;
+            padding: 8px 0;
+            letter-spacing: 2px;
         }
-        
-        /* ESPACIOS */
-        .mb-10 {
-            margin-bottom: 10px;
+
+        .fin-informe span {
+            padding: 0 15px;
         }
-        
-        .mt-10 {
-            margin-top: 10px;
+
+        /* ====================================================== */
+        /* FOOTER */
+        /* ====================================================== */
+        footer {
+            position: fixed;
+            bottom: -42mm;
+            left: 0;
+            right: 0;
+            padding: 0;
+            background: white;
+            z-index: 1000;
         }
+
+        /* FIRMAS */
+        .footer-firmas {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 0 5px 0;
+        }
+
+        .footer-firmas td {
+            text-align: center;
+            padding: 0 15px;
+            vertical-align: bottom;
+            width: 50%;
+        }
+
+        .firma-linea {
+            border-top: 1px solid #000;
+            width: 70%;
+            margin: 0 auto;
+            padding-top: 0;
+        }
+
+        .firma-texto {
+            margin-top: 3px;
+            font-size: 8px;
+            line-height: 1.3;
+        }
+
+        .firma-texto .nombre {
+            font-weight: bold;
+            font-size: 9px;
+        }
+
+        /* LÍNEA DIVISORA */
+        .footer-line {
+            border-top: 2px solid #1c3d6e;
+            margin: 6px 0 4px 0;
+            width: 100%;
+        }
+
+        /* INFORMACIÓN INSTITUCIONAL */
+        .footer-info {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 3px;
+        }
+
+        .footer-info td {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 7pt;
+            font-weight: bold;
+            font-style: italic;
+            color: #333;
+            text-align: center;
+            padding: 1px 3px;
+            border: none;
+            vertical-align: middle;
+            line-height: 1.4;
+        }
+
+        .footer-info .pagina {
+            font-weight: bold;
+            font-style: normal;
+            font-size: 7pt;
+        }
+
+        .mb-10 { margin-bottom: 10px; }
+        .mt-10 { margin-top: 10px; }
+        .mt-20 { margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- ===== PIE DE PÁGINA (fixed: se repite en cada página) ===== -->
-    <div class="pie-pagina">
-        <table>
+    @php
+        $docSlug = match($proforma->tipo) {
+            'AMBIENTAL' => 'solicitud-ensayo-ambiental',
+            'ANALISIS_QUIMICO', 'INVESTIGACION' => 'solicitud-ensayo',
+            default => 'solicitud-ensayo'
+        };
+        $cfg = \App\Models\Documento::whereSlug($docSlug)->first() ?? new \App\Models\Documento;
+        $global = \App\Models\Configuracion::obtener();
+        $logoPath = $cfg->config('logo_path') ?? $global->logo_path;
+
+        // Mapa de clase CSS por tipo de documento (PROFORMA, COTIZACION, CONTRATO, CONTRATO MODIFICADO)
+        $badgeClaseMap = [
+            'PROFORMA' => 'badge-proforma',
+            'COTIZACION' => 'badge-cotizacion',
+            'CONTRATO' => 'badge-contrato',
+            'CONTRATO MODIFICADO' => 'badge-contrato-modificado',
+        ];
+    @endphp
+
+    <!-- ====================================================== -->
+    <!-- HEADER (se repite en cada página) -->
+    <!-- ====================================================== -->
+    <header>
+        <table class="header-table">
             <tr>
-                <td class="pie-izquierda">
-                    <strong>{{ $cfg->config('institucion_nombre') }}</strong><br>
-                    {{ $cfg->config('footer_direccion') }}<br>
-                    {{ $cfg->config('footer_telefono') }} | {{ $cfg->config('footer_email') }}
+                <td class="logo-cell">
+                    <div class="logo-container">
+                        @if($logoPath && file_exists(storage_path('app/public/' . $logoPath)))
+                            <img src="{{ storage_path('app/public/' . $logoPath) }}" alt="Logo">
+                        @elseif(file_exists(public_path('images/logo-cima.jpg')))
+                            <img src="{{ public_path('images/logo-cima.jpg') }}" alt="Logo CIMA">
+                        @elseif(file_exists(public_path('images/logo-cima.png')))
+                            <img src="{{ public_path('images/logo-cima.png') }}" alt="Logo CIMA">
+                        @else
+                            <div style="width: 65px; height: 65px; background: #2c5282; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold;">
+                                {{ $cfg->config('institucion_sigla', 'CIMA') }}
+                            </div>
+                        @endif
+                    </div>
                 </td>
-                <td class="pie-derecha">
-                    Página <span class="num-pagina-actual"></span> de {{ $totalPaginas ?? 1 }}
+                <td class="center-cell">
+                    <div class="titulo">PROFORMA DE SERVICIOS</div>
+                    <div class="subtitulo">{{ strtoupper($cfg->config('laboratorio_nombre') ?? $global->laboratorio_nombre ?? 'CENTRO DE INVESTIGACIÓN MINERO AMBIENTAL') }}</div>
+                    <div class="institucion">
+                        @if($proforma->unidad == 'UIA')
+                            Unidad de Investigación Ambiental "UIA"
+                        @elseif($proforma->unidad == 'UAQ')
+                            Unidad de Análisis Químico "UAQ"
+                        @else
+                            {{ $cfg->config('footer_texto') }}
+                        @endif
+                    </div>
+                    <div class="sigla">
+                        {{ $cfg->config('institucion_sigla') ?? $global->institucion_sigla ?? 'CIMA-UATF' }}
+                    </div>
+                    @if($proforma->unidad)
+                        <div style="font-size: 8px; font-weight: bold; color: #2c5282; margin-top: 2px;">
+                            {{ $proforma->unidad == 'UIA' ? 'Unidad de Investigación Ambiental' : 'Unidad de Análisis Químico' }}
+                        </div>
+                    @endif
+                </td>
+                <td class="codigo-cell">
+                    <div class="codigo-box">
+                        <div><span class="label">{{ $cfg->codigo_documento ?? 'PO01-FR02' }}</span></div>
+                        <div><span class="label">VERSIÓN:</span> {{ $cfg->version ?? '06' }}</div>
+                        <div><span class="label">FECHA:</span> {{ $cfg->fecha_documento ?? $proforma->fecha_recepcion->format('Y-m-d') }}</div>
+                        <div class="codigo-proforma">
+                            <span class="label">CÓDIGO:</span> {{ $proforma->codigo }}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- BADGE(S) DE TIPO DE DOCUMENTO: PROFORMA / COTIZACIÓN / CONTRATO / CONTRATO MODIFICADO -->
+            @if(!empty($proforma->tipo_documento))
+            <tr class="badge-tipo-documento-row">
+                <td colspan="3">
+                    @foreach($proforma->tipo_documento as $td)
+                        @php
+                            $badgeClase = $badgeClaseMap[$td] ?? 'badge-proforma';
+                        @endphp
+                        <span class="badge-tipo-documento {{ $badgeClase }}">{{ $td }}</span>
+                    @endforeach
+                </td>
+            </tr>
+            @endif
+        </table>
+        <div class="separator"></div>
+    </header>
+
+    <!-- ====================================================== -->
+    <!-- CONTENIDO -->
+    <!-- ====================================================== -->
+    <div class="page-content">
+
+        <!-- DATOS DE RECEPCIÓN -->
+        @php
+            $numRecepcion = explode('-', $proforma->codigo)[2] ?? $proforma->numero_recepcion;
+
+            $tipoProformaLabel = match($proforma->tipo) {
+                'AMBIENTAL' => 'AMBIENTAL',
+                'ANALISIS_QUIMICO' => 'ANÁLISIS QUÍMICO',
+                'INVESTIGACION' => 'INVESTIGACIÓN',
+                default => $proforma->tipo,
+            };
+        @endphp
+        <table class="data-table" style="margin-bottom: 4px;">
+            <tr>
+                <td style="width: 34%; text-align: left; border: 1px solid #999; padding: 3px 5px;">
+                    <strong>Fecha de Recepción:</strong> {{ $proforma->fecha_recepcion->format('Y-m-d') }}
+                </td>
+                <td style="width: 33%; text-align: center; border: 1px solid #999; padding: 3px 5px;">
+                    <strong>Tipo:</strong> {{ $tipoProformaLabel }}
+                </td>
+                <td style="width: 33%; text-align: right; border: 1px solid #999; padding: 3px 5px;">
+                    <strong>Nro. Recepción:</strong> {{ $numRecepcion }}
                 </td>
             </tr>
         </table>
-    </div>
 
-    <!-- ENCABEZADO -->
-    <table class="header-table">
-         <tr>
-            <td class="logo-cell">
-                <div class="logo-container">
-                    @php
-                        $logo = $cfg->config('logo_path');
-                    @endphp
-                    @if($logo && file_exists(storage_path('app/public/' . $logo)))
-                        <img src="{{ storage_path('app/public/' . $logo) }}" alt="Logo">
-                    @elseif(file_exists(public_path('images/logo-cima.jpg')))
-                        <img src="{{ public_path('images/logo-cima.jpg') }}" alt="Logo CIMA">
-                    @elseif(file_exists(public_path('images/logo-cima.png')))
-                        <img src="{{ public_path('images/logo-cima.png') }}" alt="Logo CIMA">
-                    @endif
-                </div>
-             </td>
-            
-            <td class="center-cell">
-                <h1>PROFORMA DE SERVICIOS</h1>
-                <h2>{{ strtoupper($cfg->config('laboratorio_nombre')) }}</h2>
-                <h3>
-                    @if($proforma->unidad == 'UIA')
-                        Unidad de Investigación Ambiental "UIA"
-                    @elseif($proforma->unidad == 'UAQ')
-                        Unidad de Análisis Químico "UAQ"
-                    @else
-                        Unidad de Análisis Químico "UAQ"
-                    @endif
-                </h3>
-                
-                <div class="document-subtitle">
-                    @if($proforma->tipo === 'AGUA')
-                        ANÁLISIS QUÍMICO - BACTERIOLÓGICO: AGUAS, SUELOS, SEDIMENTOS Y MINERALES
-                    @elseif($proforma->tipo === 'AMBIENTAL')
-                        MUESTREO DE MATERIAL PARTICULADO, RUIDO, GASES, AGUAS, SEDIMIENTOS Y VEGETACIÓN
-                    @else
-                        {{ $cfg->config('footer_texto') }}
-                    @endif
-                </div>
-                
-                <div class="document-options">
-                    @php $td = $proforma->tipo_documento ?? []; @endphp
-                    <span class="doc-option{{ in_array('PROFORMA', $td) ? ' selected proforma' : '' }}">
-                        PROFORMA
-                    </span>
-
-                    <span class="doc-option{{ in_array('COTIZACION', $td) ? ' selected cotizacion' : '' }}">
-                        COTIZACIÓN
-                    </span>
-
-                    <span class="doc-option{{ in_array('CONTRATO', $td) ? ' selected contrato' : '' }}">
-                        CONTRATO
-                    </span>
-
-                    <span class="doc-option{{ in_array('CONTRATO MODIFICADO', $td) ? ' selected contrato-modificado' : '' }}">
-                        CONTRATO MODIFICADO
-                    </span>
-                </div>
-                
-                @if($proforma->unidad)
-                <div class="unidad-badge">
-                    <i class="fas fa-building"></i> {{ $proforma->unidad == 'UIA' ? 'Unidad de Investigación Ambiental' : 'Unidad de Análisis Químico' }}
-                </div>
-                @endif
-            </td>
-            
-            <td class="codigo-cell">
-                <div class="codigo-box">
-                    <div><strong>{{ $cfg->codigo_documento }}</strong></div>
-                    <div>VERSIÓN: {{ $cfg->version }}</div>
-                    <div>FECHA: {{ $cfg->fecha_documento ?? $proforma->fecha_emision->format('Y-m-d') }}</div>
-                    <div style="margin-top: 5px; border-top: 1px solid #ccc; padding-top: 3px;">
-                        <strong>CÓDIGO:</strong> {{ $proforma->codigo }}
-                    </div>
-                </div>
-             </td>
-         </tr>
-    </table>
-    
-    <div class="separator"></div>
-
-    <!-- DATOS DE RECEPCIÓN -->
-    @php $numRecepcion = explode('-', $proforma->codigo)[2] ?? $proforma->numero_recepcion; @endphp
-    <table class="data-table" style="margin-bottom: 5px;">
-        <tr>
-            <td style="width: 50%; text-align: left;"><strong>Fecha de recepción:</strong> {{ $proforma->fecha_recepcion->format('d/m/Y') }}</td>
-            <td style="width: 50%; text-align: right;"><strong>Nro. Recepción:</strong> {{ $numRecepcion }}</td>
-        </tr>
-    </table>
-
-    <!-- SECCIÓN 1: DATOS DEL CLIENTE -->
-    <div class="mb-10">
-        <div class="section-title">1.- DATOS DEL CLIENTE</div>
-        
-        <table class="data-table">
-               <tr>
-                    <td style="width: 25%;"><strong>Nombre/Razón Social:</strong></td>
+        <!-- ====================================================== -->
+        <!-- SECCIÓN 1: DATOS DEL CLIENTE -->
+        <!-- ====================================================== -->
+        <div class="mb-10">
+            <div class="section-title">1.- DATOS DEL CLIENTE</div>
+            <table class="data-table">
+                <tr>
+                    <td class="label" style="width: 25%;">Nombre/Razón Social:</td>
                     <td style="width: 75%;" colspan="3">{{ $proforma->cliente->razon_social }}</td>
-                 </tr>
-                 <tr>
-                    <td><strong>Persona en contacto:</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">Persona en contacto:</td>
                     <td style="width: 25%;">{{ $proforma->persona_contacto ?? $proforma->cliente->persona_contacto }}</td>
-                    <td style="width: 25%;"><strong>Teléfono/Celular:</strong></td>
-                    <td style="width: 25%;">{{ $proforma->telefono_contacto ?? $proforma->cliente->telefono ?? 'N/A' }}</td>
-                 </tr>
-                 <tr>
-                    <td><strong>NIT:</strong></td>
-                    <td style="width: 25%;">{{ $proforma->cliente->nit ?? 'N/A' }}</td>
-                    <td style="width: 25%;"><strong>Dirección:</strong></td>
-                    <td style="width: 25%;">{{ $proforma->cliente->direccion ?? 'N/A' }}</td>
-                 </tr>
-          </table>
-    </div>
+                    <td class="label" style="width: 20%;">Teléfono/Celular:</td>
+                    <td style="width: 30%;">{{ $proforma->telefono_contacto ?? $proforma->cliente->telefono ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">NIT:</td>
+                    <td>{{ $proforma->cliente->nit ?? 'N/A' }}</td>
+                    <td class="label">Dirección:</td>
+                    <td>{{ $proforma->cliente->direccion ?? 'N/A' }}</td>
+                </tr>
+            </table>
+        </div>
 
-    <!-- SECCIÓN 2: DATOS DE LA MUESTRA -->
-    <div class="mb-10">
-        <div class="section-title">2.- DATOS DE LA MUESTRA</div>
-        
-        <table class="data-table">
-              <tr>
-                    <td style="width: 25%;"><strong>Tipo de muestra:</strong></td>
+        <!-- ====================================================== -->
+        <!-- SECCIÓN 2: DATOS DE LA MUESTRA -->
+        <!-- ====================================================== -->
+        <div class="mb-10">
+            <div class="section-title">2.- DATOS DE LA MUESTRA</div>
+            <table class="data-table">
+                <tr>
+                    <td class="label" style="width: 25%;">Tipo de muestra:</td>
                     <td style="width: 25%;">{{ $proforma->tipo_muestra }}</td>
-                    <td style="width: 25%;"><strong>Muestreado por:</strong></td>
+                    <td class="label" style="width: 25%;">Muestreado por:</td>
                     <td style="width: 25%;">{{ $proforma->muestreado_por ?? 'N/A' }}</td>
-                 </tr>
-                 <tr>
-                    <td><strong>Fecha de muestreo:</strong></td>
-                    <td>{{ $proforma->fecha_emision->format('d/m/Y') }}</td>
-                    <td><strong>Hora recepción:</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">Fecha de Muestreo:</td>
+                    <td>{{ $proforma->fecha_muestreo ? $proforma->fecha_muestreo->format('Y-m-d') : $proforma->fecha_recepcion->format('Y-m-d') }}</td>
+                    <td class="label">Hora recepción:</td>
                     <td>{{ $proforma->hora_recepcion ?? 'N/A' }}</td>
-                 </tr>
-                  <tr>
-                    <td><strong>Procedencia:</strong></td>
-                    <td style="width: 25%;">{{ $proforma->procedencia ?? 'N/A' }}</td>
-                    <td style="width: 25%;"><strong>Coordenadas:</strong></td>
-                    <td style="width: 25%;">
+                </tr>
+                <tr>
+                    <td class="label">Procedencia:</td>
+                    <td>{{ $proforma->procedencia ?? 'N/A' }}</td>
+                    <td class="label">Coordenadas:</td>
+                    <td>
                         @php
                             $coords = [];
                             if ($proforma->punto_cardinal_1 && $proforma->valor_cardinal_1) {
-                                $coords[] = '<b>' . $proforma->punto_cardinal_1 . ':</b> ' . $proforma->valor_cardinal_1;
+                                $coords[] = $proforma->punto_cardinal_1 . ': ' . $proforma->valor_cardinal_1;
                             }
                             if ($proforma->punto_cardinal_2 && $proforma->valor_cardinal_2) {
-                                $coords[] = '<b>' . $proforma->punto_cardinal_2 . ':</b> ' . $proforma->valor_cardinal_2;
+                                $coords[] = $proforma->punto_cardinal_2 . ': ' . $proforma->valor_cardinal_2;
                             }
                         @endphp
-                        {!! !empty($coords) ? implode('&nbsp;&nbsp;&nbsp;&nbsp;', $coords) : 'N/A' !!}
+                        {{ !empty($coords) ? implode(' | ', $coords) : 'N/A' }}
                     </td>
-                 </tr>
-                 <tr>
-                    <td><strong>Código de Cliente:</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">Código de Cliente:</td>
                     <td colspan="3">{{ implode(', ', $proforma->codigo_cliente ?? []) ?: 'N/A' }}</td>
-                 </tr>
-          </table>
-    </div>
+                </tr>
+            </table>
+        </div>
 
-    <!-- SECCIÓN 3: PARÁMETROS A ANALIZAR -->
-    <div class="mb-10">
-        <div class="section-title">3.- PARÁMETROS A ANALIZAR - MUESTRAS DE {{ strtoupper($proforma->tipo_muestra) }}</div>
-        
-        <table class="params-table">
-            <thead>
-                 <tr>
-                    <th style="width: 5%;">#</th>
-                    <th style="width: 30%;">Parámetro</th>
-                    <th style="width: 25%;">Método</th>
-                    <th style="width: 10%;">N° Muestras</th>
-                    <th style="width: 15%;">Precio Unit. (Bs)</th>
-                    <th style="width: 15%;">Total (Bs)</th>
-                 </tr>
-            </thead>
-            <tbody>
-                @if($proforma->parametros->count() > 0)
-                    @foreach($proforma->parametros as $index => $parametro)
+        <!-- ====================================================== -->
+        <!-- SECCIÓN 3: PARÁMETROS A ANALIZAR (SIEMPRE VISIBLE)    -->
+        <!-- ====================================================== -->
+        <div class="mb-10">
+            <div class="section-title">3.- PARÁMETROS A ANALIZAR - MUESTRAS DE {{ strtoupper($proforma->tipo_muestra) }}</div>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">#</th>
+                        <th style="width: 35%;">Parámetro</th>
+                        <th style="width: 25%;">Método</th>
+                        <th style="width: 10%;">N° Muestras</th>
+                        <th style="width: 15%;">Precio Unit. (Bs)</th>
+                        <th style="width: 10%;">Total (Bs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if($proforma->parametros->count() > 0)
+                        @foreach($proforma->parametros as $index => $parametro)
+                        @php
+                            $nombreParam = $parametro->nombre;
+                            if ($parametro->categoria === 'RUIDO') {
+                                $nombreParam = 'RUIDO';
+                            } elseif ($parametro->categoria === 'GASES') {
+                                $nombreParam = 'GASES';
+                            }
+                            $metodo = $proforma->tipo === 'AMBIENTAL' && $parametro->categoria === 'GASES'
+                                ? ($parametro->pivot->metodo ?? '')
+                                : ($proforma->tipo === 'AMBIENTAL' ? ($parametro->metodo ?? '') : ($parametro->tecnica ?: ($parametro->codigo_poe ?? '')));
+                        @endphp
+                        <tr>
+                            <td class="align-center">{{ $index + 1 }}</td>
+                            <td class="align-left">{{ $nombreParam }}</td>
+                            <td class="align-center">{{ $metodo ?: '---' }}</td>
+                            <td class="align-center">{{ $parametro->pivot->cantidad_muestras }}</td>
+                            <td class="align-right">Bs. {{ number_format($parametro->pivot->precio_unitario, 2) }}</td>
+                            <td class="align-right">Bs. {{ number_format($parametro->pivot->precio_unitario * $parametro->pivot->cantidad_muestras, 2) }}</td>
+                        </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="6" class="align-center">No hay parámetros asignados</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- SECCIÓN 4: LOGÍSTICA DE MUESTREO (SOLO AMBIENTAL)     -->
+        <!-- ====================================================== -->
+        @if($proforma->tipo === 'AMBIENTAL' && $proforma->logisticasMuestreo->count() > 0)
+        <div class="mb-10">
+            <div class="section-title">4.- LOGÍSTICA DE MUESTREO</div>
+            <table class="logistica-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">#</th>
+                        <th style="width: 30%;">Concepto</th>
+                        <th style="width: 30%;">Descripción</th>
+                        <th style="width: 10%;">Cantidad</th>
+                        <th style="width: 15%;">Precio Unit. (Bs)</th>
+                        <th style="width: 10%;">Subtotal (Bs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $logIndex = 0; @endphp
+                    @foreach($proforma->logisticasMuestreo as $logistica)
                     @php
-                        $nombreParam = $parametro->nombre;
-                        if ($parametro->categoria === 'RUIDO') {
-                            $nombreParam = 'RUIDO';
-                        } elseif ($parametro->categoria === 'GASES') {
-                            $nombreParam = 'GASES';
-                        }
+                        $logIndex++;
+                        $precioUnitario = $logistica->pivot->precio_unitario ?? $logistica->costo ?? 0;
+                        $cantidad = $logistica->pivot->cantidad ?? 1;
+                        $subtotal = $precioUnitario * $cantidad;
+                        $descripcion = $logistica->pivot->descripcion ?? $logistica->descripcion ?? '';
+                        $categoria = $logistica->categoria ?? '';
                     @endphp
                     <tr>
-                        <td class="align-center">{{ $index + 1 }}</td>
-                        <td>{{ $nombreParam }}</td>
-                        <td class="align-center">{{ $proforma->tipo === 'AMBIENTAL' && $parametro->categoria === 'GASES' ? ($parametro->pivot->metodo ?? '') : ($proforma->tipo === 'AMBIENTAL' ? ($parametro->metodo ?? '') : ($parametro->tecnica ?: ($parametro->codigo_poe ?? ''))) }}</td>
-                        <td class="align-center">{{ $parametro->pivot->cantidad_muestras }}</td>
-                        <td class="align-right">Bs. {{ number_format($parametro->pivot->precio_unitario, 2) }}</td>
-                        <td class="align-right">Bs. {{ number_format($parametro->pivot->precio_unitario * $parametro->pivot->cantidad_muestras, 2) }}</td>
+                        <td class="align-center">{{ $logIndex }}</td>
+                        <td class="align-left">{{ $categoria }}</td>
+                        <td class="align-left">{{ $descripcion }}</td>
+                        <td class="align-center">{{ $cantidad }}</td>
+                        <td class="align-right">Bs. {{ number_format($precioUnitario, 2) }}</td>
+                        <td class="align-right">Bs. {{ number_format($subtotal, 2) }}</td>
                     </tr>
                     @endforeach
-
-                    @if($proforma->tipo === 'AMBIENTAL' && $proforma->logisticasMuestreo->count() > 0)
-                    @php
-                        $totalPuntos = $proforma->logisticasMuestreo->sum(fn($l) => $l->pivot->cantidad);
-                        $totalCosto = $proforma->logisticasMuestreo->sum(fn($l) => $l->costo);
-                        $descripcionUsuario = $proforma->logisticasMuestreo->first(fn($l) => !empty($l->pivot->descripcion))?->pivot->descripcion ?? 'Logística de muestreo';
-                    @endphp
+                </tbody>
+                <tfoot>
                     <tr>
-                        <td class="align-center">{{ $proforma->parametros->count() + 1 }}</td>
-                        <td>{{ $descripcionUsuario }}</td>
-                        <td class="align-center" style="text-align: center; vertical-align: middle;">
-                            <strong style="font-size: 8px;">NÚMERO DE PUNTOS TOTALES</strong><br>
-                            <span style="font-size: 14px; font-weight: bold;">{{ $totalPuntos }}</span>
+                        <td colspan="5" class="align-right">TOTAL LOGÍSTICA:</td>
+                        <td class="align-right">
+                            Bs. {{ number_format($proforma->logisticasMuestreo->sum(fn($l) => ($l->pivot->precio_unitario ?? $l->costo ?? 0) * ($l->pivot->cantidad ?? 1)), 2) }}
                         </td>
-                        <td class="align-center">{{ $totalPuntos }}</td>
-                        <td class="align-right">Bs. {{ number_format($totalCosto, 2) }}</td>
-                        <td class="align-right">Bs. {{ number_format($totalCosto, 2) }}</td>
                     </tr>
-                    @endif
-                @else
-                    <tr>
-                        <td colspan="6" class="align-center">No hay parámetros asignados</td>
-                    </tr>
-                @endif
-            </tbody>
-         </table>
-        
+                </tfoot>
+            </table>
+        </div>
+        @endif
+
         <!-- ALERTA DE MODIFICACIÓN DE PARÁMETROS -->
         @if($proforma->parametros_modificados && $proforma->justificacion_modificacion)
         <div class="alert-modification">
             <div class="alert-modification-title">
-                <strong>⚠️ MODIFICACIÓN DE PARÁMETROS BAJO CONTRATO</strong>
+                <strong>!! MODIFICACIÓN DE PARÁMETROS BAJO CONTRATO ¡¡</strong>
             </div>
-            <div class="alert-modification-text">
-                Esta proforma ha sido modificada en sus parámetros de análisis.
-            </div>
-            <div class="alert-modification-text">
+            <div style="font-size: 8px; color: #856404;">
                 <strong>Justificación:</strong> {{ $proforma->justificacion_modificacion }}
             </div>
             @if($proforma->usuarioModificacion)
-            <div class="alert-modification-detail">
-                Modificado por: {{ $proforma->usuarioModificacion->name }} | 
-                Fecha: {{ $proforma->updated_at->format('d/m/Y H:i:s') }}
+            <div style="font-size: 7px; color: #856404; margin-top: 2px; border-top: 1px dashed #ffc107; padding-top: 2px;">
+                Modificado por: {{ $proforma->usuarioModificacion->name }} |
+                Fecha: {{ $proforma->updated_at->format('Y-m-d H:i:s') }}
             </div>
             @endif
         </div>
         @endif
-        
+
         <!-- TOTAL EN LETRAS -->
         <div class="total-in-words">
             <strong>{{ $totalEnLetras }}</strong>
         </div>
 
-    </div>
-
-    <!-- RESUMEN FINANCIERO -->
-    @php
-        $subtotalCalculado = $proforma->parametros->sum(fn($p) => $p->pivot->cantidad_muestras * $p->pivot->precio_unitario);
-        if ($proforma->tipo === 'AMBIENTAL') {
-            $subtotalCalculado += $proforma->logisticasMuestreo->sum(fn($l) => $l->costo);
-        }
-    @endphp
-    <div class="financial-summary">
-        <div class="summary-title">RESUMEN FINANCIERO</div>
-        
-        <div class="summary-line">
-            <span class="summary-label">Subtotal:</span>
-            <span class="summary-value">Bs. {{ number_format($subtotalCalculado, 2) }}</span>
+        <!-- ====================================================== -->
+        <!-- RESUMEN FINANCIERO -->
+        <!-- ====================================================== -->
+        @php
+            $subtotalCalculado = $proforma->parametros->sum(fn($p) => $p->pivot->cantidad_muestras * $p->pivot->precio_unitario);
+            if ($proforma->tipo === 'AMBIENTAL') {
+                $subtotalCalculado += $proforma->logisticasMuestreo->sum(fn($l) => ($l->pivot->precio_unitario ?? $l->costo ?? 0) * ($l->pivot->cantidad ?? 1));
+            }
+        @endphp
+        <div class="financial-summary">
+            <div class="summary-title">RESUMEN FINANCIERO</div>
+            <div class="summary-line">
+                <span class="bold">Subtotal:</span>
+                <span>Bs. {{ number_format($subtotalCalculado, 2) }}</span>
+            </div>
+            @if($proforma->descuento > 0)
+            <div class="summary-line">
+                <span class="bold">Descuento Institucional (20%):</span>
+                <span class="text-danger">- Bs. {{ number_format($proforma->descuento, 2) }}</span>
+            </div>
+            @endif
+            <div class="summary-line total">
+                <span class="bold">TOTAL:</span>
+                <span class="text-success">Bs. {{ number_format($proforma->total, 2) }}</span>
+            </div>
+            @if($proforma->adelanto > 0)
+            <div class="summary-line" style="margin-top: 4px;">
+                <span class="bold">Adelanto recibido:</span>
+                <span>Bs. {{ number_format($proforma->adelanto, 2) }}</span>
+            </div>
+            <div class="summary-line" style="border-top: 1px dashed #999; padding-top: 3px;">
+                <span class="bold">Saldo pendiente:</span>
+                <span class="{{ $proforma->saldo > 0 ? 'text-danger' : 'text-success' }}">
+                    Bs. {{ number_format($proforma->saldo, 2) }}
+                </span>
+            </div>
+            @endif
         </div>
-        
-        @if($proforma->descuento > 0)
-        <div class="summary-line">
-            <span class="summary-label">Descuento Institucional (20%):</span>
-            <span class="summary-value text-danger">- Bs. {{ number_format($proforma->descuento, 2) }}</span>
+
+        <!-- OBSERVACIONES -->
+        @if($proforma->observaciones)
+        <div class="mb-10">
+            <div class="section-title">OBSERVACIONES</div>
+            <div class="observacion-box">
+                {!! nl2br(e($proforma->observaciones)) !!}
+            </div>
         </div>
         @endif
-        
-        <div class="summary-line total">
-            <span class="summary-label">TOTAL:</span>
-            <span class="summary-value text-success">Bs. {{ number_format($proforma->total, 2) }}</span>
+
+        <!-- NOTAS -->
+        <div class="nota-box">
+            <p><strong>Nota 1:</strong> {{ $cfg->config('nota1', 'Para realizar el análisis se debe dejar cancelado el 100% del monto total.') }}</p>
+            <p><strong>Nota 2:</strong> {{ $cfg->config('nota2', 'El laboratorio no realiza declaraciones de conformidad sobre los resultados que se reportan.') }}</p>
+            <p><strong>Nota 3:</strong> {{ $cfg->config('nota3', 'Los resultados estarán disponibles dentro de los plazos establecidos según el tipo de análisis.') }}</p>
         </div>
-        
-        @if($proforma->adelanto > 0)
-        <div class="summary-line" style="margin-top: 8px;">
-            <span class="summary-label">Adelanto recibido:</span>
-            <span class="summary-value">Bs. {{ number_format($proforma->adelanto, 2) }}</span>
+
+        <!-- FIN DEL INFORME -->
+        <div class="fin-informe" id="finInforme">
+            <span>-------------------- FIN DEL INFORME --------------------</span>
         </div>
-        
-        <div class="summary-line" style="border-top: 1px dashed #999; padding-top: 5px;">
-            <span class="summary-label">Saldo pendiente:</span>
-            <span class="summary-value {{ $proforma->saldo > 0 ? 'text-danger' : 'text-success' }}">
-                Bs. {{ number_format($proforma->saldo, 2) }}
-            </span>
-        </div>
-        @endif
+
     </div>
 
-    <!-- OBSERVACIONES -->
-    @if($proforma->observaciones)
-    <div class="mb-10">
-        <div class="section-title">OBSERVACIONES</div>
-        <div style="padding: 8px; border: 1px solid #e2e8f0; border-radius: 3px; font-size: 10px; background-color: #fffde7; line-height: 1.4;">
-            {!! nl2br(e($proforma->observaciones)) !!}
-        </div>
-    </div>
-    @endif
+    <!-- ====================================================== -->
+    <!-- FOOTER -->
+    <!-- ====================================================== -->
+    <footer>
+        <!-- FIRMAS -->
+        <table class="footer-firmas">
+            <tr>
+                <td>
+                    <div class="firma-linea"></div>
+                    <div class="firma-texto">
+                        <div class="nombre">{{ $cfg->config('responsable_nombre') ?? $global->responsable_nombre ?? 'Lic. Mayra Anghela Calderón Rosas' }}</div>
+                        <div>{{ $cfg->config('responsable_cargo') ?? $global->responsable_cargo ?? 'RESPONSABLE - UAQ' }}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="firma-linea"></div>
+                    <div class="firma-texto">
+                        <div class="nombre">{{ $cfg->config('director_nombre') ?? $global->director_nombre ?? 'M.Sc. Ing. Elva Fernández I.' }}</div>
+                        <div>{{ $cfg->config('director_cargo') ?? $global->director_cargo ?? 'DIRECTOR(A) CIMA - UATF' }}</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-    <!-- NOTAS -->
-    <div style="font-size: 10px; margin-top: 15px; padding: 8px; background-color: #f8f9fa; border-radius: 3px; border-left: 3px solid #2c5282;">
-        <p><strong>Nota 1:</strong> {{ $cfg->config('nota1', 'Para realizar el análisis se debe dejar cancelado el 100% del monto total.') }}</p>
-        <p><strong>Nota 2:</strong> {{ $cfg->config('nota2', 'El laboratorio no realiza declaraciones de conformidad sobre los resultados que se reportan.') }}</p>
-        <p><strong>Nota 3:</strong> {{ $cfg->config('nota3', 'Los resultados estarán disponibles dentro de los plazos establecidos según el tipo de análisis.') }}</p>
-    </div>
+        <!-- LÍNEA DIVISORA -->
+        <div class="footer-line"></div>
 
-    <!-- FIRMAS -->
-    <table class="signatures-table">
-         <tr>
-             <td>
-                <div class="signature-line"></div>
-                <div class="signature-text">
-                    <strong>{{ $cfg->config('responsable_nombre') }}</strong><br>
-                    {{ $cfg->config('responsable_cargo') }}<br>
-                    {{ $cfg->config('institucion_nombre') }}
-                </div>
-             </td>
-             <td>
-                <div class="signature-line"></div>
-                <div class="signature-text">
-                    <strong>{{ $cfg->config('director_nombre') }}</strong><br>
-                    {{ $cfg->config('director_cargo') }}<br>
-                    {{ $proforma->cliente->razon_social }}
-                </div>
-             </td>
-         </tr>
-     </table>
-
-    <!-- FOOTER (colofón institucional, sale una sola vez, no en cada página) -->
-    <div class="footer">
-        <p><strong>{{ $cfg->config('institucion_nombre') }}</strong></p>
-        <p>{{ $cfg->config('footer_direccion') }}</p>
-        <p>{{ $cfg->config('footer_telefono') }} | {{ $cfg->config('footer_email') }}</p>
-        <p><em>{{ $cfg->config('footer_texto') }}</em></p>
-    </div>
-
+        <!-- INFORMACIÓN INSTITUCIONAL CON NUMERACIÓN -->
+        <table class="footer-info">
+            <tr>
+                <td colspan="3">
+                    Av. Arce esq. Villazón s/n - Teléfono/Fax 62-29711 - Edificio facultad de Ingenieria Minera bloque 1, segundo piso
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    Cel: 78570522 - cima-uatf@uatf.edu.bo
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="pagina">
+                    Página <span class="pagenum"></span> de {{ $totalPaginas ?? '?' }}
+                </td>
+            </tr>
+        </table>
+    </footer>
 </body>
 </html>

@@ -19,14 +19,12 @@
                 </p>
             </div>
             
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 flex-wrap">
                 @auth
-                    @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
-                        <a href="{{ route('informes.create') }}" 
-                           class="btn" 
-                           style="background-color: #C2F527; border-radius: 30px; padding: 10px 25px; color: #000000; border: none; transition: all 0.3s ease;"
-                           onmouseover="this.style.backgroundColor='#a8d420'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(194, 245, 39, 0.3)';"
-                           onmouseout="this.style.backgroundColor='#C2F527'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                     @can('crear parametros')
+                        <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                           onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
+                           onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
                             <i class="fas fa-plus-circle"></i>
                             Nuevo Informe
                         </a>
@@ -36,6 +34,18 @@
                         </div>
                     @endif
                 @endauth
+
+                <!-- BOTÓN NUEVO PARA ACTUALIZAR PRECIOS CON ANIMACIÓN -->
+                @can('editar parametros')
+                    <a href="{{ route('parametros.precios.masivos') }}" 
+                       class="btn" 
+                       style="background-color: #28a745; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                       onmouseover="this.style.backgroundColor='#218838'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(40, 167, 69, 0.3)';"
+                       onmouseout="this.style.backgroundColor='#28a745'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
+                        <i class="fas fa-dollar-sign me-1"></i>
+                        Actualizar Precios
+                    </a>
+                @endcan
             </div>
         </div>
     </div>
@@ -45,29 +55,45 @@
     <!-- ============================================ -->
     <div class="card mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ route('informes.index') }}" class="row g-3" id="searchForm">
-                <!-- Buscador por código -->
-                <div class="col-md-12 mb-3">
-                    <label for="search" class="form-label fw-semibold">
-                        <i class="fas fa-search me-2" style="color: #C2F527;"></i>
-                        Buscar Informe
-                    </label>
-                    <div class="input-group">
-                        <span class="input-group-text" style="background-color: #C2F527; color: #000; border: none;">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" 
-                               class="form-control" 
-                               id="search" 
-                               name="search" 
-                               value="{{ request('search') }}" 
-                               placeholder="Buscar por código de informe (ej: INF-001)..."
-                               style="border-left: none;">
-                        @if(request('search'))
-                        <a href="{{ route('informes.index') }}" class="btn btn-outline-secondary" style="border-radius: 0 30px 30px 0;">
-                            <i class="fas fa-times"></i> Limpiar
-                        </a>
-                        @endif
+            <form action="{{ route('parametros.index') }}" method="GET" id="searchForm">
+                <div class="row align-items-end">
+                    <div class="col-md-8">
+                        <label for="search" class="form-label fw-semibold">
+                            <i class="fas fa-search me-2" style="color: #A31800;"></i>
+                            Buscar Parámetro
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="background-color: #A31800; color: white; border: none;">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="search" 
+                                   name="search" 
+                                   value="{{ request('search') }}" 
+                                   placeholder="Buscar por ID, Nombre, Método o Categoría..."
+                                   style="border-left: none;">
+                            <button class="btn" type="submit" style="background-color: #A31800; color: white; border: none;">
+                                <i class="fas fa-filter me-1"></i> Filtrar
+                            </button>
+                            @if(request('search'))
+                                <a href="{{ route('parametros.index') }}" class="btn btn-outline-secondary" style="border-radius: 0 30px 30px 0;">
+                                    <i class="fas fa-times"></i> Limpiar
+                                </a>
+                            @endif
+                        </div>
+                        <small class="text-muted mt-1 d-block">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Puede buscar por ID, nombre del parámetro, método de análisis o categoría.
+                        </small>
+                    </div>
+                    
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <div class="d-flex align-items-center justify-content-md-end">
+                            <span class="badge" style="background-color: #A31800; color: white; padding: 8px 15px; border-radius: 20px; font-weight: 500;">
+                                <i class="fas fa-database me-1"></i> Total: {{ $parametros->total() }} parámetros
+                            </span>
+                        </div>
                     </div>
                     <small class="text-muted mt-1 d-block">
                         <i class="fas fa-info-circle me-1"></i>
@@ -276,22 +302,70 @@
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
-                            <tr style="background-color: #C2F527; color: #000;">
-                                <th width="100" style="background-color: #C2F527; color: #000; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Código</th>
-                                <th style="background-color: #C2F527; color: #000; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Proforma / Cliente</th>
-                                <th width="120" style="background-color: #C2F527; color: #000; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Estado</th>
-                                <th width="100" style="background-color: #C2F527; color: #000; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Prioridad</th>
-                                <th width="120" style="background-color: #C2F527; color: #000; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Emisión</th>
-                                <th width="140" class="text-center" style="background-color: #C2F527; color: #000; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Acciones</th>
+                            <tr style="background-color: #A31800; color: white;">
+                                <th width="80" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">ID</th>
+                                <th style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Parámetro</th>
+                                <th style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Método</th>
+                                <th width="140" class="text-end" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Precio Unitario</th>
+                                <th width="120" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Categoría</th>
+                                <th width="120" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Tipo de Análisis</th>
+                                <th width="100" class="text-center" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Proformas</th>
+                                <th width="140" class="text-center" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($informes as $informe)
                                 <tr>
                                     <td>
-                                        <span class="badge fs-6" style="background-color: #0dcaf0; color: #000000;">
-                                            <i class="fas fa-hashtag me-1"></i>
-                                            {{ $informe->codigo }}
+                                        <span class="badge bg-secondary">#{{ $parametro->id }}</span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ $parametro->nombre }}</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            <i class="fas fa-microscope me-1"></i>
+                                            {{ $parametro->metodo }}
+                                        </small>
+                                    </td>
+                                    <td class="text-end fw-semibold text-success">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        {{ number_format($parametro->precio_unitario, 2) }}
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            @if($parametro->tipo == 'AMBIENTAL') bg-warning text-dark
+                                            @elseif($parametro->tipo == 'AGUA') bg-info
+                                            @elseif($parametro->tipo == 'INVESTIGACION') bg-secondary
+                                            @else bg-secondary
+                                            @endif">
+                                            <i class="fas 
+                                                @if($parametro->tipo == 'AMBIENTAL') fa-leaf
+                                                @elseif($parametro->tipo == 'AGUA') fa-tint
+                                                @elseif($parametro->tipo == 'INVESTIGACION') fa-flask
+                                                @else fa-tag
+                                                @endif me-1"></i>
+                                            {{ $parametro->tipo ?? 'N/A' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            @if($parametro->categoria == 'AIRE') bg-warning text-dark
+                                            @elseif($parametro->categoria == 'RUIDO') bg-info
+                                            @elseif($parametro->categoria == 'GASES') bg-danger
+                                            @elseif($parametro->categoria == 'AGUA') bg-primary
+                                            @elseif($parametro->categoria == 'SUELO') bg-success
+                                            @else bg-secondary
+                                            @endif">
+                                            <i class="fas 
+                                                @if($parametro->categoria == 'AIRE') fa-wind
+                                                @elseif($parametro->categoria == 'RUIDO') fa-volume-up
+                                                @elseif($parametro->categoria == 'GASES') fa-industry
+                                                @elseif($parametro->categoria == 'AGUA') fa-tint
+                                                @elseif($parametro->categoria == 'SUELO') fa-mountain
+                                                @else fa-tag
+                                                @endif me-1"></i>
+                                            {{ $parametro->categoria ?? 'N/A' }}
                                         </span>
                                     </td>
                                     
@@ -355,8 +429,7 @@
                                     
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            <!-- Botón VER -->
-                                            <a href="{{ route('informes.show', $informe) }}" 
+                                            <a href="{{ route('parametros.show', $parametro) }}" 
                                                class="btn btn-sm"
                                                style="color: #0dcaf0; border: 1px solid #0dcaf0; background: transparent; border-radius: 6px; padding: 0.5rem; width: 38px; height: 38px; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center;"
                                                data-bs-toggle="tooltip"
@@ -366,71 +439,41 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
-<!-- <<<<<<< HEAD
                                             @auth
-                                                @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
-                                                    <a href="{{ route('informes.edit', $informe) }}" 
-                                                       class="btn btn-outline-warning btn-sm"
-                                                       data-bs-toggle="tooltip"
-                                                       title="Editar informe">
-                                                        <i class="fas fa-edit"></i>
+                                                @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
+                                                    @can('editar parametros')
+                                                        <a href="{{ route('parametros.edit', $parametro) }}" 
+                                                           class="btn btn-outline-warning btn-sm"
+                                                           data-bs-toggle="tooltip" 
+                                                           data-bs-placement="top"
+                                                           title="Editar parámetro">
+                                                            <i class="fas fa-edit"></i>
+                                                    @endcan
                                                     </a>
-                                                    
-                                                    <form action="{{ route('informes.destroy', $informe) }}" 
-                                                          method="POST" 
-                                                          class="d-inline"
-                                                          onsubmit="return confirm('¿Está seguro de eliminar el informe {{ $informe->codigo }}?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" 
-                                                                class="btn btn-outline-danger btn-sm"
-                                                                data-bs-toggle="tooltip"
-                                                                title="Eliminar informe">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
+                                                    @can('eliminar parametros')
+                                                    <button type="button" 
+                                                            class="btn btn-outline-danger btn-sm"
+                                                            data-bs-toggle="tooltip" 
+                                                            data-bs-placement="top"
+                                                            title="Eliminar parámetro"
+                                                            onclick="confirmarEliminacion({{ $parametro->id }}, '{{ $parametro->nombre }}', 'parámetro')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                    @endcan
                                                 @endif
                                             @endauth
-                                            
-                                            <a href="{{ route('informes.pdf', $informe) }}" 
-                                               class="btn btn-outline-success btn-sm"
-                                               data-bs-toggle="tooltip"
-                                               title="Generar PDF"
-                                               target="_blank">
-                                                <i class="fas fa-file-pdf"></i>
-                                            </a>
-                                        </div>
-======= -->
-                                            @can('editar parametros')
-                                                <a href="{{ route('parametros.edit', $parametro) }}" 
-                                                   class="btn btn-outline-warning btn-sm"
-                                                   data-bs-toggle="tooltip" 
-                                                   data-bs-placement="top"
-                                                   title="Editar parámetro">
-                                                    <i class="fas fa-edit"></i>
-                                            @endcan
-                                            </a>
-                                            @can('eliminar parametros')
-                                            <button type="button" 
-                                                    class="btn btn-outline-danger btn-sm"
-                                                    data-bs-toggle="tooltip" 
-                                                    data-bs-placement="top"
-                                                    title="Eliminar parámetro"
-                                                    onclick="confirmarEliminacion({{ $parametro->id }}, '{{ $parametro->nombre }}', 'parámetro')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                            @endcan
                                         </div>
                                         
-                                        <!-- Formulario oculto para eliminar -->
-                                        @can('eliminar parametros')
-                                            <form id="delete-form-{{ $parametro->id }}" 
-                                                  action="{{ route('parametros.destroy', $parametro) }}" 
-                                                  method="POST" class="d-none">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                        @endcan
+                                        @auth
+                                            @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
+                                                <form id="delete-form-{{ $parametro->id }}" 
+                                                      action="{{ route('parametros.destroy', $parametro) }}" 
+                                                      method="POST" class="d-none">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            @endif
+                                        @endauth
                                     </td>
                                 </tr>
                             @endforeach
@@ -438,7 +481,12 @@
                     </table>
                 </div>
 
-                <!-- Botón de Papelera y texto de registros centrado -->
+                @if($parametros->hasPages())
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $parametros->appends(request()->query())->links() }}
+                    </div>
+                @endif
+                
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
                     @auth
                         @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
@@ -473,46 +521,32 @@
                         @endif
                     </p>
                     
-<!-- <<<<<<< HEAD
                     @auth
-                        @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
-                            <a href="{{ route('informes.create') }}" 
-                               class="btn" 
-                               style="background-color: #C2F527; border-radius: 30px; padding: 10px 25px; color: #000000; border: none; transition: all 0.3s ease;"
-                               onmouseover="this.style.backgroundColor='#a8d420'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(194, 245, 39, 0.3)';"
-                               onmouseout="this.style.backgroundColor='#C2F527'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                                <i class="fas fa-plus-circle me-2"></i>
-                                Crear primer informe
-                            </a>
+                        @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
+                            @if(request('search'))
+                                <a href="{{ route('parametros.index') }}" class="btn btn-outline-secondary" style="border-radius: 30px; padding: 10px 25px;">
+                                    <i class="fas fa-times me-2"></i>
+                                    Limpiar búsqueda
+                                </a>
+                            @else
+                                <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                                   onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
+                                   onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
+                                    <i class="fas fa-plus-circle me-2"></i>
+                                    Crear primer parámetro
+                                </a>
+                            @endif
                         @else
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
-                                Solo el administrador puede crear nuevos informes.
+                                Solo el administrador puede crear nuevos parámetros.
                             </div>
-======= -->
-                    @can('crear parametros')
-                        @if(request('search'))
-                            <a href="{{ route('parametros.index') }}" class="btn btn-outline-secondary" style="border-radius: 30px; padding: 10px 25px;">
-                                <i class="fas fa-times me-2"></i>
-                                Limpiar búsqueda
-                            </a>
-                        @else
-                            <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;">
-                                <i class="fas fa-plus-circle me-2"></i>
-                                Crear primer parámetro
-                            </a>
                         @endif
-                    @else
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Solo el administrador puede crear nuevos parámetros.
-                        </div>
-                    @endcan
+                    @endauth
                 </div>
             @endif
         </div>
         
-        @if($informes->count() > 0)
         <div class="card-footer bg-light">
             <div class="row">
                 <div class="col-md-6">
@@ -533,12 +567,9 @@
     </div>
 </div>
 
-<!-- ============================================ -->
-<!-- ESTILOS ADICIONALES                           -->
-<!-- ============================================ -->
 <style>
-.btn[style*="background-color: #C2F527"]:hover {
-    background-color: #a8d420 !important;
+.btn[style*="background-color: #A31800"]:hover {
+    background-color: #7a1200 !important;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(194, 245, 39, 0.3);
 }
@@ -568,6 +599,21 @@
     background-color: #C2F527 !important;
     border-color: #C2F527 !important;
     color: #000 !important;
+}
+
+.btn-outline-warning,
+.btn-outline-danger {
+    transition: all 0.2s ease;
+}
+
+.btn-outline-warning:hover,
+.btn-outline-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.fa-microscope{
+    color: #A31800!important;
 }
 
 .input-group-text {
@@ -701,6 +747,12 @@ button[type="submit"]:focus {
             });
         }
     });
+
+    function confirmarEliminacion(id, nombre, tipo) {
+        if (confirm(`¿Está seguro de eliminar el ${tipo} "${nombre}"?\n\n⚠️ Esta acción moverá el registro a la papelera.`)) {
+            document.getElementById(`delete-form-${id}`).submit();
+        }
+    }
 </script>
 @endpush
 @endsection

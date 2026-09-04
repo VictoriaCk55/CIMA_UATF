@@ -2,7 +2,6 @@
 
 <?php $__env->startSection('content'); ?>
 <div class="container-main">
-    <!-- Encabezado de página -->
     <div class="page-header mt-3">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -12,7 +11,6 @@
                         Proforma <?php echo e($proforma->codigo); ?>
 
                     </h1>
-                    <!-- BADGE DE ESTADO -->
                     <span class="badge bg-<?php echo e($proforma->estado_color); ?> fs-6 px-3 py-2">
                         <i class="fas <?php echo e($proforma->estado_icono); ?> me-1"></i>
                         <?php echo e($proforma->estado_texto); ?>
@@ -32,7 +30,6 @@
         </div>
     </div>
 
-    <!-- Mensajes -->
     <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
@@ -51,9 +48,7 @@
         </div>
     <?php endif; ?>
 
-    <!-- Contenido -->
     <div class="row">
-        <!-- Información de la proforma -->
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
@@ -79,36 +74,45 @@
                             <p class="h5">
                                 <span class="badge 
                                     <?php if($proforma->tipo == 'AMBIENTAL'): ?> bg-warning text-dark
-                                    <?php elseif($proforma->tipo == 'AGUA'): ?> bg-info
+                                    <?php elseif($proforma->tipo == 'ANALISIS_QUIMICO'): ?> bg-info text-white
                                     <?php else: ?> bg-secondary
                                     <?php endif; ?>">
                                     <i class="fas 
                                         <?php if($proforma->tipo == 'AMBIENTAL'): ?> fa-leaf
-                                        <?php elseif($proforma->tipo == 'AGUA'): ?> fa-tint
+                                        <?php elseif($proforma->tipo == 'ANALISIS_QUIMICO'): ?> fa-flask
                                         <?php else: ?> fa-flask
                                         <?php endif; ?> me-1"></i>
-                                    <?php echo e($proforma->tipo); ?>
+                                    <?php echo e($proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo); ?>
 
                                 </span>
                             </p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="text-muted small">Fecha de Emisión</label>
+                            <label class="text-muted small">Fecha de Recepción</label>
                             <p class="h5">
                                 <i class="far fa-calendar me-1" style="color: #ffc107;"></i>
-                                <?php echo e($proforma->fecha_emision->format('d/m/Y')); ?>
+                                <?php echo e($proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : 'N/A'); ?>
 
                             </p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="text-muted small">Fecha de Recepción</label>
+                            <label class="text-muted small">Fecha de Muestreo</label>
                             <p class="h5">
-                                <?php if($proforma->fecha_recepcion): ?>
+                                <?php if($proforma->fecha_muestreo): ?>
                                     <i class="far fa-calendar-check me-1" style="color: #ffc107;"></i>
-                                    <?php echo e($proforma->fecha_recepcion->format('d/m/Y')); ?>
+                                    <?php echo e($proforma->fecha_muestreo->format('Y-m-d')); ?>
 
                                 <?php else: ?>
-                                    <span class="text-muted">No especificada</span>
+                                    <i class="fas fa-exclamation-triangle me-1" style="color: #ff9800;"></i>
+                                    <span class="text-warning">No especificada</span>
+                                    <?php if($proforma->estado == 'BORRADOR'): ?>
+                                        <br>
+                                        <small class="text-muted">
+                                            <a href="<?php echo e(route('proformas.edit', $proforma)); ?>" style="color: #ffc107;">
+                                                <i class="fas fa-edit me-1"></i> Editar para agregar fecha de muestreo
+                                            </a>
+                                        </small>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </p>
                         </div>
@@ -157,7 +161,6 @@
                 </div>
             </div>
 
-            <!-- ===== NUEVA SECCIÓN: INFORMACIÓN DEL SISTEMA ===== -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -171,7 +174,7 @@
                             <label class="text-muted small">Fecha de Creación</label>
                             <p class="h5">
                                 <i class="far fa-calendar-plus me-2" style="color: #ffc107;"></i>
-                                <?php echo e($proforma->created_at->format('d/m/Y H:i:s')); ?>
+                                <?php echo e($proforma->created_at->format('Y-m-d H:i:s')); ?>
 
                             </p>
                             <small class="text-muted">
@@ -183,7 +186,7 @@
                             <label class="text-muted small">Última Actualización</label>
                             <p class="h5">
                                 <i class="far fa-calendar-check me-2" style="color: #ffc107;"></i>
-                                <?php echo e($proforma->updated_at->format('d/m/Y H:i:s')); ?>
+                                <?php echo e($proforma->updated_at->format('Y-m-d H:i:s')); ?>
 
                             </p>
                             <small class="text-muted">
@@ -195,7 +198,6 @@
                 </div>
             </div>
 
-            <!-- Detalles del Cliente -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -235,7 +237,6 @@
                         </div>
                     </div>
                     
-                    <!-- CAMPO UNIDAD - DESPUÉS DE DIRECCIÓN -->
                     <?php if($proforma->unidad): ?>
                     <div class="row mt-2 pt-2 border-top">
                         <div class="col-12">
@@ -257,7 +258,6 @@
                 </div>
             </div>
 
-            <!-- ALERTA DE MODIFICACIÓN DE PARÁMETROS -->
             <?php if($proforma->parametros_modificados && $proforma->justificacion_modificacion): ?>
             <div class="card mb-4 border-warning">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
@@ -281,7 +281,7 @@
 
                             <br>
                             <i class="fas fa-calendar-alt me-1"></i>
-                            Fecha: <?php echo e($proforma->updated_at->format('d/m/Y H:i:s')); ?>
+                            Fecha: <?php echo e($proforma->updated_at->format('Y-m-d H:i:s')); ?>
 
                         </small>
                         <?php endif; ?>
@@ -290,7 +290,6 @@
             </div>
             <?php endif; ?>
 
-            <!-- Servicios/Parámetros -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -316,7 +315,7 @@
                                     <td>
                                         <strong><?php echo e($parametro->categoria === 'RUIDO' ? 'RUIDO' : ($parametro->categoria === 'GASES' ? 'GASES' : $parametro->nombre)); ?></strong>
                                     </td>
-                                    <td class="text-center"><?php echo e($proforma->tipo === 'AGUA' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A')); ?></td>
+                                    <td class="text-center"><?php echo e($proforma->tipo === 'AMBIENTAL' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A')); ?></td>
                                     <td class="text-center"><?php echo e($parametro->pivot->cantidad_muestras); ?></td>
                                     <td class="text-end">Bs. <?php echo e(number_format($parametro->pivot->precio_unitario, 2)); ?></td>
                                     <td class="text-end">Bs. <?php echo e(number_format($parametro->pivot->precio_unitario * $parametro->pivot->cantidad_muestras, 2)); ?></td>
@@ -361,28 +360,39 @@
                                     <th>Concepto</th>
                                     <th>Descripción</th>
                                     <th class="text-center">Cantidad</th>
-                                    <th class="text-end">Costo Unit.</th>
+                                    <th class="text-end">Precio Unit.</th>
                                     <th class="text-end">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php $totalLogistica = 0; ?>
                                 <?php $__currentLoopData = $proforma->logisticasMuestreo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $subtotal = $precio * ($log->pivot->cantidad ?? 1);
+                                    $totalLogistica += $subtotal;
+                                ?>
                                 <tr>
                                     <td><?php echo e($log->categoria); ?> - <?php echo e($log->descripcion); ?></td>
                                     <td><?php echo e($log->pivot->descripcion ?? ''); ?></td>
-                                    <td class="text-center"><?php echo e($log->pivot->cantidad); ?></td>
-                                    <td class="text-end">Bs. <?php echo e(number_format($log->costo, 2)); ?></td>
-                                    <td class="text-end">Bs. <?php echo e(number_format($log->pivot->subtotal, 2)); ?></td>
+                                    <td class="text-center"><?php echo e($log->pivot->cantidad ?? 1); ?></td>
+                                    <td class="text-end">Bs. <?php echo e(number_format($precio, 2)); ?></td>
+                                    <td class="text-end">Bs. <?php echo e(number_format($subtotal, 2)); ?></td>
                                 </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Total Logística:</td>
+                                    <td class="text-end fw-bold">Bs. <?php echo e(number_format($totalLogistica, 2)); ?></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
             <?php endif; ?>
 
-            <!-- ===== RESUMEN FINANCIERO ===== -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -395,7 +405,28 @@
                         <table class="table table-sm" style="margin-bottom: 0;">
                             <tbody>
                                 <tr>
-                                    <td class="text-end fw-bold">Total:</td>
+                                    <td class="text-end fw-bold">Subtotal Servicios:</td>
+                                    <td class="text-end">Bs. <?php echo e(number_format($proforma->parametros->sum(fn($p) => $p->pivot->precio_unitario * $p->pivot->cantidad_muestras), 2)); ?></td>
+                                </tr>
+                                <?php if($proforma->logisticasMuestreo->count() > 0): ?>
+                                <?php $totalLogistica = 0; ?>
+                                <?php $__currentLoopData = $proforma->logisticasMuestreo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $totalLogistica += $precio * ($log->pivot->cantidad ?? 1);
+                                ?>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+                                    <td class="text-end fw-bold">Logística:</td>
+                                    <td class="text-end">Bs. <?php echo e(number_format($totalLogistica, 2)); ?></td>
+                                </tr>
+                                <?php endif; ?>
+                                <tr>
+                                    <td class="text-end fw-bold">Descuento:</td>
+                                    <td class="text-end text-danger">- Bs. <?php echo e(number_format($proforma->descuento, 2)); ?></td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td class="text-end fw-bold text-success">Total:</td>
                                     <td class="text-end fw-bold text-success">
                                         Bs. <?php echo e(number_format($proforma->total, 2)); ?>
 
@@ -435,9 +466,7 @@
             <?php endif; ?>
         </div>
 
-        <!-- Panel lateral -->
         <div class="col-md-4">
-            <!-- Card acciones -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -484,7 +513,6 @@
                             <?php endif; ?>
                         <?php endif; ?>
                             <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar pdf proformas')): ?>
-                                        <!-- PDF - Verde outline con texto negro, hover verde sólido texto blanco -->
                         <a href="<?php echo e(route('proformas.pdf', $proforma)); ?>" 
                            class="btn"
                            style="color: #000000; border: 2px solid #198754; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -500,7 +528,6 @@
                             
                             <?php if($proforma->estado == 'BORRADOR'): ?>
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar proformas')): ?>
-                                    <!-- Editar Proforma Completa - Amarillo outline -->
                                     <a href="<?php echo e(route('proformas.edit', $proforma)); ?>" 
                                        class="btn"
                                        style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -511,7 +538,6 @@
                                     </a>
                                     <?php endif; ?>
                                     
-                                    <!-- ENVIAR A REVISIÓN -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -525,7 +551,6 @@
                                         Enviar a Revisión
                                     </button>
                                     <?php endif; ?>
-                                    <!-- Rechazar Proforma -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -540,7 +565,6 @@
                                     </button>
                                     <?php endif; ?>
                                     
-                                    <!-- Eliminar Proforma -->
                                      <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('eliminar proformas')): ?>
                                     <form action="<?php echo e(route('proformas.destroy', $proforma)); ?>" 
                                           method="POST" 
@@ -563,7 +587,6 @@
                                         Proforma en revisión
                                     </div>
                                     
-                                    <!-- Botón para editar SOLO ADELANTO (ENVIADA) -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar adelanto de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -577,7 +600,6 @@
                                     </button>
                                     <?php endif; ?>
 
-                                    <!-- Aprobar Proforma -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -592,7 +614,6 @@
                                     </button>
                                     <?php endif; ?>
                                     
-                                    <!-- Rechazar Proforma -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -613,7 +634,6 @@
                                         Proforma aprobada
                                     </div>
                                     
-                                    <!-- Botón para editar SOLO ADELANTO (APROBADA) -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar adelanto de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -628,7 +648,6 @@
                                     <?php endif; ?>
                                     
                                     <?php if($proforma->informe): ?>
-                                        <!-- Ver Informe Asociado -->
                                         <a href="<?php echo e(route('informes.show', $proforma->informe)); ?>" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -639,7 +658,6 @@
                                         </a>
                                     <?php else: ?>
                                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear informes')): ?>
-                                        <!-- Crear Informe -->
                                         <a href="<?php echo e(route('informes.create', ['proforma_id' => $proforma->id])); ?>" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #0dcaf0; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -657,7 +675,6 @@
                                         Proforma finalizada
                                     </div>
                                     
-                                    <!-- FINALIZADA - NO SE PUEDE EDITAR NADA -->
                                     <div class="alert alert-info mt-2">
                                         <i class="fas fa-info-circle me-2"></i>
                                         Las proformas finalizadas no pueden ser modificadas.
@@ -680,7 +697,6 @@
                                         Proforma rechazada
                                     </div>
                                     
-                                    <!-- Volver a Borrador -->
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
                                     <button type="button" 
                                             class="btn"
@@ -700,7 +716,6 @@
                 </div>
             </div>
 
-            <!-- Información de Informe -->
             <div class="card">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -720,7 +735,6 @@
 
                                 </span>
                             </p>
-                            <!-- Ver Informe -->
                             <a href="<?php echo e(route('informes.show', $proforma->informe)); ?>" 
                                class="btn"
                                style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block;"
@@ -752,195 +766,189 @@
     </div>
 </div>
 
-<!-- Modal para cambiar estado -->
-        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
-        <div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color: #ffc107; border-bottom: none;">
-                        <h5 class="modal-title" style="color: #000000;">
-                            <i class="fas fa-exchange-alt me-2" style="color: #000000;"></i>
-                            Cambiar Estado de la Proforma
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
-                    </div>
-                    <form action="<?php echo e(route('proformas.cambiar-estado', $proforma)); ?>" method="POST">
-                        <?php echo csrf_field(); ?>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="estado" class="form-label">
-                                    <i class="fas fa-flag me-1 text-danger"></i>
-                                    Nuevo Estado <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-select" id="estado" name="estado" required>
-                                    <option value="">-- Seleccione estado --</option>
-                                    <option value="BORRADOR">📝 Borrador</option>
-                                    <option value="ENVIADA">⏳ Enviada</option>
-                                    <option value="APROBADA">✅ Aprobada</option>
-                                    <option value="RECHAZADA">❌ Rechazada</option>
-                                    <option value="FINALIZADA">🏁 Finalizada</option>
-                                </select>
-                                <small class="form-text text-muted">
-                                    Estado actual: <strong><?php echo e($proforma->estado_texto); ?></strong>
-                                </small>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="comentario" class="form-label">
-                                    <i class="fas fa-comment me-1"></i>
-                                    Comentario (Opcional)
-                                </label>
-                                <textarea class="form-control" 
-                                          id="comentario" 
-                                          name="comentario" 
-                                          rows="3"
-                                          placeholder="Justificación del cambio de estado..."></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 20px;">
-                                <i class="fas fa-times me-2"></i>
-                                Cancelar
-                            </button>
-                            <button type="submit" class="btn" style="background-color: #ffc107; border-radius: 30px; padding: 8px 20px; color: #000000; border: none;">
-                                <i class="fas fa-save me-2"></i>
-                                Guardar Cambio
-                            </button>
-                        </div>
-                    </form>
-                </div>
+<?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('revision de proformas')): ?>
+<div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #ffc107; border-bottom: none;">
+                <h5 class="modal-title" style="color: #000000;">
+                    <i class="fas fa-exchange-alt me-2" style="color: #000000;"></i>
+                    Cambiar Estado de la Proforma
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
             </div>
-        </div>
-        <?php endif; ?>
-
-        <!-- Modal para editar SOLO ADELANTO -->
-         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar adelanto de proformas')): ?>
-        <div class="modal fade" id="editarAdelantoModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color: #ffc107; border-bottom: none;">
-                        <h5 class="modal-title" style="color: #000000;">
-                            <i class="fas fa-money-bill-wave me-2" style="color: #000000;"></i>
-                            Actualizar Adelanto
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+            <form action="<?php echo e(route('proformas.cambiar-estado', $proforma)); ?>" method="POST">
+                <?php echo csrf_field(); ?>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">
+                            <i class="fas fa-flag me-1 text-danger"></i>
+                            Nuevo Estado <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="estado" name="estado" required>
+                            <option value="">-- Seleccione estado --</option>
+                            <option value="BORRADOR">📝 Borrador</option>
+                            <option value="ENVIADA">⏳ Enviada</option>
+                            <option value="APROBADA">✅ Aprobada</option>
+                            <option value="RECHAZADA">❌ Rechazada</option>
+                            <option value="FINALIZADA">🏁 Finalizada</option>
+                        </select>
+                        <small class="form-text text-muted">
+                            Estado actual: <strong><?php echo e($proforma->estado_texto); ?></strong>
+                        </small>
                     </div>
-                    <form action="<?php echo e(route('proformas.actualizar-adelanto', $proforma)); ?>" method="POST">
-                        <?php echo csrf_field(); ?>
-                        <?php echo method_field('PUT'); ?>
-                        <div class="modal-body">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <strong>Información actual:</strong>
-                                <ul class="mb-0 mt-2">
-                                    <li>Total: <strong>Bs. <?php echo e(number_format($proforma->total, 2)); ?></strong></li>
-                                    <li>Adelanto actual: <strong>Bs. <?php echo e(number_format($proforma->adelanto, 2)); ?></strong></li>
-                                    <li>Saldo actual: <strong class="<?php echo e($proforma->saldo > 0 ? 'text-danger' : 'text-success'); ?>">
-                                        Bs. <?php echo e(number_format($proforma->saldo, 2)); ?>
-
-                                    </strong></li>
-                                </ul>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="nuevo_adelanto" class="form-label">
-                                    <i class="fas fa-hand-holding-usd me-1 text-warning"></i>
-                                    Nuevo Adelanto (Bs.) <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Bs.</span>
-                                    <input type="number" 
-                                           class="form-control" 
-                                           id="nuevo_adelanto" 
-                                           name="adelanto" 
-                                           value="<?php echo e($proforma->adelanto); ?>" 
-                                           min="0" 
-                                           max="<?php echo e($proforma->total); ?>"
-                                           step="0.01"
-                                           required>
-                                </div>
-                                <small class="text-muted">
-                                    El adelanto no puede ser mayor al total (Bs. <?php echo e(number_format($proforma->total, 2)); ?>)
-                                </small>
-                            </div>
-                            
-                            <div class="mb-3" id="nuevoSaldoPreview">
-                                <?php
-                                    $nuevoSaldoPreview = $proforma->total - $proforma->adelanto;
-                                ?>
-                                <label class="form-label text-muted">Nuevo saldo estimado:</label>
-                                <p class="h5 <?php echo e($nuevoSaldoPreview > 0 ? 'text-danger' : 'text-success'); ?>">
-                                    <i class="fas <?php echo e($nuevoSaldoPreview > 0 ? 'fa-exclamation-triangle' : 'fa-check-circle'); ?> me-2"></i>
-                                    Bs. <span id="saldoPreview"><?php echo e(number_format($nuevoSaldoPreview, 2)); ?></span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 20px;">
-                                <i class="fas fa-times me-2"></i>
-                                Cancelar
-                            </button>
-                            <button type="submit" class="btn" style="background-color: #ffc107; border-radius: 30px; padding: 8px 20px; color: #000000; border: none;">
-                                <i class="fas fa-save me-2"></i>
-                                Actualizar Adelanto
-                            </button>
-                        </div>
-                    </form>
+                    
+                    <div class="mb-3">
+                        <label for="comentario" class="form-label">
+                            <i class="fas fa-comment me-1"></i>
+                            Comentario (Opcional)
+                        </label>
+                        <textarea class="form-control" 
+                                  id="comentario" 
+                                  name="comentario" 
+                                  rows="3"
+                                  placeholder="Justificación del cambio de estado..."></textarea>
+                    </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 20px;">
+                        <i class="fas fa-times me-2"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn" style="background-color: #ffc107; border-radius: 30px; padding: 8px 20px; color: #000000; border: none;">
+                        <i class="fas fa-save me-2"></i>
+                        Guardar Cambio
+                    </button>
+                </div>
+            </form>
         </div>
-        <?php endif; ?>
-        
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Modal para cambiar estado
-            const estadoModal = document.getElementById('cambiarEstadoModal');
-            if (estadoModal) {
-                estadoModal.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    if (button) {
-                        const estado = button.getAttribute('data-estado');
-                        if (estado) {
-                            const select = document.getElementById('estado');
-                            if (select) {
-                                select.value = estado;
-                            }
-                        }
-                    }
-                });
-            }
-            
-            // Preview de saldo en modal de adelanto
-            const adelantoInput = document.getElementById('nuevo_adelanto');
-            const saldoPreview = document.getElementById('saldoPreview');
-            const totalProforma = <?php echo e($proforma->total); ?>;
-            
-            if (adelantoInput && saldoPreview) {
-                adelantoInput.addEventListener('input', function() {
-                    const nuevoAdelanto = parseFloat(this.value) || 0;
-                    const nuevoSaldo = totalProforma - nuevoAdelanto;
+    </div>
+</div>
+<?php endif; ?>
+
+<?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar adelanto de proformas')): ?>
+<div class="modal fade" id="editarAdelantoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #ffc107; border-bottom: none;">
+                <h5 class="modal-title" style="color: #000000;">
+                    <i class="fas fa-money-bill-wave me-2" style="color: #000000;"></i>
+                    Actualizar Adelanto
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+            </div>
+            <form action="<?php echo e(route('proformas.actualizar-adelanto', $proforma)); ?>" method="POST">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Información actual:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Total: <strong>Bs. <?php echo e(number_format($proforma->total, 2)); ?></strong></li>
+                            <li>Adelanto actual: <strong>Bs. <?php echo e(number_format($proforma->adelanto, 2)); ?></strong></li>
+                            <li>Saldo actual: <strong class="<?php echo e($proforma->saldo > 0 ? 'text-danger' : 'text-success'); ?>">
+                                Bs. <?php echo e(number_format($proforma->saldo, 2)); ?>
+
+                            </strong></li>
+                        </ul>
+                    </div>
                     
-                    saldoPreview.textContent = nuevoSaldo.toFixed(2);
+                    <div class="mb-3">
+                        <label for="nuevo_adelanto" class="form-label">
+                            <i class="fas fa-hand-holding-usd me-1 text-warning"></i>
+                            Nuevo Adelanto (Bs.) <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">Bs.</span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="nuevo_adelanto" 
+                                   name="adelanto" 
+                                   value="<?php echo e($proforma->adelanto); ?>" 
+                                   min="0" 
+                                   max="<?php echo e($proforma->total); ?>"
+                                   step="0.01"
+                                   required>
+                        </div>
+                        <small class="text-muted">
+                            El adelanto no puede ser mayor al total (Bs. <?php echo e(number_format($proforma->total, 2)); ?>)
+                        </small>
+                    </div>
                     
-                    // Cambiar color según el saldo
-                    const previewElement = document.getElementById('nuevoSaldoPreview').querySelector('p');
-                    if (nuevoSaldo > 0) {
-                        previewElement.className = 'h5 text-danger';
-                        previewElement.querySelector('i').className = 'fas fa-exclamation-triangle me-2';
-                    } else if (nuevoSaldo < 0) {
-                        previewElement.className = 'h5 text-warning';
-                        previewElement.querySelector('i').className = 'fas fa-arrow-up me-2';
-                    } else {
-                        previewElement.className = 'h5 text-success';
-                        previewElement.querySelector('i').className = 'fas fa-check-circle me-2';
+                    <div class="mb-3" id="nuevoSaldoPreview">
+                        <?php
+                            $nuevoSaldoPreview = $proforma->total - $proforma->adelanto;
+                        ?>
+                        <label class="form-label text-muted">Nuevo saldo estimado:</label>
+                        <p class="h5 <?php echo e($nuevoSaldoPreview > 0 ? 'text-danger' : 'text-success'); ?>">
+                            <i class="fas <?php echo e($nuevoSaldoPreview > 0 ? 'fa-exclamation-triangle' : 'fa-check-circle'); ?> me-2"></i>
+                            Bs. <span id="saldoPreview"><?php echo e(number_format($nuevoSaldoPreview, 2)); ?></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 20px;">
+                        <i class="fas fa-times me-2"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn" style="background-color: #ffc107; border-radius: 30px; padding: 8px 20px; color: #000000; border: none;">
+                        <i class="fas fa-save me-2"></i>
+                        Actualizar Adelanto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const estadoModal = document.getElementById('cambiarEstadoModal');
+    if (estadoModal) {
+        estadoModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            if (button) {
+                const estado = button.getAttribute('data-estado');
+                if (estado) {
+                    const select = document.getElementById('estado');
+                    if (select) {
+                        select.value = estado;
                     }
-                });
+                }
             }
         });
-        </script>
+    }
+    
+    const adelantoInput = document.getElementById('nuevo_adelanto');
+    const saldoPreview = document.getElementById('saldoPreview');
+    const totalProforma = <?php echo e($proforma->total); ?>;
+    
+    if (adelantoInput && saldoPreview) {
+        adelantoInput.addEventListener('input', function() {
+            const nuevoAdelanto = parseFloat(this.value) || 0;
+            const nuevoSaldo = totalProforma - nuevoAdelanto;
+            
+            saldoPreview.textContent = nuevoSaldo.toFixed(2);
+            
+            const previewElement = document.getElementById('nuevoSaldoPreview').querySelector('p');
+            if (nuevoSaldo > 0) {
+                previewElement.className = 'h5 text-danger';
+                previewElement.querySelector('i').className = 'fas fa-exclamation-triangle me-2';
+            } else if (nuevoSaldo < 0) {
+                previewElement.className = 'h5 text-warning';
+                previewElement.querySelector('i').className = 'fas fa-arrow-up me-2';
+            } else {
+                previewElement.className = 'h5 text-success';
+                previewElement.querySelector('i').className = 'fas fa-check-circle me-2';
+            }
+        });
+    }
+});
+</script>
 
 <style>
-/* ========== ESTILOS ADICIONALES ========== */
 .fa-file-invoice-dollar {
     color: #ffc107 !important;
 }
@@ -962,7 +970,6 @@
     box-shadow: 0 8px 20px rgba(128, 128, 128, 0.3) !important;
 }
 
-/* ========== CORRECCIÓN PARA MÓVIL ========== */
 @media (max-width: 768px) {
     .page-header .d-flex {
         flex-direction: column !important;
@@ -1020,4 +1027,4 @@
 }
 </style>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\CIMA_UATF-main\resources\views/proformas/show.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/proformas/show.blade.php ENDPATH**/ ?>

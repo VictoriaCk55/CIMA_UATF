@@ -41,19 +41,16 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Estilo para el mensaje de búsqueda */
 .select2-container--default .select2-search--dropdown .select2-search__field::placeholder {
     color: #999;
     font-style: italic;
 }
 
-/* Mensaje personalizado en el placeholder */
 .select2-selection__placeholder {
     color: #6c757d !important;
     font-style: italic;
 }
 
-/* Estilo para el botón de guardar */
 .btn[style*="background-color: #ffc107"]:hover {
     background-color: #e6a800 !important;
     transform: translateY(-2px);
@@ -165,7 +162,6 @@
     box-shadow: 0 0 0 3px rgba(153, 132, 30, 0.15) !important;
 }
 
-/* Estilo para errores de validación */
 .alert-duplicado-frontend {
     background-color: #f8d7da;
     border: 1px solid #f5c6cb;
@@ -182,11 +178,39 @@
     color: #dc3545;
 }
 
-
-/* Reforzar color del icono de proformas */
 .fa-file-invoice-dollar {
     color: #ffc107 !important;
 }
+
+/* Estilos para los inputs de fecha con ícono */
+.input-fecha {
+    position: relative;
+}
+
+.input-fecha .form-control {
+    padding-right: 40px !important;
+}
+
+.input-fecha .flatpickr-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+    pointer-events: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    z-index: 5;
+}
+
+.input-fecha .form-control:focus + .flatpickr-icon {
+    color: #ffc107 !important;
+}
+
+.input-fecha .form-control:hover + .flatpickr-icon {
+    color: #ffc107 !important;
+}
+
 @media (max-width: 768px) {
     .page-header .d-flex {
         flex-direction: column !important;
@@ -224,7 +248,6 @@
 
 @section('content')
 <div class="container-main">
-    <!-- Encabezado de página -->
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -243,7 +266,6 @@
         </div>
     </div>
 
-    <!-- Mensajes de error -->
     @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-triangle me-2"></i>
@@ -257,7 +279,6 @@
         </div>
     @endif
 
-    <!-- Formulario -->
     <div class="card">
         <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
             <h5 class="mb-0" style="color: #000000;">
@@ -313,11 +334,7 @@
                                     id="tipo" name="tipo" required 
                                     onchange="calcularTotalesEstimados()">
                                 <option value="AMBIENTAL" {{ old('tipo', $proforma->tipo) == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
-<<<<<<< HEAD
-                                <option value="AGUA" {{ old('tipo', $proforma->tipo) == 'AGUA' ? 'selected' : '' }}>AGUA</option>
-=======
-                                <option value="ANALISIS QUIMICO" {{ old('tipo', $proforma->tipo) == 'ANALISIS QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
->>>>>>> actualizacion
+                                <option value="ANALISIS_QUIMICO" {{ old('tipo', $proforma->tipo) == 'ANALISIS_QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
                                 <option value="INVESTIGACION" {{ old('tipo', $proforma->tipo) == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN (20% descuento)</option>
                             </select>
                             @error('tipo')
@@ -341,7 +358,6 @@
                         </div>
                     </div>
                     
-                    <!-- CAMPO UNIDAD - NUEVO -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="unidad" class="form-label">Unidad (Opcional)</label>
@@ -358,11 +374,14 @@
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label for="fecha_emision" class="form-label">Fecha de Emisión *</label>
-                            <input type="date" class="form-control @error('fecha_emision') is-invalid @enderror" 
-                                   id="fecha_emision" name="fecha_emision" 
-                                   value="{{ old('fecha_emision', $proforma->fecha_emision->format('Y-m-d')) }}" required>
-                            @error('fecha_emision')
+                            <label for="fecha_recepcion" class="form-label">Fecha de Recepción *</label>
+                            <div class="input-fecha">
+                                <input type="text" class="form-control @error('fecha_recepcion') is-invalid @enderror" 
+                                       id="fecha_recepcion" name="fecha_recepcion" 
+                                       value="{{ old('fecha_recepcion', $proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : date('Y-m-d')) }}" 
+                                       autocomplete="off" required>
+                            </div>
+                            @error('fecha_recepcion')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
@@ -370,22 +389,14 @@
                     
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="fecha_recepcion" class="form-label">Fecha de Recepción *</label>
-                            <input type="date" class="form-control @error('fecha_recepcion') is-invalid @enderror" 
-                                   id="fecha_recepcion" name="fecha_recepcion" 
-                                   value="{{ old('fecha_recepcion', $proforma->fecha_recepcion->format('Y-m-d')) }}" required>
-                            @error('fecha_recepcion')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label for="numero_recepcion" class="form-label">Nro. de Recepción</label>
-                            <input type="text" class="form-control @error('numero_recepcion') is-invalid @enderror" 
-                                   id="numero_recepcion" name="numero_recepcion" 
-                                   value="{{ old('numero_recepcion', $proforma->numero_recepcion) }}"
-                                   placeholder="Ej: 001">
-                            @error('numero_recepcion')
+                            <label for="fecha_muestreo" class="form-label">Fecha de Muestreo *</label>
+                            <div class="input-fecha">
+                                <input type="text" class="form-control @error('fecha_muestreo') is-invalid @enderror" 
+                                       id="fecha_muestreo" name="fecha_muestreo" 
+                                       value="{{ old('fecha_muestreo', $proforma->fecha_muestreo ? $proforma->fecha_muestreo->format('Y-m-d') : date('Y-m-d')) }}" 
+                                       autocomplete="off" required>
+                            </div>
+                            @error('fecha_muestreo')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
@@ -582,7 +593,6 @@
                         Parámetros a Analizar
                     </h6>
 
-                    <!-- Selector de categoría para AMBIENTAL -->
                     <div id="ambient-categoria-wrapper" style="display: none;" class="mb-3">
                         <label class="form-label">Categoría del parámetro</label>
                         <div class="d-flex gap-2">
@@ -597,7 +607,6 @@
                             </button>
                         </div>
                         <div id="ambient-params-picker" style="display: none;" class="mt-2">
-                            <!-- Selector único para AIRE / RUIDO -->
                             <div id="ambient-single-select" class="row">
                                 <div class="col-md-10">
                                     <select id="ambient-param-select" class="form-select">
@@ -610,7 +619,6 @@
                                     </button>
                                 </div>
                             </div>
-                            <!-- Checkboxes para GASES -->
                             <div id="ambient-gases-checkbox" style="display: none;">
                                 <div id="ambient-gases-list" class="d-flex flex-wrap gap-3 mb-2"></div>
                                 <button type="button" id="add-ambient-gases" class="btn btn-success">
@@ -680,7 +688,6 @@
                             <input type="hidden" name="parametros[{{ $paramIndex }}][orden]" value="{{ $paramIndex }}">
 >>>>>>> actualizacion
                             
-                            <!-- Método de ensayo -->
                             <div class="row mt-2 metodo-container" id="metodo-{{ $paramIndex }}" style="display: {{ $parametro->categoria === 'GASES' ? 'none' : 'block' }};">
                                 <div class="col-12">
                                     <small class="text-muted">
@@ -690,7 +697,6 @@
                                 </div>
                             </div>
 
-                            <!-- Método editable para GASES -->
                             <div class="row mt-2 metodo-gas-container" id="metodo-gas-{{ $paramIndex }}" style="display: {{ $parametro->categoria === 'GASES' ? 'block' : 'none' }};">
                                 <div class="col-md-6">
                                     <label class="form-label small">Método (equipo utilizado) *</label>
@@ -729,11 +735,7 @@
                                         @foreach($logisticasMuestreo as $opt)
                                             <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}"
                                                 {{ $log->id == $opt->id ? 'selected' : '' }}>
-<<<<<<< HEAD
-                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }})
-=======
-                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }}) 
->>>>>>> actualizacion
+                                                {{ $opt->categoria }} - {{ $opt->descripcion }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -752,10 +754,15 @@
                                            name="logisticas[{{ $logIndex }}][cantidad]" value="{{ $log->pivot->cantidad }}" min="1" required>
                                 </div>
                                 <div class="col-md-2 mb-2 mb-md-0">
-                                    <label class="form-label small">Costo Unitario</label>
+                                    <label class="form-label small">Precio Unitario (Bs.)</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Bs.</span>
-                                        <input type="text" class="form-control logistica-costo" value="{{ number_format($log->costo, 2) }}" readonly>
+                                        <input type="number" class="form-control logistica-precio"
+                                               name="logisticas[{{ $logIndex }}][precio_unitario]"
+                                               value="{{ old('logisticas.' . $logIndex . '.precio_unitario', $log->pivot->precio_unitario ?? $log->costo) }}"
+                                               step="0.01"
+                                               min="0"
+                                               required>
                                     </div>
                                 </div>
                                 <div class="col-md-1 text-center">
@@ -777,11 +784,7 @@
                                         <option value="">Seleccionar concepto...</option>
                                         @foreach($logisticasMuestreo as $opt)
                                             <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}">
-<<<<<<< HEAD
-                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }})
-=======
-                                                {{ $opt->categoria }} - {{ $opt->descripcion }} (Bs. {{ number_format($opt->costo, 2) }}) 
->>>>>>> actualizacion
+                                                {{ $opt->categoria }} - {{ $opt->descripcion }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -800,10 +803,15 @@
                                            name="logisticas[0][cantidad]" value="1" min="1" required>
                                 </div>
                                 <div class="col-md-2 mb-2 mb-md-0">
-                                    <label class="form-label small">Costo Unitario</label>
+                                    <label class="form-label small">Precio Unitario (Bs.)</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Bs.</span>
-                                        <input type="text" class="form-control logistica-costo" value="0.00" readonly>
+                                        <input type="number" class="form-control logistica-precio"
+                                               name="logisticas[0][precio_unitario]"
+                                               value="0"
+                                               step="0.01"
+                                               min="0"
+                                               required>
                                     </div>
                                 </div>
                                 <div class="col-md-1 text-center">
@@ -911,10 +919,14 @@
 @endsection
 
 @push('scripts')
-<!-- jQuery y Select2 desde CDN -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- Flatpickr para formato de fecha AAAA-MM-DD -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
 
 <style>
 .select2-container--default .select2-selection--single {
@@ -942,16 +954,168 @@
     color: #000000 !important;
 }
 
-/* Estilo para el mensaje de búsqueda */
 .select2-container--default .select2-search--dropdown .select2-search__field::placeholder {
     color: #999;
     font-style: italic;
 }
 
-/* Mensaje personalizado en el placeholder */
 .select2-selection__placeholder {
     color: #6c757d !important;
     font-style: italic;
+}
+
+/* ===== ESTILOS PARA FLATPICKR ===== */
+.flatpickr-calendar {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
+    border: none !important;
+    font-family: "Segoe UI", Roboto, sans-serif !important;
+}
+
+.flatpickr-calendar .flatpickr-months {
+    background: #ffc107 !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 8px 0 !important;
+}
+
+.flatpickr-calendar .flatpickr-months .flatpickr-prev-month,
+.flatpickr-calendar .flatpickr-months .flatpickr-next-month {
+    color: #000 !important;
+    fill: #000 !important;
+}
+
+.flatpickr-calendar .flatpickr-months .flatpickr-prev-month:hover,
+.flatpickr-calendar .flatpickr-months .flatpickr-next-month:hover {
+    background: rgba(0,0,0,0.1) !important;
+    border-radius: 50% !important;
+}
+
+.flatpickr-calendar .flatpickr-current-month {
+    color: #000 !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+}
+
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
+    color: #000 !important;
+    font-weight: 600 !important;
+    background: transparent !important;
+}
+
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper {
+    color: #000 !important;
+}
+
+.flatpickr-calendar .flatpickr-weekdays {
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #e9ecef !important;
+}
+
+.flatpickr-calendar .flatpickr-weekday {
+    color: #495057 !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+}
+
+.flatpickr-calendar .flatpickr-day {
+    border-radius: 50% !important;
+    transition: all 0.2s ease !important;
+    color: #333 !important;
+    font-weight: 500 !important;
+    margin: 2px !important;
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+}
+
+.flatpickr-calendar .flatpickr-day:hover {
+    background: #ffc107 !important;
+    color: #000 !important;
+    transform: scale(1.05) !important;
+}
+
+.flatpickr-calendar .flatpickr-day.selected {
+    background: #ffc107 !important;
+    color: #000 !important;
+    border-color: #ffc107 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4) !important;
+}
+
+.flatpickr-calendar .flatpickr-day.selected:hover {
+    background: #e6a800 !important;
+    border-color: #e6a800 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.today {
+    border-color: #ffc107 !important;
+    color: #ffc107 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.today:hover {
+    background: #ffc107 !important;
+    color: #000 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.inRange,
+.flatpickr-calendar .flatpickr-day.startRange,
+.flatpickr-calendar .flatpickr-day.endRange {
+    background: rgba(255, 193, 7, 0.2) !important;
+    border-color: #ffc107 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.inRange.selected {
+    background: #ffc107 !important;
+    color: #000 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.flatpickr-disabled {
+    color: #ccc !important;
+}
+
+.flatpickr-calendar .flatpickr-day.flatpickr-disabled:hover {
+    background: transparent !important;
+    transform: none !important;
+}
+
+.flatpickr-calendar .flatpickr-time {
+    border-top: 1px solid #e9ecef !important;
+    border-radius: 0 0 12px 12px !important;
+}
+
+.flatpickr-calendar .flatpickr-time input {
+    color: #333 !important;
+    font-weight: 500 !important;
+}
+
+.flatpickr-calendar .flatpickr-time input:hover {
+    background: #f8f9fa !important;
+}
+
+.flatpickr-calendar .flatpickr-time .flatpickr-time-separator {
+    color: #333 !important;
+    font-weight: 700 !important;
+}
+
+.flatpickr-calendar .flatpickr-am-pm {
+    color: #333 !important;
+    font-weight: 600 !important;
+}
+
+/* Animación del calendario */
+.flatpickr-calendar.open {
+    animation: flatpickrFadeIn 0.25s ease-out;
+}
+
+@keyframes flatpickrFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 </style>
 
@@ -959,10 +1123,34 @@
 $(document).ready(function() {
     console.log('Documento listo - iniciando Select2 en edición');
     
-    // Array para IDs seleccionados (evitar duplicados)
+    // ===== FLATPICKR: formato AAAA-MM-DD =====
+    const flatpickrConfig = {
+        dateFormat: "Y-m-d",
+        locale: "es",
+        allowInput: true,
+        disableMobile: true,
+        placeholder: "YYYY-MM-DD",
+        monthSelectorType: "dropdown",
+        prevArrow: "<i class='fas fa-chevron-left'></i>",
+        nextArrow: "<i class='fas fa-chevron-right'></i>",
+        onReady: function(selectedDates, dateStr, instance) {
+            // Agregar ícono al input
+            const input = instance.input;
+            const wrapper = input.parentElement;
+            if (!wrapper.querySelector('.flatpickr-icon')) {
+                wrapper.classList.add('input-fecha');
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-calendar-alt flatpickr-icon';
+                wrapper.appendChild(icon);
+            }
+        }
+    };
+
+    flatpickr("#fecha_recepcion", flatpickrConfig);
+    flatpickr("#fecha_muestreo", flatpickrConfig);
+    
     let parametrosSeleccionados = [];
     
-    // Inicializar array con los parámetros existentes
     $('.parametro-select').each(function() {
         const valor = $(this).val();
         if (valor) {
@@ -971,7 +1159,6 @@ $(document).ready(function() {
     });
     console.log('Parámetros iniciales:', parametrosSeleccionados);
     
-    // ===== SELECT DE CLIENTES CON SELECT2 =====
     $('#cliente_id').select2({
         placeholder: '🔍 Buscar cliente por nombre o contacto...',
         minimumInputLength: 2,
@@ -1003,7 +1190,6 @@ $(document).ready(function() {
         }
     });
     
-    // ===== FUNCIÓN PARA INICIALIZAR SELECT2 EN PARÁMETROS =====
     function initParametroSelect(selector) {
         console.log('Inicializando Select2 en:', selector);
         
@@ -1035,7 +1221,6 @@ $(document).ready(function() {
                 processResults: function(data) {
                     console.log('Parámetros recibidos:', data);
                     
-                    // Filtrar parámetros ya seleccionados
                     let resultadosFiltrados = data.filter(item => {
                         return !parametrosSeleccionados.includes(item.id);
                     });
@@ -1047,7 +1232,6 @@ $(document).ready(function() {
         });
     }
     
-    // Enlaza el evento de selección para actualizar precio y método
     function bindParametroSelectEvents(select) {
         select.off('select2:select').on('select2:select', function(e) {
             const data = e.params.data;
@@ -1055,7 +1239,6 @@ $(document).ready(function() {
             const rowId = row.attr('id').split('-')[2];
             const valorAnterior = $(this).data('valor-anterior');
             
-            // Si había un valor anterior, removerlo de la lista
             if (valorAnterior) {
                 const index = parametrosSeleccionados.indexOf(parseInt(valorAnterior));
                 if (index > -1) {
@@ -1063,18 +1246,15 @@ $(document).ready(function() {
                 }
             }
             
-            // Verificar si el nuevo valor ya está seleccionado
             if (parametrosSeleccionados.includes(data.id)) {
                 alert('⚠️ Este parámetro ya ha sido seleccionado. Por favor, elija otro.');
                 $(this).val(valorAnterior).trigger('change');
                 return;
             }
             
-            // Agregar nuevo valor
             parametrosSeleccionados.push(data.id);
             $(this).data('valor-anterior', data.id);
             
-            // Actualizar precio y método
             $('#precio-' + rowId).val(parseFloat(data.precio_unitario).toFixed(2));
             
             const metodoText = row.find('.metodo-text');
@@ -1087,24 +1267,19 @@ $(document).ready(function() {
             detectarCambiosParametros();
         });
         
-        // Guardar valor inicial
         select.data('valor-anterior', select.val());
     }
 
-    // Inicializar Select2 en todos los parámetros existentes
     $('.parametro-select').each(function() {
         const select = $(this);
         const valor = select.val();
         
-        // Inicializar Select2
         initParametroSelect(select);
         
-        // Si ya tiene un valor seleccionado, aseguramos que se muestre correctamente
         if (valor) {
             const row = select.closest('.parametro-row');
             const rowId = row.attr('id').split('-')[2];
             
-            // Actualizar si es necesario (los datos ya están en el HTML)
             setTimeout(() => {
                 const precio = select.find('option:selected').data('precio');
                 const metodo = select.find('option:selected').data('metodo');
@@ -1117,60 +1292,17 @@ $(document).ready(function() {
             }, 100);
         }
         
-        // Enlazar eventos de selección (precio, método, duplicados)
         bindParametroSelectEvents(select);
     });
     
-    // ===== BOTÓN AGREGAR PARÁMETRO =====
-    // Plantilla de fila cuando la proforma no tiene parámetros
-    const parametroRowTemplate =
-        '<div class="parametro-row mb-3 border p-3 rounded" id="parametro-row-0">' +
-        '    <div class="row align-items-center">' +
-        '        <div class="col-md-5 mb-2 mb-md-0">' +
-        '            <label class="form-label small">Parámetro *</label>' +
-        '            <select name="parametros[0][id]" class="form-control parametro-select" id="parametro-select-0" style="width: 100%;" data-row-id="0" required>' +
-        '                <option value="">Buscar parámetro...</option>' +
-        '            </select>' +
-        '        </div>' +
-        '        <div class="col-md-3 mb-2 mb-md-0">' +
-        '            <label class="form-label small">N° Muestras *</label>' +
-        '            <input type="number" class="form-control muestra-input" name="parametros[0][cantidad]" value="1" min="1" oninput="calcularTotalesEstimados()" required>' +
-        '        </div>' +
-        '        <div class="col-md-3 mb-2 mb-md-0">' +
-        '            <label class="form-label small">Precio Unitario</label>' +
-        '            <div class="input-group">' +
-        '                <span class="input-group-text">Bs.</span>' +
-        '                <input type="text" class="form-control precio-unitario" id="precio-0" value="0.00" readonly>' +
-        '            </div>' +
-        '        </div>' +
-        '        <div class="col-md-1 text-center">' +
-        '            <label class="form-label small">&nbsp;</label>' +
-        '            <button type="button" class="btn btn-danger btn-sm remove-parametro" onclick="eliminarParametro(this)"><i class="fas fa-times"></i></button>' +
-        '        </div>' +
-        '    </div>' +
-        '    <div class="row mt-2 metodo-container" id="metodo-0" style="display: none;">' +
-        '        <div class="col-12">' +
-        '            <small class="text-muted"><i class="fas fa-microscope me-1"></i> Método: <span class="metodo-text"></span></small>' +
-        '        </div>' +
-        '    </div>' +
-        '    <div class="row mt-2 metodo-gas-container" id="metodo-gas-0" style="display: none;">' +
-        '        <div class="col-md-6">' +
-        '            <label class="form-label small">Método (equipo utilizado) *</label>' +
-        '            <input type="text" class="form-control metodo-gas-input" name="parametros[0][metodo]" placeholder="Ej: CO, O2, H2S...">' +
-        '        </div>' +
-        '    </div>' +
-        '</div>';
-
     $('#add-parametro').click(function() {
         const container = $('#parametros-container');
         const index = container.find('.parametro-row').length;
         const firstRow = $('.parametro-row:first');
-        const newRow = firstRow.length ? firstRow.clone() : $(parametroRowTemplate);
+        const newRow = firstRow.clone();
         
-        // Actualizar IDs
         newRow.attr('id', 'parametro-row-' + index);
         
-        // Limpiar select
         const newSelect = newRow.find('.parametro-select');
         newSelect.attr('id', 'parametro-select-' + index)
                 .attr('name', 'parametros[' + index + '][id]')
@@ -1180,10 +1312,8 @@ $(document).ready(function() {
                 .removeAttr('data-valor-anterior')
                 .next('.select2-container').remove();
         
-        // Limpiar opciones
         newSelect.empty().append('<option value="">Buscar parámetro...</option>');
         
-        // Limpiar otros campos
         newRow.find('.muestra-input')
               .attr('name', 'parametros[' + index + '][cantidad]')
               .val(1);
@@ -1198,7 +1328,6 @@ $(document).ready(function() {
         
         newRow.find('.metodo-text').text('');
         
-        // Botón eliminar
         const removeBtn = newRow.find('.remove-parametro');
         removeBtn.prop('disabled', false)
                 .off('click')
@@ -1206,7 +1335,6 @@ $(document).ready(function() {
         
         container.append(newRow);
         
-        // Inicializar Select2 para el nuevo select
         setTimeout(() => {
             initParametroSelect(newSelect);
             bindParametroSelectEvents(newSelect);
@@ -1216,7 +1344,6 @@ $(document).ready(function() {
         setTimeout(detectarCambiosParametros, 200);
     });
     
-    // ===== ELIMINAR PARÁMETRO =====
     window.eliminarParametro = function(btn) {
         if ($('.parametro-row').length <= 1) {
             alert('⚠️ Debe haber al menos un parámetro');
@@ -1227,7 +1354,6 @@ $(document).ready(function() {
             const row = $(btn).closest('.parametro-row');
             const select = row.find('.parametro-select');
             
-            // Obtener el ID del parámetro seleccionado para removerlo de la lista
             const selectedId = select.val();
             if (selectedId) {
                 const idNum = parseInt(selectedId);
@@ -1237,7 +1363,6 @@ $(document).ready(function() {
                 }
             }
             
-            // Destruir Select2 antes de eliminar
             if (select.data('select2')) {
                 select.select2('destroy');
             }
@@ -1250,15 +1375,12 @@ $(document).ready(function() {
         }
     };
     
-    // ===== FUNCIÓN PARA DETECTAR CAMBIOS EN PARÁMETROS =====
     function detectarCambiosParametros() {
-        // Obtener parámetros actuales (originales)
         let parametrosOriginales = [];
         @foreach($proforma->parametros as $parametro)
             parametrosOriginales.push({{ $parametro->id }});
         @endforeach
         
-        // Obtener parámetros nuevos del formulario
         let parametrosNuevos = [];
         $('.parametro-select').each(function() {
             let valor = $(this).val();
@@ -1267,11 +1389,9 @@ $(document).ready(function() {
             }
         });
         
-        // Comparar arrays
         let parametrosAgregados = parametrosNuevos.filter(x => !parametrosOriginales.includes(x));
         let parametrosEliminados = parametrosOriginales.filter(x => !parametrosNuevos.includes(x));
         
-        // Si hay cambios, mostrar la sección de justificación
         if (parametrosAgregados.length > 0 || parametrosEliminados.length > 0) {
             $('#justificacion-section').slideDown();
             $('#justificacion_modificacion').prop('required', true);
@@ -1281,11 +1401,9 @@ $(document).ready(function() {
         }
     }
     
-    // ===== VALIDACIÓN FINAL ANTES DE ENVIAR =====
     $('#proformaForm').on('submit', function(e) {
         console.log('Validando formulario antes de enviar...');
         
-        // Obtener todos los IDs de parámetros seleccionados
         let parametrosEnFormulario = [];
         let duplicados = false;
         let mensajeError = '';
@@ -1322,7 +1440,6 @@ $(document).ready(function() {
             return false;
         }
         
-        // Verificar justificación si hay cambios
         let parametrosOriginales = [];
         @foreach($proforma->parametros as $parametro)
             parametrosOriginales.push({{ $parametro->id }});
@@ -1351,47 +1468,43 @@ $(document).ready(function() {
         return true;
     });
     
-    // ===== TOGGLE LOGÍSTICA DE MUESTREO =====
     function toggleLogisticaMuestreo() {
         const tipo = $('#tipo').val();
         if (tipo === 'AMBIENTAL') {
             $('#logistica-muestreo').show();
             $('.logistica-select').prop('required', true).prop('disabled', false);
             $('.logistica-cantidad').prop('required', true).prop('disabled', false);
+            $('.logistica-precio').prop('required', true).prop('disabled', false);
             $('.logistica-descripcion').prop('disabled', false);
         } else {
             $('#logistica-muestreo').hide();
             $('.logistica-select').prop('required', false).prop('disabled', true);
             $('.logistica-cantidad').prop('required', false).prop('disabled', true);
+            $('.logistica-precio').prop('required', false).prop('disabled', true);
             $('.logistica-descripcion').prop('disabled', true);
         }
     }
     $('#tipo').on('change', toggleLogisticaMuestreo);
     toggleLogisticaMuestreo();
 
-    // ===== LOGÍSTICA DE MUESTREO - FILAS DINÁMICAS =====
-    function calcularSubtotalesLogistica() {
-        $('.logistica-row').each(function() {
-            const costo = parseFloat($(this).find('.logistica-costo').val()) || 0;
-            const cantidad = parseInt($(this).find('.logistica-cantidad').val()) || 0;
-            $(this).find('.logistica-costo').val(costo.toFixed(2));
-        });
+    function actualizarLogisticaSelect(row) {
+        const select = row.find('.logistica-select');
+        const selected = select.find('option:selected');
+        if (selected.val()) {
+            const costo = selected.data('costo');
+            const precioInput = row.find('.logistica-precio');
+            if (!precioInput.val() || parseFloat(precioInput.val()) === 0) {
+                precioInput.val(parseFloat(costo).toFixed(2));
+            }
+        }
     }
 
     $(document).on('change', '.logistica-select', function() {
-        const row = $(this).closest('.logistica-row');
-        const selected = $(this).find('option:selected');
-        if (selected.val()) {
-            row.find('.logistica-costo').val(parseFloat(selected.data('costo')).toFixed(2));
-        } else {
-            row.find('.logistica-costo').val('0.00');
-        }
-        calcularSubtotalesLogistica();
+        actualizarLogisticaSelect($(this).closest('.logistica-row'));
         calcularTotalesEstimados();
     });
 
-    $(document).on('input', '.logistica-cantidad', function() {
-        calcularSubtotalesLogistica();
+    $(document).on('input', '.logistica-cantidad, .logistica-precio', function() {
         calcularTotalesEstimados();
     });
 
@@ -1409,7 +1522,8 @@ $(document).ready(function() {
         newRow.find('.logistica-cantidad')
               .attr('name', 'logisticas[' + index + '][cantidad]').val(1);
 
-        newRow.find('.logistica-costo').val('0.00');
+        newRow.find('.logistica-precio')
+              .attr('name', 'logisticas[' + index + '][precio_unitario]').val(0);
 
         newRow.find('.logistica-descripcion')
               .attr('name', 'logisticas[' + index + '][descripcion]').val('');
@@ -1429,43 +1543,25 @@ $(document).ready(function() {
                 });
 
         container.append(newRow);
-        calcularTotalesEstimados();
         actualizarDescripcionLogistica();
-    });
-
-    // ===== AUTO-POBLAR DESCRIPCIÓN LOGÍSTICA =====
-    // Marcar como editado manualmente cuando el usuario escriba
-    $(document).on('input', '.logistica-descripcion', function() {
-        $(this).attr('data-user-edited', 'true');
+        calcularTotalesEstimados();
     });
 
     function actualizarDescripcionLogistica() {
         const nombres = [];
-        // Leer servicios agregados dinámicamente (plaintext)
         $('.parametro-row:visible .form-control-plaintext').each(function() {
             let t = $(this).text().trim();
             t = t.replace(/\s*\(.*$/, '');
             if (nombres.indexOf(t) === -1) nombres.push(t);
         });
-        // Leer servicios existentes (Select2)
-        $('.parametro-row:visible .parametro-select option:selected').each(function() {
-            if ($(this).val()) {
-                let t = $(this).text().trim();
-                t = t.replace(/\s*\(.*$/, '');
-                if (nombres.indexOf(t) === -1) nombres.push(t);
-            }
-        });
+        if ($('#ambient-gases-list .gas-checkbox:checked').length > 0 && nombres.indexOf('GASES') === -1) {
+            nombres.push('GASES');
+        }
         if (nombres.length > 0) {
-            const texto = 'Logística de Muestreo de: ' + nombres.join(', ');
-            $('.logistica-descripcion').each(function() {
-                if ($(this).attr('data-user-edited') !== 'true') {
-                    $(this).val(texto);
-                }
-            });
+            $('.logistica-descripcion').val('Logística de Muestreo de: ' + nombres.join(', '));
         }
     }
 
-    // ===== CALCULAR TOTALES =====
     window.calcularTotalesEstimados = function() {
         let subtotal = 0;
         
@@ -1475,8 +1571,10 @@ $(document).ready(function() {
             subtotal += precio * cantidad;
         });
 
-        $('#logistica-muestreo:visible .logistica-costo').each(function() {
-            subtotal += parseFloat($(this).val()) || 0;
+        $('#logistica-muestreo:visible .logistica-precio').each(function() {
+            const precio = parseFloat($(this).val()) || 0;
+            const cantidad = parseInt($(this).closest('.logistica-row').find('.logistica-cantidad').val()) || 0;
+            subtotal += precio * cantidad;
         });
         
         const tipo = $('#tipo').val();
@@ -1492,18 +1590,15 @@ $(document).ready(function() {
         $('#descuento-nota').text((tipo === 'INVESTIGACION') ? '(20% descuento aplicado)' : '(No aplica)');
     };
     
-    // ===== EVENTOS =====
     $('#tipo, #adelanto').on('change keyup', calcularTotalesEstimados);
     $(document).on('input', '.muestra-input', calcularTotalesEstimados);
     $(document).on('change', '.parametro-select', function() {
         setTimeout(detectarCambiosParametros, 100);
     });
     
-    // Calcular totales inicial y detectar cambios
     calcularTotalesEstimados();
     setTimeout(detectarCambiosParametros, 500);
 
-    // ===== AMBIENTAL: DATOS DE PARÁMETROS POR CATEGORÍA =====
     const parametrosAmbientales = @json($parametrosAmbientales);
 
     let ambientCategoria = '';
@@ -1563,7 +1658,6 @@ $(document).ready(function() {
         $('#ambient-params-picker').show();
     });
 
-    // Add single param (AIRE / RUIDO)
     $('#add-ambient-param').click(function() {
         const select = $('#ambient-param-select');
         const selected = select.find('option:selected');
@@ -1582,8 +1676,6 @@ $(document).ready(function() {
         select.val('');
     });
 
-    // Add multiple gases
-    // Helper: agrega una fila de parámetro ambiental
     function agregarFilaAmbient(id, nombre, precio, metodo, esGas) {
         const container = $('#parametros-container');
         const index = container.find('.parametro-row:visible').length;
@@ -1636,7 +1728,6 @@ $(document).ready(function() {
         actualizarDescripcionLogistica();
     }
 
-    // Add multiple gases — single GASES row with combined names
     $('#add-ambient-gases').click(function() {
         const checked = $('#ambient-gases-list .gas-checkbox:checked');
         if (checked.length === 0) {
@@ -1655,7 +1746,6 @@ $(document).ready(function() {
         checked.prop('checked', false);
     });
 
-    // ===== CÓDIGOS DE CLIENTE DINÁMICOS =====
     $('#agregar-codigo-cliente').on('click', function() {
         var container = $('#codigos-cliente-container');
         var row = container.find('.codigo-cliente-row').first().clone();

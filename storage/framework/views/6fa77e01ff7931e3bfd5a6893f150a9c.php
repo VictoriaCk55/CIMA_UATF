@@ -1586,4 +1586,4 @@
 
 
 </body>
-</html><?php /**PATH D:\CIMA_UATF-main\resources\views/proformas/ingreso-resultados.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/proformas/ingreso-resultados.blade.php ENDPATH**/ ?>

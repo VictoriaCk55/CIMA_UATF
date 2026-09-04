@@ -101,10 +101,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/parametros/{id}/restore', [ParametroController::class, 'restore'])->name('parametros.restore')->middleware('permission:restaurar parametros');
         Route::delete('/parametros/{id}/force-delete', [ParametroController::class, 'forceDelete'])->name('parametros.force-delete')->middleware('permission:forzar eliminar parametros');
 
-        // ===== NUEVA RUTA: PANEL DE PRECIOS MASIVOS (AGREGADA AQUÍ) =====
+        // ===== NUEVAS RUTAS: PANEL DE PRECIOS MASIVOS =====
         Route::get('/parametros/precios/masivos', [ParametroController::class, 'preciosMasivos'])->name('parametros.precios.masivos')->middleware('permission:editar parametros');
         Route::post('/parametros/precios/masivos', [ParametroController::class, 'actualizarPreciosMasivos'])->name('parametros.precios.actualizar')->middleware('permission:editar parametros');
-
+        
         // ===== PROFORMAS =====
         Route::get('/proformas/create', [ProformaController::class, 'create'])->name('proformas.create')->middleware('permission:crear proformas');
         Route::post('/proformas', [ProformaController::class, 'store'])->name('proformas.store')->middleware('permission:crear proformas');

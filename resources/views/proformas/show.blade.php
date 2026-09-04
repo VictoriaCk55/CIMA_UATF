@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-main">
-    <!-- Encabezado de página -->
     <div class="page-header mt-3">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -13,7 +12,6 @@
                         <i class="fas fa-file-invoice-dollar" style="color: #ffc107;"></i>
                         Proforma {{ $proforma->codigo }}
                     </h1>
-                    <!-- BADGE DE ESTADO -->
                     <span class="badge bg-{{ $proforma->estado_color }} fs-6 px-3 py-2">
                         <i class="fas {{ $proforma->estado_icono }} me-1"></i>
                         {{ $proforma->estado_texto }}
@@ -32,7 +30,6 @@
         </div>
     </div>
 
-    <!-- Mensajes -->
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
@@ -49,9 +46,7 @@
         </div>
     @endif
 
-    <!-- Contenido -->
     <div class="row">
-        <!-- Información de la proforma -->
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
@@ -76,41 +71,42 @@
                             <p class="h5">
                                 <span class="badge 
                                     @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
-<<<<<<< HEAD
-                                    @elseif($proforma->tipo == 'AGUA') bg-info
-=======
-                                    @elseif($proforma->tipo == 'ANALISIS QUIMICO') bg-info
->>>>>>> actualizacion
+                                    @elseif($proforma->tipo == 'ANALISIS_QUIMICO') bg-info text-white
                                     @else bg-secondary
                                     @endif">
                                     <i class="fas 
                                         @if($proforma->tipo == 'AMBIENTAL') fa-leaf
-<<<<<<< HEAD
-                                        @elseif($proforma->tipo == 'AGUA') fa-tint
-=======
-                                        @elseif($proforma->tipo == 'ANALISIS QUIMICO') fa-tint
->>>>>>> actualizacion
+                                        @elseif($proforma->tipo == 'ANALISIS_QUIMICO') fa-flask
                                         @else fa-flask
                                         @endif me-1"></i>
-                                    {{ $proforma->tipo }}
+                                    {{ $proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo }}
                                 </span>
-                            </p>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="text-muted small">Fecha de Emisión</label>
-                            <p class="h5">
-                                <i class="far fa-calendar me-1" style="color: #ffc107;"></i>
-                                {{ $proforma->fecha_emision->format('d/m/Y') }}
                             </p>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="text-muted small">Fecha de Recepción</label>
                             <p class="h5">
-                                @if($proforma->fecha_recepcion)
+                                <i class="far fa-calendar me-1" style="color: #ffc107;"></i>
+                                {{ $proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : 'N/A' }}
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Fecha de Muestreo</label>
+                            <p class="h5">
+                                @if($proforma->fecha_muestreo)
                                     <i class="far fa-calendar-check me-1" style="color: #ffc107;"></i>
-                                    {{ $proforma->fecha_recepcion->format('d/m/Y') }}
+                                    {{ $proforma->fecha_muestreo->format('Y-m-d') }}
                                 @else
-                                    <span class="text-muted">No especificada</span>
+                                    <i class="fas fa-exclamation-triangle me-1" style="color: #ff9800;"></i>
+                                    <span class="text-warning">No especificada</span>
+                                    @if($proforma->estado == 'BORRADOR')
+                                        <br>
+                                        <small class="text-muted">
+                                            <a href="{{ route('proformas.edit', $proforma) }}" style="color: #ffc107;">
+                                                <i class="fas fa-edit me-1"></i> Editar para agregar fecha de muestreo
+                                            </a>
+                                        </small>
+                                    @endif
                                 @endif
                             </p>
                         </div>
@@ -155,7 +151,6 @@
                 </div>
             </div>
 
-            <!-- ===== NUEVA SECCIÓN: INFORMACIÓN DEL SISTEMA ===== -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -169,7 +164,7 @@
                             <label class="text-muted small">Fecha de Creación</label>
                             <p class="h5">
                                 <i class="far fa-calendar-plus me-2" style="color: #ffc107;"></i>
-                                {{ $proforma->created_at->format('d/m/Y H:i:s') }}
+                                {{ $proforma->created_at->format('Y-m-d H:i:s') }}
                             </p>
                             <small class="text-muted">
                                 <i class="fas fa-clock me-1"></i> Hace {{ $proforma->created_at->diffForHumans() }}
@@ -179,7 +174,7 @@
                             <label class="text-muted small">Última Actualización</label>
                             <p class="h5">
                                 <i class="far fa-calendar-check me-2" style="color: #ffc107;"></i>
-                                {{ $proforma->updated_at->format('d/m/Y H:i:s') }}
+                                {{ $proforma->updated_at->format('Y-m-d H:i:s') }}
                             </p>
                             <small class="text-muted">
                                 <i class="fas fa-clock me-1"></i> Hace {{ $proforma->updated_at->diffForHumans() }}
@@ -189,7 +184,6 @@
                 </div>
             </div>
 
-            <!-- Detalles del Cliente -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -226,7 +220,6 @@
                         </div>
                     </div>
                     
-                    <!-- CAMPO UNIDAD - DESPUÉS DE DIRECCIÓN -->
                     @if($proforma->unidad)
                     <div class="row mt-2 pt-2 border-top">
                         <div class="col-12">
@@ -247,7 +240,6 @@
                 </div>
             </div>
 
-            <!-- ALERTA DE MODIFICACIÓN DE PARÁMETROS -->
             @if($proforma->parametros_modificados && $proforma->justificacion_modificacion)
             <div class="card mb-4 border-warning">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
@@ -269,7 +261,7 @@
                             Modificado por: {{ $proforma->usuarioModificacion->name }}
                             <br>
                             <i class="fas fa-calendar-alt me-1"></i>
-                            Fecha: {{ $proforma->updated_at->format('d/m/Y H:i:s') }}
+                            Fecha: {{ $proforma->updated_at->format('Y-m-d H:i:s') }}
                         </small>
                         @endif
                     </div>
@@ -277,7 +269,6 @@
             </div>
             @endif
 
-            <!-- Servicios/Parámetros -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -303,7 +294,7 @@
                                     <td>
                                         <strong>{{ $parametro->categoria === 'RUIDO' ? 'RUIDO' : ($parametro->categoria === 'GASES' ? 'GASES' : $parametro->nombre) }}</strong>
                                     </td>
-                                    <td class="text-center">{{ $proforma->tipo === 'AGUA' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A') }}</td>
+                                    <td class="text-center">{{ $proforma->tipo === 'AMBIENTAL' ? ($parametro->tecnica ?? 'N/A') : ($parametro->pivot->metodo ?: $parametro->metodo ?? 'N/A') }}</td>
                                     <td class="text-center">{{ $parametro->pivot->cantidad_muestras }}</td>
                                     <td class="text-end">Bs. {{ number_format($parametro->pivot->precio_unitario, 2) }}</td>
                                     <td class="text-end">Bs. {{ number_format($parametro->pivot->precio_unitario * $parametro->pivot->cantidad_muestras, 2) }}</td>
@@ -347,28 +338,39 @@
                                     <th>Concepto</th>
                                     <th>Descripción</th>
                                     <th class="text-center">Cantidad</th>
-                                    <th class="text-end">Costo Unit.</th>
+                                    <th class="text-end">Precio Unit.</th>
                                     <th class="text-end">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @php $totalLogistica = 0; @endphp
                                 @foreach($proforma->logisticasMuestreo as $log)
+                                @php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $subtotal = $precio * ($log->pivot->cantidad ?? 1);
+                                    $totalLogistica += $subtotal;
+                                @endphp
                                 <tr>
                                     <td>{{ $log->categoria }} - {{ $log->descripcion }}</td>
                                     <td>{{ $log->pivot->descripcion ?? '' }}</td>
-                                    <td class="text-center">{{ $log->pivot->cantidad }}</td>
-                                    <td class="text-end">Bs. {{ number_format($log->costo, 2) }}</td>
-                                    <td class="text-end">Bs. {{ number_format($log->pivot->subtotal, 2) }}</td>
+                                    <td class="text-center">{{ $log->pivot->cantidad ?? 1 }}</td>
+                                    <td class="text-end">Bs. {{ number_format($precio, 2) }}</td>
+                                    <td class="text-end">Bs. {{ number_format($subtotal, 2) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Total Logística:</td>
+                                    <td class="text-end fw-bold">Bs. {{ number_format($totalLogistica, 2) }}</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
             @endif
 
-            <!-- ===== RESUMEN FINANCIERO ===== -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -381,7 +383,28 @@
                         <table class="table table-sm" style="margin-bottom: 0;">
                             <tbody>
                                 <tr>
-                                    <td class="text-end fw-bold">Total:</td>
+                                    <td class="text-end fw-bold">Subtotal Servicios:</td>
+                                    <td class="text-end">Bs. {{ number_format($proforma->parametros->sum(fn($p) => $p->pivot->precio_unitario * $p->pivot->cantidad_muestras), 2) }}</td>
+                                </tr>
+                                @if($proforma->logisticasMuestreo->count() > 0)
+                                @php $totalLogistica = 0; @endphp
+                                @foreach($proforma->logisticasMuestreo as $log)
+                                @php 
+                                    $precio = $log->pivot->precio_unitario ?? $log->costo ?? 0;
+                                    $totalLogistica += $precio * ($log->pivot->cantidad ?? 1);
+                                @endphp
+                                @endforeach
+                                <tr>
+                                    <td class="text-end fw-bold">Logística:</td>
+                                    <td class="text-end">Bs. {{ number_format($totalLogistica, 2) }}</td>
+                                </tr>
+                                @endif
+                                <tr>
+                                    <td class="text-end fw-bold">Descuento:</td>
+                                    <td class="text-end text-danger">- Bs. {{ number_format($proforma->descuento, 2) }}</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td class="text-end fw-bold text-success">Total:</td>
                                     <td class="text-end fw-bold text-success">
                                         Bs. {{ number_format($proforma->total, 2) }}
                                     </td>
@@ -419,9 +442,7 @@
             @endif
         </div>
 
-        <!-- Panel lateral -->
         <div class="col-md-4">
-            <!-- Card acciones -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -468,7 +489,6 @@
                             @endcan
                         @endif
                             @can('generar pdf proformas')
-                                        <!-- PDF - Verde outline con texto negro, hover verde sólido texto blanco -->
                         <a href="{{ route('proformas.pdf', $proforma) }}" 
                            class="btn"
                            style="color: #000000; border: 2px solid #198754; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -484,7 +504,6 @@
                             
                             @if($proforma->estado == 'BORRADOR')
                                     @can('editar proformas')
-                                    <!-- Editar Proforma Completa - Amarillo outline -->
                                     <a href="{{ route('proformas.edit', $proforma) }}" 
                                        class="btn"
                                        style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -495,7 +514,6 @@
                                     </a>
                                     @endcan
                                     
-                                    <!-- ENVIAR A REVISIÓN -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -509,7 +527,6 @@
                                         Enviar a Revisión
                                     </button>
                                     @endcan
-                                    <!-- Rechazar Proforma -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -524,7 +541,6 @@
                                     </button>
                                     @endcan
                                     
-                                    <!-- Eliminar Proforma -->
                                      @can('eliminar proformas')
                                     <form action="{{ route('proformas.destroy', $proforma) }}" 
                                           method="POST" 
@@ -547,7 +563,6 @@
                                         Proforma en revisión
                                     </div>
                                     
-                                    <!-- Botón para editar SOLO ADELANTO (ENVIADA) -->
                                     @can('editar adelanto de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -561,7 +576,6 @@
                                     </button>
                                     @endcan
 
-                                    <!-- Aprobar Proforma -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -576,7 +590,6 @@
                                     </button>
                                     @endcan
                                     
-                                    <!-- Rechazar Proforma -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -597,7 +610,6 @@
                                         Proforma aprobada
                                     </div>
                                     
-                                    <!-- Botón para editar SOLO ADELANTO (APROBADA) -->
                                     @can('editar adelanto de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -612,7 +624,6 @@
                                     @endcan
                                     
                                     @if($proforma->informe)
-                                        <!-- Ver Informe Asociado -->
                                         <a href="{{ route('informes.show', $proforma->informe) }}" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -623,7 +634,6 @@
                                         </a>
                                     @else
                                         @can('crear informes')
-                                        <!-- Crear Informe -->
                                         <a href="{{ route('informes.create', ['proforma_id' => $proforma->id]) }}" 
                                            class="btn"
                                            style="color: #000000; border: 2px solid #0dcaf0; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: block; text-align: center;"
@@ -641,7 +651,6 @@
                                         Proforma finalizada
                                     </div>
                                     
-                                    <!-- FINALIZADA - NO SE PUEDE EDITAR NADA -->
                                     <div class="alert alert-info mt-2">
                                         <i class="fas fa-info-circle me-2"></i>
                                         Las proformas finalizadas no pueden ser modificadas.
@@ -664,7 +673,6 @@
                                         Proforma rechazada
                                     </div>
                                     
-                                    <!-- Volver a Borrador -->
                                     @can('revision de proformas')
                                     <button type="button" 
                                             class="btn"
@@ -684,7 +692,6 @@
                 </div>
             </div>
 
-            <!-- Información de Informe -->
             <div class="card">
                 <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
                     <h5 class="mb-0" style="color: #000000;">
@@ -703,7 +710,6 @@
                                     {{ $proforma->informe->estado_texto }}
                                 </span>
                             </p>
-                            <!-- Ver Informe -->
                             <a href="{{ route('informes.show', $proforma->informe) }}" 
                                class="btn"
                                style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block;"
@@ -735,198 +741,188 @@
     </div>
 </div>
 
-<!-- Modal para cambiar estado -->
-        @can('revision de proformas')
-        <div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color: #ffc107; border-bottom: none;">
-                        <h5 class="modal-title" style="color: #000000;">
-                            <i class="fas fa-exchange-alt me-2" style="color: #000000;"></i>
-                            Cambiar Estado de la Proforma
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
-                    </div>
-                    <form action="{{ route('proformas.cambiar-estado', $proforma) }}" method="POST">
-                        @csrf
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="estado" class="form-label">
-                                    <i class="fas fa-flag me-1 text-danger"></i>
-                                    Nuevo Estado <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-select" id="estado" name="estado" required>
-                                    <option value="">-- Seleccione estado --</option>
-                                    <option value="BORRADOR">📝 Borrador</option>
-                                    <option value="ENVIADA">⏳ Enviada</option>
-                                    <option value="APROBADA">✅ Aprobada</option>
-                                    <option value="RECHAZADA">❌ Rechazada</option>
-                                    <option value="FINALIZADA">🏁 Finalizada</option>
-                                </select>
-                                <small class="form-text text-muted">
-                                    Estado actual: <strong>{{ $proforma->estado_texto }}</strong>
-                                </small>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="comentario" class="form-label">
-                                    <i class="fas fa-comment me-1"></i>
-                                    Comentario (Opcional)
-                                </label>
-                                <textarea class="form-control" 
-                                          id="comentario" 
-                                          name="comentario" 
-                                          rows="3"
-                                          placeholder="Justificación del cambio de estado..."></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 20px;">
-                                <i class="fas fa-times me-2"></i>
-                                Cancelar
-                            </button>
-                            <button type="submit" class="btn" style="background-color: #ffc107; border-radius: 30px; padding: 8px 20px; color: #000000; border: none;">
-                                <i class="fas fa-save me-2"></i>
-                                Guardar Cambio
-                            </button>
-                        </div>
-                    </form>
-                </div>
+@can('revision de proformas')
+<div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #ffc107; border-bottom: none;">
+                <h5 class="modal-title" style="color: #000000;">
+                    <i class="fas fa-exchange-alt me-2" style="color: #000000;"></i>
+                    Cambiar Estado de la Proforma
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
             </div>
+            <form action="{{ route('proformas.cambiar-estado', $proforma) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">
+                            <i class="fas fa-flag me-1 text-danger"></i>
+                            Nuevo Estado <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="estado" name="estado" required>
+                            <option value="">-- Seleccione estado --</option>
+                            <option value="BORRADOR">📝 Borrador</option>
+                            <option value="ENVIADA">⏳ Enviada</option>
+                            <option value="APROBADA">✅ Aprobada</option>
+                            <option value="RECHAZADA">❌ Rechazada</option>
+                            <option value="FINALIZADA">🏁 Finalizada</option>
+                        </select>
+                        <small class="form-text text-muted">
+                            Estado actual: <strong>{{ $proforma->estado_texto }}</strong>
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="comentario" class="form-label">
+                            <i class="fas fa-comment me-1"></i>
+                            Comentario (Opcional)
+                        </label>
+                        <textarea class="form-control" 
+                                  id="comentario" 
+                                  name="comentario" 
+                                  rows="3"
+                                  placeholder="Justificación del cambio de estado..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 20px;">
+                        <i class="fas fa-times me-2"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn" style="background-color: #ffc107; border-radius: 30px; padding: 8px 20px; color: #000000; border: none;">
+                        <i class="fas fa-save me-2"></i>
+                        Guardar Cambio
+                    </button>
+                </div>
+            </form>
         </div>
-        @endcan
+    </div>
+</div>
+@endcan
 
-        <!-- Modal para editar SOLO ADELANTO -->
-         @can('editar adelanto de proformas')
-        <div class="modal fade" id="editarAdelantoModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color: #ffc107; border-bottom: none;">
-                        <h5 class="modal-title" style="color: #000000;">
-                            <i class="fas fa-money-bill-wave me-2" style="color: #000000;"></i>
-                            Actualizar Adelanto
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
-                    </div>
-                    <form action="{{ route('proformas.actualizar-adelanto', $proforma) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="modal-body">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <strong>Información actual:</strong>
-                                <ul class="mb-0 mt-2">
-                                    <li>Total: <strong>Bs. {{ number_format($proforma->total, 2) }}</strong></li>
-                                    <li>Adelanto actual: <strong>Bs. {{ number_format($proforma->adelanto, 2) }}</strong></li>
-                                    <li>Saldo actual: <strong class="{{ $proforma->saldo > 0 ? 'text-danger' : 'text-success' }}">
-                                        Bs. {{ number_format($proforma->saldo, 2) }}
-                                    </strong></li>
-                                </ul>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="nuevo_adelanto" class="form-label">
-                                    <i class="fas fa-hand-holding-usd me-1 text-warning"></i>
-                                    Nuevo Adelanto (Bs.) <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Bs.</span>
-                                    <input type="number" 
-                                           class="form-control" 
-                                           id="nuevo_adelanto" 
-                                           name="adelanto" 
-                                           value="{{ $proforma->adelanto }}" 
-                                           min="0" 
-                                           max="{{ $proforma->total }}"
-                                           step="0.01"
-                                           required>
-                                </div>
-                                <small class="text-muted">
-                                    El adelanto no puede ser mayor al total (Bs. {{ number_format($proforma->total, 2) }})
-                                </small>
-                            </div>
-                            
-                            <div class="mb-3" id="nuevoSaldoPreview">
-                                @php
-                                    $nuevoSaldoPreview = $proforma->total - $proforma->adelanto;
-                                @endphp
-                                <label class="form-label text-muted">Nuevo saldo estimado:</label>
-                                <p class="h5 {{ $nuevoSaldoPreview > 0 ? 'text-danger' : 'text-success' }}">
-                                    <i class="fas {{ $nuevoSaldoPreview > 0 ? 'fa-exclamation-triangle' : 'fa-check-circle' }} me-2"></i>
-                                    Bs. <span id="saldoPreview">{{ number_format($nuevoSaldoPreview, 2) }}</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 20px;">
-                                <i class="fas fa-times me-2"></i>
-                                Cancelar
-                            </button>
-                            <button type="submit" class="btn" style="background-color: #ffc107; border-radius: 30px; padding: 8px 20px; color: #000000; border: none;">
-                                <i class="fas fa-save me-2"></i>
-                                Actualizar Adelanto
-                            </button>
-                        </div>
-                    </form>
-                </div>
+@can('editar adelanto de proformas')
+<div class="modal fade" id="editarAdelantoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #ffc107; border-bottom: none;">
+                <h5 class="modal-title" style="color: #000000;">
+                    <i class="fas fa-money-bill-wave me-2" style="color: #000000;"></i>
+                    Actualizar Adelanto
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
             </div>
+            <form action="{{ route('proformas.actualizar-adelanto', $proforma) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Información actual:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Total: <strong>Bs. {{ number_format($proforma->total, 2) }}</strong></li>
+                            <li>Adelanto actual: <strong>Bs. {{ number_format($proforma->adelanto, 2) }}</strong></li>
+                            <li>Saldo actual: <strong class="{{ $proforma->saldo > 0 ? 'text-danger' : 'text-success' }}">
+                                Bs. {{ number_format($proforma->saldo, 2) }}
+                            </strong></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="nuevo_adelanto" class="form-label">
+                            <i class="fas fa-hand-holding-usd me-1 text-warning"></i>
+                            Nuevo Adelanto (Bs.) <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">Bs.</span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="nuevo_adelanto" 
+                                   name="adelanto" 
+                                   value="{{ $proforma->adelanto }}" 
+                                   min="0" 
+                                   max="{{ $proforma->total }}"
+                                   step="0.01"
+                                   required>
+                        </div>
+                        <small class="text-muted">
+                            El adelanto no puede ser mayor al total (Bs. {{ number_format($proforma->total, 2) }})
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3" id="nuevoSaldoPreview">
+                        @php
+                            $nuevoSaldoPreview = $proforma->total - $proforma->adelanto;
+                        @endphp
+                        <label class="form-label text-muted">Nuevo saldo estimado:</label>
+                        <p class="h5 {{ $nuevoSaldoPreview > 0 ? 'text-danger' : 'text-success' }}">
+                            <i class="fas {{ $nuevoSaldoPreview > 0 ? 'fa-exclamation-triangle' : 'fa-check-circle' }} me-2"></i>
+                            Bs. <span id="saldoPreview">{{ number_format($nuevoSaldoPreview, 2) }}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 20px;">
+                        <i class="fas fa-times me-2"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn" style="background-color: #ffc107; border-radius: 30px; padding: 8px 20px; color: #000000; border: none;">
+                        <i class="fas fa-save me-2"></i>
+                        Actualizar Adelanto
+                    </button>
+                </div>
+            </form>
         </div>
-        @endcan
-        
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Modal para cambiar estado
-            const estadoModal = document.getElementById('cambiarEstadoModal');
-            if (estadoModal) {
-                estadoModal.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    if (button) {
-                        const estado = button.getAttribute('data-estado');
-                        if (estado) {
-                            const select = document.getElementById('estado');
-                            if (select) {
-                                select.value = estado;
-                            }
-                        }
+    </div>
+</div>
+@endcan
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const estadoModal = document.getElementById('cambiarEstadoModal');
+    if (estadoModal) {
+        estadoModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            if (button) {
+                const estado = button.getAttribute('data-estado');
+                if (estado) {
+                    const select = document.getElementById('estado');
+                    if (select) {
+                        select.value = estado;
                     }
-                });
-            }
-            
-            // Preview de saldo en modal de adelanto
-            const adelantoInput = document.getElementById('nuevo_adelanto');
-            const saldoPreview = document.getElementById('saldoPreview');
-<<<<<<< HEAD
-            const totalProforma = {{ $proforma->total }};
-=======
-            const totalProforma = {{ $proforma->total }}';
->>>>>>> actualizacion
-            
-            if (adelantoInput && saldoPreview) {
-                adelantoInput.addEventListener('input', function() {
-                    const nuevoAdelanto = parseFloat(this.value) || 0;
-                    const nuevoSaldo = totalProforma - nuevoAdelanto;
-                    
-                    saldoPreview.textContent = nuevoSaldo.toFixed(2);
-                    
-                    // Cambiar color según el saldo
-                    const previewElement = document.getElementById('nuevoSaldoPreview').querySelector('p');
-                    if (nuevoSaldo > 0) {
-                        previewElement.className = 'h5 text-danger';
-                        previewElement.querySelector('i').className = 'fas fa-exclamation-triangle me-2';
-                    } else if (nuevoSaldo < 0) {
-                        previewElement.className = 'h5 text-warning';
-                        previewElement.querySelector('i').className = 'fas fa-arrow-up me-2';
-                    } else {
-                        previewElement.className = 'h5 text-success';
-                        previewElement.querySelector('i').className = 'fas fa-check-circle me-2';
-                    }
-                });
+                }
             }
         });
-        </script>
+    }
+    
+    const adelantoInput = document.getElementById('nuevo_adelanto');
+    const saldoPreview = document.getElementById('saldoPreview');
+    const totalProforma = {{ $proforma->total }};
+    
+    if (adelantoInput && saldoPreview) {
+        adelantoInput.addEventListener('input', function() {
+            const nuevoAdelanto = parseFloat(this.value) || 0;
+            const nuevoSaldo = totalProforma - nuevoAdelanto;
+            
+            saldoPreview.textContent = nuevoSaldo.toFixed(2);
+            
+            const previewElement = document.getElementById('nuevoSaldoPreview').querySelector('p');
+            if (nuevoSaldo > 0) {
+                previewElement.className = 'h5 text-danger';
+                previewElement.querySelector('i').className = 'fas fa-exclamation-triangle me-2';
+            } else if (nuevoSaldo < 0) {
+                previewElement.className = 'h5 text-warning';
+                previewElement.querySelector('i').className = 'fas fa-arrow-up me-2';
+            } else {
+                previewElement.className = 'h5 text-success';
+                previewElement.querySelector('i').className = 'fas fa-check-circle me-2';
+            }
+        });
+    }
+});
+</script>
 
 <style>
-/* ========== ESTILOS ADICIONALES ========== */
 .fa-file-invoice-dollar {
     color: #ffc107 !important;
 }
@@ -948,7 +944,6 @@
     box-shadow: 0 8px 20px rgba(128, 128, 128, 0.3) !important;
 }
 
-/* ========== CORRECCIÓN PARA MÓVIL ========== */
 @media (max-width: 768px) {
     .page-header .d-flex {
         flex-direction: column !important;

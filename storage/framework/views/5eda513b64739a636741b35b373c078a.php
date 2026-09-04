@@ -2,7 +2,6 @@
 
 <?php $__env->startSection('content'); ?>
 <div class="container-main">
-    <!-- Encabezado de página -->
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -17,7 +16,6 @@
             
             <div class="d-flex gap-2">
                 <?php if(auth()->guard()->check()): ?>
-
                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear proformas')): ?>
                         <a href="<?php echo e(route('proformas.create')); ?>" class="btn btn-primary" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000; border: none; transition: all 0.3s ease;">
                             <i class="fas fa-plus-circle"></i>
@@ -33,11 +31,9 @@
         </div>
     </div>
 
-    <!-- BUSCADOR Y FILTROS -->
     <div class="card mb-4">
         <div class="card-body">
             <form method="GET" action="<?php echo e(route('proformas.index')); ?>" class="row">
-                <!-- Buscador general -->
                 <div class="col-md-12 mb-3">
                     <label for="search" class="form-label fw-semibold">
                         <i class="fas fa-search me-2" style="color: #ffc107;"></i>
@@ -62,11 +58,10 @@
                     </div>
                     <small class="text-muted mt-1 d-block">
                         <i class="fas fa-info-circle me-1"></i>
-                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, AGUA, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
+                        Puede buscar por código de proforma, nombre del cliente o tipo (AMBIENTAL, ANÁLISIS QUÍMICO, INVESTIGACION). La búsqueda no distingue mayúsculas/minúsculas.
                     </small>
                 </div>
                 
-                <!-- Filtros existentes -->
                 <div class="col-md-3">
                     <label for="mes" class="form-label">
                         <i class="fas fa-calendar-alt me-1" style="color: #ffc107;"></i> Mes
@@ -172,7 +167,6 @@
         <?php endif; ?>
     </div>
 
-    <!-- Tabla de proformas -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
@@ -236,18 +230,18 @@
 
                                         </small>
                                     </td>
-                                    <td>
+                                   <td>
                                         <span class="badge rounded-pill 
                                             <?php if($proforma->tipo == 'AMBIENTAL'): ?> bg-warning text-dark
-                                            <?php elseif($proforma->tipo == 'AGUA'): ?> bg-info
+                                            <?php elseif($proforma->tipo == 'ANALISIS_QUIMICO'): ?> bg-info text-white
                                             <?php else: ?> bg-secondary
                                             <?php endif; ?>">
                                             <i class="fas 
                                                 <?php if($proforma->tipo == 'AMBIENTAL'): ?> fa-leaf
-                                                <?php elseif($proforma->tipo == 'AGUA'): ?> fa-tint
+                                                <?php elseif($proforma->tipo == 'ANALISIS_QUIMICO'): ?> fa-flask
                                                 <?php else: ?> fa-flask
                                                 <?php endif; ?> me-1"></i>
-                                            <?php echo e($proforma->tipo); ?>
+                                            <?php echo e($proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo); ?>
 
                                         </span>
                                     </td>
@@ -292,7 +286,6 @@
                                         ?>
                                         
                                         <span class="badge rounded-pill <?php echo e($bgColor); ?>" style="color: <?php echo e($textColor); ?>; padding: 8px 12px; <?php echo e($estado === 'FINALIZADA' ? 'border: 1px solid #ddd;' : ''); ?>">
-                                            <!-- <i class="fas <?php echo e($icono); ?> me-1" style="color: <?php echo e($textColor); ?>;"></i> -->
                                             <?php echo e($estado); ?>
 
                                         </span>
@@ -302,8 +295,7 @@
                                     </td>
                                     <td>
                                         <small>
-                                            <!-- <i class="far fa-calendar me-1"></i> -->
-                                            <?php echo e($proforma->fecha_emision->format('d/m/Y')); ?>
+                                            <?php echo e($proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : 'N/A'); ?>
 
                                         </small>
                                     </td>
@@ -328,7 +320,6 @@
                                                 Opciones
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
-                                                <!-- Ver detalles -->
                                                 <li>
                                                     <a class="dropdown-item" 
                                                     href="<?php echo e(route('proformas.show', $proforma)); ?>"
@@ -338,7 +329,6 @@
                                                     </a>
                                                 </li>
                                                 
-                                                <!-- Editar (solo admin y borrador) -->
                                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['editar proformas', 'eliminar proformas'])): ?>
                                                     <?php if($proforma->estado == 'BORRADOR'): ?>
                                                         <li>
@@ -352,7 +342,6 @@
                                                             <?php endif; ?>
                                                         </li>
                                                         
-                                                        <!-- Eliminar -->
                                                         <li>
                                                             <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('eliminar proformas')): ?>
                                                             <form action="<?php echo e(route('proformas.destroy', $proforma)); ?>" 
@@ -374,7 +363,6 @@
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                                 
-                                                <!-- Generar PDF -->
                                                 <li>
                                                     <a class="dropdown-item" 
                                                     href="<?php echo e(route('proformas.pdf', $proforma)); ?>"
@@ -394,7 +382,6 @@
                                                 </li>
                                                 <?php endif; ?>
                                                 <?php else: ?>
-                                                <!-- Cadena de Custodia (solo AGUA / INVESTIGACIÓN) -->
                                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar cadena custodia')): ?>
                                                 <li>
                                                     <a class="dropdown-item" 
@@ -407,7 +394,6 @@
                                                 </li>
                                                 <?php endif; ?>
                                                 
-                                                <!-- Formulario de resultados (solo AGUA / INVESTIGACIÓN) -->
                                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver resultados')): ?>
                                                 <li>
                                                     <a class="dropdown-item" 
@@ -428,7 +414,6 @@
                     </table>
                 </div>
 
-                <!-- Botón de Papelera y texto de registros centrado -->
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
                     <?php if(auth()->guard()->check()): ?>
                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver papelera proformas')): ?>
@@ -501,16 +486,13 @@
     </div>
 </div>
 
-<!-- Estilos adicionales -->
 <style>
-/* Estilo para el botón de nueva proforma */
 .btn-primary[style*="background-color: #ffc107"]:hover {
     background-color: #e6a800 !important;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
 }
 
-/* Estilo para el botón de papelera en círculo */
 .btn-icon-circle {
     width: 35px !important;
     height: 35px !important;
@@ -526,7 +508,6 @@
     transform: scale(1.1) !important;
 }
 
-/* Estilos para la paginación */
 .pagination .page-link {
     color: #ffc107 !important;
     border-radius: 8px;
@@ -539,7 +520,6 @@
     color: #000 !important;
 }
 
-/* Estilo para los botones de acción */
 .btn-outline-warning,
 .btn-outline-danger,
 .btn-outline-success {
@@ -553,7 +533,6 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Estilo para el input de búsqueda */
 .input-group-text {
     border-radius: 30px 0 0 30px !important;
 }
@@ -562,7 +541,6 @@
     border-radius: 0 !important;
 }
 
-/* Estilo para el foco de inputs y selects en proformas */
 .form-control:focus,
 .form-select:focus,
 .input-group-text:focus,
@@ -572,30 +550,25 @@
     outline: none !important;
 }
 
-/* Específico para el input de búsqueda */
 #search:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
-/* Para los selects de filtros */
 select.form-select:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
-/* Para el botón de filtrar */
 button[type="submit"]:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
-/* Reforzar color del icono de proformas */
 .fa-file-invoice-dollar {
     color: #ffc107 !important;
 }
 
-/* ========== CORRECCIÓN PARA MÓVIL ========== */
 @media (max-width: 768px) {
     .page-header .d-flex {
         flex-direction: column !important;
@@ -646,7 +619,6 @@ button[type="submit"]:focus {
         display: none !important;
     }
     
-    /* Ajuste para móvil - papelera y texto */
     .d-flex.align-items-center.justify-content-center.position-relative {
         flex-direction: column !important;
         padding-top: 40px !important;
@@ -663,7 +635,6 @@ button[type="submit"]:focus {
 <?php $__env->startPush('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar tooltips de Bootstrap
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl, {
@@ -674,7 +645,6 @@ button[type="submit"]:focus {
             });
         });
         
-        // Auto-submit del formulario de búsqueda al escribir
         let searchTimeout;
         const searchInput = document.getElementById('search');
         const searchForm = document.getElementById('searchForm');
@@ -693,4 +663,4 @@ button[type="submit"]:focus {
 </script>
 <?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\CIMA_UATF-main\resources\views/proformas/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/proformas/index.blade.php ENDPATH**/ ?>

@@ -126,16 +126,17 @@
                         @enderror
                     </div>
 
+                    <!-- CATEGORÍA (antes Tipo de Análisis) - campo: tipo -->
                     <div class="col-md-4 mb-3">
 <<<<<<< HEAD
                         <label for="tipo" class="form-label">
-                            Tipo de Análisis *
+                            Categoría *
                         </label>
                         <select class="form-select @error('tipo') is-invalid @enderror" 
                                 id="tipo" 
                                 name="tipo" 
                                 required>
-                            <option value="">Seleccionar tipo...</option>
+                            <option value="">Seleccionar categoría...</option>
                             <option value="AMBIENTAL" {{ old('tipo', $parametro->tipo) == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
                             <option value="AGUA" {{ old('tipo', $parametro->tipo) == 'AGUA' ? 'selected' : '' }}>AGUA</option>
                             <option value="INVESTIGACION" {{ old('tipo', $parametro->tipo) == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN</option>
@@ -143,29 +144,34 @@
                         @error('tipo')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <small class="text-muted">Categoría del análisis según formato CIMA</small>
                     </div>
 
+                    <!-- TIPO DE ANÁLISIS (antes Categoría) - campo: categoria -->
                     <div class="col-md-4 mb-3">
 =======
 >>>>>>> actualizacion
                         <label for="categoria" class="form-label">
-                            Categoría
+                            Tipo de Análisis
                         </label>
                         <select class="form-select @error('categoria') is-invalid @enderror" 
                                 id="categoria" 
                                 name="categoria">
-                            <option value="">Seleccionar categoría...</option>
-                            @if(old('categoria', $parametro->categoria) && !in_array(old('categoria', $parametro->categoria), ['AIRE', 'RUIDO', 'GASES', 'AGUA', 'SUELO']))
+                            <option value="">Seleccionar tipo...</option>
+                            @if(old('categoria', $parametro->categoria) && !in_array(old('categoria', $parametro->categoria), ['AIRE', 'RUIDO', 'GASES', 'AGUA', 'SUELO', 'OTROS']))
                                 <option value="{{ old('categoria', $parametro->categoria) }}" selected>{{ old('categoria', $parametro->categoria) }}</option>
                             @endif
-                            @foreach(['AIRE', 'RUIDO', 'GASES', 'AGUA', 'SUELO'] as $cat)
-                                <option value="{{ $cat }}" {{ old('categoria', $parametro->categoria) == $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                            @endforeach
+                            <option value="AIRE" {{ old('categoria', $parametro->categoria) == 'AIRE' ? 'selected' : '' }}>AIRE</option>
+                            <option value="RUIDO" {{ old('categoria', $parametro->categoria) == 'RUIDO' ? 'selected' : '' }}>RUIDO</option>
+                            <option value="GASES" {{ old('categoria', $parametro->categoria) == 'GASES' ? 'selected' : '' }}>GASES</option>
+                            <option value="AGUA" {{ old('categoria', $parametro->categoria) == 'AGUA' ? 'selected' : '' }}>AGUA</option>
+                            <option value="SUELO" {{ old('categoria', $parametro->categoria) == 'SUELO' ? 'selected' : '' }}>SUELO</option>
+                            <option value="OTROS" {{ old('categoria', $parametro->categoria) == 'OTROS' ? 'selected' : '' }}>OTROS</option>
                         </select>
                         @error('categoria')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Ej: AIRE, RUIDO, GASES, AGUA</small>
+                        <small class="text-muted">Ej: AIRE, RUIDO, GASES, AGUA, SUELO, OTROS</small>
                     </div>
 
 <<<<<<< HEAD
@@ -241,34 +247,16 @@
                         <label for="tecnica" class="form-label">
                             Técnica
                         </label>
-<<<<<<< HEAD
-                        <select class="form-select @error('tecnica') is-invalid @enderror" 
-                                id="tecnica" 
-                                name="tecnica">
-                            <option value="">Seleccionar técnica...</option>
-                            @if(old('tecnica', $parametro->tecnica) && !in_array(old('tecnica', $parametro->tecnica), ['POTENCIOMETRIA', 'ABSORCION ATOMICA', 'FOTOMETRIA', 'UV-VISIBLE', 'IONOMETRIA', 'VOLUMETRIA', 'GRAVIMETRIA', 'NEFELOMÉTRICO', 'BACTEREOLOGIA', 'OTROS']))
-                                <option value="{{ old('tecnica', $parametro->tecnica) }}" selected>{{ old('tecnica', $parametro->tecnica) }}</option>
-                            @endif
-                            @foreach(['POTENCIOMETRIA', 'ABSORCION ATOMICA', 'FOTOMETRIA', 'UV-VISIBLE', 'IONOMETRIA', 'VOLUMETRIA', 'GRAVIMETRIA', 'NEFELOMÉTRICO', 'BACTEREOLOGIA', 'OTROS'] as $tec)
-                                <option value="{{ $tec }}" {{ old('tecnica', $parametro->tecnica) == $tec ? 'selected' : '' }}>{{ $tec }}</option>
-                            @endforeach
-                        </select>
-                        @error('tecnica')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">Técnica analítica utilizada</small>
-=======
                         <input type="text" 
                                class="form-control @error('tecnica') is-invalid @enderror" 
                                id="tecnica" 
                                name="tecnica" 
                                value="{{ old('tecnica', $parametro->tecnica) }}" 
-                               placeholder="Ej: Potenciometría, Absorción Atómica, Volumetría...">
+                               placeholder="Ej: POTENCIOMETRIA, ABSORCION ATOMICA, VOLUMETRIA, NEFELOMÉTRICO">
                         @error('tecnica')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Técnica analítica utilizada (texto libre)</small>
->>>>>>> actualizacion
+                        <small class="text-muted">Técnica analítica utilizada (puede escribir libremente)</small>
                     </div>
 
                     <div class="col-md-6 mb-4">
@@ -279,17 +267,15 @@
                                 id="matriz" 
                                 name="matriz">
                             <option value="">Seleccionar matriz...</option>
-                            @if(old('matriz', $parametro->matriz) && !in_array(old('matriz', $parametro->matriz), ['AGUA', 'AIRE', 'SUELO', 'OTROS']))
-                                <option value="{{ old('matriz', $parametro->matriz) }}" selected>{{ old('matriz', $parametro->matriz) }}</option>
-                            @endif
-                            @foreach(['AGUA', 'AIRE', 'SUELO', 'OTROS'] as $mat)
-                                <option value="{{ $mat }}" {{ old('matriz', $parametro->matriz) == $mat ? 'selected' : '' }}>{{ $mat }}</option>
-                            @endforeach
+                            <option value="AGUA" {{ old('matriz', $parametro->matriz) == 'AGUA' ? 'selected' : '' }}>AGUA</option>
+                            <option value="AIRE" {{ old('matriz', $parametro->matriz) == 'AIRE' ? 'selected' : '' }}>AIRE</option>
+                            <option value="SUELO" {{ old('matriz', $parametro->matriz) == 'SUELO' ? 'selected' : '' }}>SUELO</option>
+                            <option value="OTROS" {{ old('matriz', $parametro->matriz) == 'OTROS' ? 'selected' : '' }}>OTROS</option>
                         </select>
                         @error('matriz')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Matriz de análisis: AGUA, AIRE, SUELO</small>
+                        <small class="text-muted">Matriz de análisis: AGUA, AIRE, SUELO, OTROS</small>
                     </div>
 
                     <div class="col-md-6 mb-4">
@@ -300,17 +286,14 @@
                                 id="tipo_medicion" 
                                 name="tipo_medicion">
                             <option value="">Seleccionar tipo de medición...</option>
-                            @if(old('tipo_medicion', $parametro->tipo_medicion) && !in_array(old('tipo_medicion', $parametro->tipo_medicion), ['Ambiental', 'Industrial']))
-                                <option value="{{ old('tipo_medicion', $parametro->tipo_medicion) }}" selected>{{ old('tipo_medicion', $parametro->tipo_medicion) }}</option>
-                            @endif
-                            @foreach(['Ambiental', 'Industrial'] as $tm)
-                                <option value="{{ $tm }}" {{ old('tipo_medicion', $parametro->tipo_medicion) == $tm ? 'selected' : '' }}>{{ $tm }}</option>
-                            @endforeach
+                            <option value="Ambiental" {{ old('tipo_medicion', $parametro->tipo_medicion) == 'Ambiental' ? 'selected' : '' }}>Ambiental</option>
+                            <option value="Industrial" {{ old('tipo_medicion', $parametro->tipo_medicion) == 'Industrial' ? 'selected' : '' }}>Industrial</option>
+                            <option value="OTROS" {{ old('tipo_medicion', $parametro->tipo_medicion) == 'OTROS' ? 'selected' : '' }}>OTROS</option>
                         </select>
                         @error('tipo_medicion')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Ej: Ambiental, Industrial</small>
+                        <small class="text-muted">Ej: Ambiental, Industrial, OTROS</small>
                     </div>
                 </div>
 
@@ -347,15 +330,12 @@
 
 <!-- Estilos adicionales específicos para la página de edición -->
 <style>
-
-/* Estilo para el botón de actualizar */
 button[type="submit"][style*="background-color: #A31800"]:hover {
     background-color: #7a1200 !important;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(163, 24, 0, 0.3);
 }
 
-/* Estilo para el botón de cancelar */
 .btn-secondary {
     background-color: #6c757d;
     border: none;
@@ -368,18 +348,14 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
     box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
 }
 
-/* Enfocar inputs con el color rojo */
 .form-control:focus, .form-select:focus {
     border-color: #A31800 !important;
     box-shadow: 0 0 0 3px rgba(163, 24, 0, 0.15) !important;
 }
 
-
-/* Estilo para el icono de advertencia */
 .fa-exclamation-triangle {
     color: #A31800 !important;
 }
-
 
 .btn-volver {
     color: #000000 !important;
@@ -395,30 +371,26 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
     color: #000000 !important;
     border-color: #ffffff !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 8px 20px rgba(128, 128, 128, 0.3) !important; /* Sombra gris más pronunciada */
+    box-shadow: 0 8px 20px rgba(128, 128, 128, 0.3) !important;
 }
-
 
 .fa-microscope{
     color: #A31800!important;
 }
 
 @media (max-width: 768px) {
-    /* Reorganizar el encabezado en móvil */
     .page-header .d-flex {
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 15px !important;
     }
     
-    /* El botón volver ocupa todo el ancho en móvil */
     .page-header .btn-volver {
         width: 100% !important;
         justify-content: center !important;
         margin-top: 10px !important;
     }
     
-    /* Ajustar el título y badge */
     .d-flex.align-items-center.gap-3 {
         flex-wrap: wrap !important;
         gap: 10px !important;
@@ -429,65 +401,54 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
         width: 100% !important;
     }
     
-    /* Badge ocupa su espacio */
     .badge.fs-6 {
         font-size: 0.85rem !important;
         padding: 5px 12px !important;
     }
     
-    /* Ajustar columnas en móvil */
     .col-md-8, .col-md-4 {
         width: 100% !important;
     }
     
-    /* Botones en el panel lateral */
     .d-grid.gap-2 .btn {
         width: 100% !important;
         margin-bottom: 5px !important;
     }
     
-    /* Ajustar tablas en móvil */
     .table-responsive {
         overflow-x: auto !important;
     }
     
-    /* Ajustar texto en tarjetas */
     .card-body .row .col-md-6 {
         width: 100% !important;
     }
     
-    /* Ajustar iconos */
     .fa-2x {
         font-size: 1.5rem !important;
     }
 }
 
-/* Ajuste para tablets */
 @media (min-width: 769px) and (max-width: 991px) {
     .col-md-8, .col-md-4 {
         width: 100% !important;
     }
 }
 
-/* ========== CORRECCIÓN PARA BOTONES DE FORMULARIO ========== */
 @media (max-width: 768px) {
-    /* Hacer los botones más pequeños y manejables en móvil */
     .d-flex.justify-content-between.pt-3.border-top,
     .d-flex.justify-content-between.mt-4.pt-3.border-top {
         flex-direction: column !important;
         gap: 10px !important;
     }
     
-    /* Botones ocupan todo el ancho pero con mejor tamaño */
     .d-flex.justify-content-between.pt-3.border-top .btn,
     .d-flex.justify-content-between.mt-4.pt-3.border-top .btn {
         width: 100% !important;
-        padding: 12px 20px !important; /* Un poco más pequeños que antes */
+        padding: 12px 20px !important;
         font-size: 1rem !important;
         margin: 0 !important;
     }
     
-    /* Para formularios con btn-group */
     .btn-group {
         width: 100% !important;
         display: flex !important;
@@ -499,35 +460,29 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
         padding: 12px 15px !important;
     }
     
-    /* Ajustar espaciado del formulario */
     .card-body {
         padding: 1rem !important;
     }
     
-    /* Ajustar inputs para mejor visualización */
     .form-control, .form-select {
-        font-size: 16px !important; /* Evita zoom automático en iOS */
+        font-size: 16px !important;
         padding: 12px !important;
     }
     
-    /* Ajustar labels */
     .form-label {
         font-size: 0.95rem !important;
         margin-bottom: 0.25rem !important;
     }
     
-    /* Ajustar textos pequeños */
     small.text-muted {
         font-size: 0.8rem !important;
     }
     
-    /* Ajustar títulos de sección */
     h6.border-bottom {
         font-size: 1rem !important;
         padding-bottom: 0.5rem !important;
     }
     
-    /* Ajustar input groups */
     .input-group {
         flex-wrap: nowrap !important;
     }
@@ -541,7 +496,6 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
     }
 }
 
-/* Ajuste para tablets */
 @media (min-width: 769px) and (max-width: 991px) {
     .btn {
         padding: 10px 20px !important;

@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-main">
-    <!-- Encabezado de página -->
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -34,11 +33,9 @@
         </div>
     </div>
 
-    <!-- BUSCADOR Y FILTROS -->
     <div class="card mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ route('proformas.index') }}" class="row" id="searchForm">
-                <!-- Buscador general -->
+            <form method="GET" action="{{ route('proformas.index') }}" class="row">
                 <div class="col-md-12 mb-3">
                     <label for="search" class="form-label fw-semibold">
                         <i class="fas fa-search me-2" style="color: #ffc107;"></i>
@@ -67,7 +64,6 @@
                     </small>
                 </div>
                 
-                <!-- Filtros existentes -->
                 <div class="col-md-3">
                     <label for="mes" class="form-label">
                         <i class="fas fa-calendar-alt me-1" style="color: #ffc107;"></i> Mes
@@ -167,7 +163,6 @@
         @endif
     </div>
 
-    <!-- Tabla de proformas -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
@@ -227,18 +222,18 @@
                                             {{ $proforma->persona_contacto ?? $proforma->cliente->persona_contacto ?? 'N/A' }}
                                         </small>
                                     </td>
-                                    <td>
+                                   <td>
                                         <span class="badge rounded-pill 
                                             @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
-                                            @elseif($proforma->tipo == 'ANALISIS QUIMICO') bg-info
+                                            @elseif($proforma->tipo == 'ANALISIS_QUIMICO') bg-info text-white
                                             @else bg-secondary
                                             @endif">
                                             <i class="fas 
                                                 @if($proforma->tipo == 'AMBIENTAL') fa-leaf
-                                                @elseif($proforma->tipo == 'ANALISIS QUIMICO') fa-tint
+                                                @elseif($proforma->tipo == 'ANALISIS_QUIMICO') fa-flask
                                                 @else fa-flask
                                                 @endif me-1"></i>
-                                            {{ $proforma->tipo }}
+                                            {{ $proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo }}
                                         </span>
                                     </td>
                                     <td>
@@ -290,7 +285,7 @@
                                     </td>
                                     <td>
                                         <small>
-                                            {{ $proforma->fecha_emision->format('d/m/Y') }}
+                                            {{ $proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : 'N/A' }}
                                         </small>
                                     </td>
                                     <td class="text-end fw-semibold text-success">
@@ -312,7 +307,6 @@
                                                 Opciones
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
-                                                <!-- Ver detalles -->
                                                 <li>
                                                     <a class="dropdown-item" 
                                                     href="{{ route('proformas.show', $proforma) }}"
@@ -322,7 +316,6 @@
                                                     </a>
                                                 </li>
                                                 
-                                                <!-- Editar (solo admin y borrador) -->
                                                 @canany(['editar proformas', 'eliminar proformas'])
                                                     @if($proforma->estado == 'BORRADOR')
                                                         <li>
@@ -336,7 +329,6 @@
                                                             @endcan
                                                         </li>
                                                         
-                                                        <!-- Eliminar -->
                                                         <li>
                                                             @can('eliminar proformas')
                                                             <form action="{{ route('proformas.destroy', $proforma) }}" 
@@ -358,7 +350,6 @@
                                                     @endif
                                                 @endcanany
                                                 
-                                                <!-- Generar PDF -->
                                                 <li>
                                                     <a class="dropdown-item" 
                                                     href="{{ route('proformas.pdf', $proforma) }}"
@@ -378,30 +369,28 @@
                                                     </li>
                                                     @endhasanyrole
                                                 @else
-                                                    <!-- Cadena de Custodia -->
-                                                    @can('generar cadena custodia')
-                                                    <li>
-                                                        <a class="dropdown-item" 
-                                                        href="{{ route('proformas.cadena-custodia', $proforma) }}"
-                                                        target="_blank"
-                                                        title="Generar Cadena de Custodia">
-                                                            <i class="fas fa-clipboard-list me-2" style="color: #198754;"></i>
-                                                            Cadena de Custodia
-                                                        </a>
-                                                    </li>
-                                                    @endcan
-                                                    
-                                                    <!-- Formulario de resultados -->
-                                                    @can('ver resultados')
-                                                    <li>
-                                                        <a class="dropdown-item" 
-                                                        href="{{ route('resultados.index', $proforma->id) }}"
-                                                        title="Abrir formulario de resultados">
-                                                            <i class="fas fa-file-alt me-2" style="color: #0d6efd;"></i>
-                                                            Formulario de resultados
-                                                        </a>
-                                                    </li>
-                                                    @endcan
+                                                @can('generar cadena custodia')
+                                                <li>
+                                                    <a class="dropdown-item" 
+                                                    href="{{ route('proformas.cadena-custodia', $proforma) }}"
+                                                    target="_blank"
+                                                    title="Generar Cadena de Custodia">
+                                                        <i class="fas fa-clipboard-list me-2" style="color: #198754;"></i>
+                                                        Cadena de Custodia
+                                                    </a>
+                                                </li>
+                                                @endcan
+                                                
+                                                @can('ver resultados')
+                                                <li>
+                                                    <a class="dropdown-item" 
+                                                    href="{{ route('resultados.index', $proforma->id) }}"
+                                                    title="Abrir formulario de resultados">
+                                                        <i class="fas fa-file-alt me-2" style="color: #0d6efd;"></i>
+                                                        Formulario de resultados
+                                                    </a>
+                                                </li>
+                                                @endcan
                                                 @endif
                                             </ul>
                                         </div>
@@ -412,7 +401,6 @@
                     </table>
                 </div>
 
-                <!-- Botón de Papelera y texto de registros centrado -->
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
                     @auth
                         @can('ver papelera proformas')
@@ -485,7 +473,6 @@
     </div>
 </div>
 
-<!-- Estilos adicionales -->
 <style>
 .btn-primary[style*="background-color: #ffc107"]:hover {
     background-color: #e6a800 !important;

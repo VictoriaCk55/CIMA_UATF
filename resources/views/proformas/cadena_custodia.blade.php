@@ -296,7 +296,7 @@
 
             <!-- CODIGO -->
             <td class="codigo-cell" style="width:28mm;">
-                <strong>{{ $cfg->codigo_documento }}</strong>
+                <strong>{{ $cfg->codigo_documento ?? 'PO01-FR02' }}</strong>
             </td>
 
         </tr>
@@ -304,7 +304,7 @@
         <tr>
 
             <td class="codigo-cell">
-                VERSIÓN: {{ $cfg->version }}
+                VERSIÓN: {{ $cfg->version ?? '06' }}
             </td>
 
         </tr>
@@ -312,7 +312,7 @@
         <tr>
 
             <td class="codigo-cell">
-                FECHA: {{ $cfg->fecha_documento }}
+                FECHA: {{ $cfg->fecha_documento ?? date('Y-m-d') }}
             </td>
 
         </tr>
@@ -327,10 +327,30 @@
 
         <span class="checkbox-option">
 
+            <strong>PROFORMA</strong>
+
+            <span class="checkbox-square">
+                {{ in_array('PROFORMA', $proforma->tipo_documento ?? []) ? '✔' : '' }}
+            </span>
+
+        </span>
+
+        <span class="checkbox-option">
+
+            <strong>COTIZACION</strong>
+
+            <span class="checkbox-square">
+                {{ in_array('COTIZACION', $proforma->tipo_documento ?? []) ? '✔' : '' }}
+            </span>
+
+        </span>
+
+        <span class="checkbox-option">
+
             <strong>CONTRATO</strong>
 
             <span class="checkbox-square">
-                {{ $proforma->tipo == 'CONTRATO' ? '✔' : '' }}
+                {{ in_array('CONTRATO', $proforma->tipo_documento ?? []) ? '✔' : '' }}
             </span>
 
         </span>
@@ -340,7 +360,7 @@
             <strong>CONTRATO MODIFICADO</strong>
 
             <span class="checkbox-square">
-                {{ $proforma->tipo == 'CONTRATO_MODIFICADO' ? '✔' : '' }}
+                {{ in_array('CONTRATO MODIFICADO', $proforma->tipo_documento ?? []) ? '✔' : '' }}
             </span>
 
         </span>
@@ -396,11 +416,7 @@
             </td>
 
             <!-- ESPACIO GRANDE -->
-<<<<<<< HEAD
-            <td colspan="2">{{ $proforma->fecha_emision->format('Y/m/d') }}</td>
-=======
-            <td colspan="2">{{ $proforma->fecha_emision->format('d/m/Y') }}</td>
->>>>>>> actualizacion
+            <td colspan="2">{{ $proforma->fecha_muestreo ? $proforma->fecha_muestreo->format('Y-m-d') : 'N/A' }}</td>
 
         </tr>
 
@@ -418,11 +434,7 @@
             </td>
 
             <!-- ESPACIO GRANDE -->
-<<<<<<< HEAD
-            <td colspan="2">{{ $proforma->fecha_recepcion->format('Y/m/d') }}</td>
-=======
-            <td colspan="2">{{ $proforma->fecha_recepcion->format('d/m/Y') }}</td>
->>>>>>> actualizacion
+            <td colspan="2">{{ $proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : 'N/A' }}</td>
 
         </tr>
 
@@ -465,12 +477,20 @@
 
             @for ($i = 0; $i < 28; $i++)
 
+                @php
+                    $parametroMostrar = $proforma->parametros[$i] ?? null;
+                    $nombreParam = $parametroMostrar ? $parametroMostrar->nombre : '';
+                    if ($parametroMostrar && $parametroMostrar->categoria === 'RUIDO') {
+                        $nombreParam = 'RUIDO';
+                    } elseif ($parametroMostrar && $parametroMostrar->categoria === 'GASES') {
+                        $nombreParam = 'GASES';
+                    }
+                @endphp
+
                 <td class="w-small vertical">
 
                     <span class="vertical-text">
-
-                        {{ $proforma->parametros[$i]->nombre ?? '' }}
-
+                        {{ $nombreParam }}
                     </span>
 
                 </td>
@@ -533,7 +553,11 @@
 
                 @php
                     $paramSub = $proforma->parametros[$i] ?? null;
-                    $tecnicaSub = $paramSub ? ($paramSub->tecnica ?? '') : '';
+                    if ($paramSub && $paramSub->categoria === 'GASES') {
+                        $tecnicaSub = $paramSub->pivot->metodo ?? '';
+                    } else {
+                        $tecnicaSub = $paramSub ? ($paramSub->metodo ?? '') : '';
+                    }
                 @endphp
 
                 <td class="w-small vertical">

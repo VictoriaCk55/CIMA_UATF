@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="container-main">
-    <!-- Encabezado de página con más espacio -->
     <div class="page-header mt-3">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -21,7 +20,6 @@
         </div>
     </div>
 
-    <!-- Información principal -->
     <div class="row">
         <div class="col-md-8">
             <div class="card mb-4">
@@ -68,28 +66,51 @@
                             </p>
                         </div>
 
+                        <!-- CATEGORÍA (campo: tipo) -->
                         <div class="col-md-6 mb-3">
-                            <label class="form-label text-muted small">Tipo de Análisis</label>
+                            <label class="form-label text-muted small">Categoría</label>
                             <p class="fs-5">
                                 <span class="badge 
                                     @if($parametro->tipo == 'AMBIENTAL') bg-warning text-dark
                                     @elseif($parametro->tipo == 'AGUA') bg-info
+                                    @elseif($parametro->tipo == 'INVESTIGACION') bg-secondary
                                     @else bg-secondary
                                     @endif fs-6">
                                     <i class="fas 
                                         @if($parametro->tipo == 'AMBIENTAL') fa-leaf
                                         @elseif($parametro->tipo == 'AGUA') fa-tint
-                                        @else fa-flask
+                                        @elseif($parametro->tipo == 'INVESTIGACION') fa-flask
+                                        @else fa-tag
                                         @endif me-1"></i>
-                                    {{ $parametro->tipo }}
+                                    {{ $parametro->tipo ?? 'N/A' }}
                                 </span>
                             </p>
                         </div>
 
+                        <!-- TIPO DE ANÁLISIS (campo: categoria) -->
                         @if($parametro->categoria)
                         <div class="col-md-6 mb-3">
-                            <label class="form-label text-muted small">Categoría</label>
-                            <p class="fs-5"><span class="badge bg-secondary fs-6">{{ $parametro->categoria }}</span></p>
+                            <label class="form-label text-muted small">Tipo de Análisis</label>
+                            <p class="fs-5">
+                                <span class="badge 
+                                    @if($parametro->categoria == 'AIRE') bg-warning text-dark
+                                    @elseif($parametro->categoria == 'RUIDO') bg-info
+                                    @elseif($parametro->categoria == 'GASES') bg-danger
+                                    @elseif($parametro->categoria == 'AGUA') bg-primary
+                                    @elseif($parametro->categoria == 'SUELO') bg-success
+                                    @else bg-secondary
+                                    @endif fs-6">
+                                    <i class="fas 
+                                        @if($parametro->categoria == 'AIRE') fa-wind
+                                        @elseif($parametro->categoria == 'RUIDO') fa-volume-up
+                                        @elseif($parametro->categoria == 'GASES') fa-industry
+                                        @elseif($parametro->categoria == 'AGUA') fa-tint
+                                        @elseif($parametro->categoria == 'SUELO') fa-mountain
+                                        @else fa-tag
+                                        @endif me-1"></i>
+                                    {{ $parametro->categoria ?? 'N/A' }}
+                                </span>
+                            </p>
                         </div>
                         @endif
 
@@ -147,7 +168,6 @@
         </div>
         
         <div class="col-md-4">
-            <!-- Información adicional -->
             <div class="card mb-4">
                 <div class="card-header" style="background-color: #A31800; border-bottom: none;">
                     <h5 class="mb-0 text-white">
@@ -182,54 +202,50 @@
                 </div>
             </div>
             
-            <!-- Acciones -->
-                @canany(['editar parametros', 'eliminar parametros'])
-                    <div class="card">
-                        <div class="card-header" style="background-color: #A31800; border-bottom: none;">
-                            <h5 class="mb-0 text-white">
-                                <i class="fas fa-cogs me-2"></i>
-                                Acciones
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-grid gap-2">
-                                @can('editar parametros')
-                                <a href="{{ route('parametros.edit', $parametro) }}" 
-                                class="btn"
-                       style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500;"
-                       onmouseover="this.style.backgroundColor='#ffc107'; this.style.color='#000000'; this.style.borderColor='#ffc107';"
-                       onmouseout="this.style.backgroundColor='transparent'; this.style.color='#000000'; this.style.borderColor='#ffc107';">
-                        <i class="fas fa-edit me-2"></i>
-                        Editar Parametro
-                                </a>
-                                @endcan
-                                
-                                @can('eliminar parametros')
-                                <button type="button" 
-                                        class="btn btn-outline-danger" 
-                                        style="border-radius: 30px; padding: 10px 25px;"
-                                        onclick="confirmarEliminacion({{ $parametro->id }}, '{{ $parametro->nombre }}', 'parámetro')">
-                                    <i class="fas fa-trash me-2"></i>
-                                    Eliminar Parámetro
-                                </button>
-                                @endcan
-                                
-                                <!-- Formulario oculto para eliminar -->
-                                <form id="delete-form-{{ $parametro->id }}" 
-                                      action="{{ route('parametros.destroy', $parametro) }}" 
-                                      method="POST" class="d-none">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                            </div>
+            @canany(['editar parametros', 'eliminar parametros'])
+                <div class="card">
+                    <div class="card-header" style="background-color: #A31800; border-bottom: none;">
+                        <h5 class="mb-0 text-white">
+                            <i class="fas fa-cogs me-2"></i>
+                            Acciones
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            @can('editar parametros')
+                            <a href="{{ route('parametros.edit', $parametro) }}" 
+                               class="btn"
+                               style="color: #000000; border: 2px solid #ffc107; background-color: transparent; border-radius: 30px; padding: 10px 25px; transition: all 0.3s ease; font-weight: 500;"
+                               onmouseover="this.style.backgroundColor='#ffc107'; this.style.color='#000000'; this.style.borderColor='#ffc107';"
+                               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#000000'; this.style.borderColor='#ffc107';">
+                                <i class="fas fa-edit me-2"></i>
+                                Editar Parametro
+                            </a>
+                            @endcan
+                            
+                            @can('eliminar parametros')
+                            <button type="button" 
+                                    class="btn btn-outline-danger" 
+                                    style="border-radius: 30px; padding: 10px 25px;"
+                                    onclick="confirmarEliminacion({{ $parametro->id }}, '{{ $parametro->nombre }}', 'parámetro')">
+                                <i class="fas fa-trash me-2"></i>
+                                Eliminar Parámetro
+                            </button>
+                            @endcan
+                            
+                            <form id="delete-form-{{ $parametro->id }}" 
+                                  action="{{ route('parametros.destroy', $parametro) }}" 
+                                  method="POST" class="d-none">
+                                @csrf
+                                @method('DELETE')
+                            </form>
                         </div>
                     </div>
-                @endif
+                </div>
             @endcanany
         </div>
     </div>
     
-    <!-- Advertencia importante - AHORA PERMANENTE (sin clase alert alert-warning que se auto-cierra) -->
     <div class="card mt-4 border-warning">
         <div class="card-header bg-warning text-white">
             <h6 class="mb-0">
@@ -247,17 +263,13 @@
     </div>
 </div>
 
-<!-- Estilos adicionales específicos para la página de detalles -->
 <style>
-
-/* Estilo para el botón de editar */
 .btn[style*="background-color: #A31800"]:hover {
     background-color: #7a1200 !important;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(163, 24, 0, 0.3);
 }
 
-/* Estilo para el botón de eliminar */
 .btn-outline-danger {
     border-radius: 30px !important;
     padding: 10px 25px !important;
@@ -287,25 +299,22 @@
     color: #000000 !important;
     border-color: #ffffff !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 8px 20px rgba(128, 128, 128, 0.3) !important; /* Sombra gris más pronunciada */
+    box-shadow: 0 8px 20px rgba(128, 128, 128, 0.3) !important;
 }
 
 @media (max-width: 768px) {
-    /* Reorganizar el encabezado en móvil */
     .page-header .d-flex {
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 15px !important;
     }
     
-    /* El botón volver ocupa todo el ancho en móvil */
     .page-header .btn-volver {
         width: 100% !important;
         justify-content: center !important;
         margin-top: 10px !important;
     }
     
-    /* Ajustar el título y badge */
     .d-flex.align-items-center.gap-3 {
         flex-wrap: wrap !important;
         gap: 10px !important;
@@ -316,40 +325,33 @@
         width: 100% !important;
     }
     
-    /* Badge ocupa su espacio */
     .badge.fs-6 {
         font-size: 0.85rem !important;
         padding: 5px 12px !important;
     }
     
-    /* Ajustar columnas en móvil */
     .col-md-8, .col-md-4 {
         width: 100% !important;
     }
     
-    /* Botones en el panel lateral */
     .d-grid.gap-2 .btn {
         width: 100% !important;
         margin-bottom: 5px !important;
     }
     
-    /* Ajustar tablas en móvil */
     .table-responsive {
         overflow-x: auto !important;
     }
     
-    /* Ajustar texto en tarjetas */
     .card-body .row .col-md-6 {
         width: 100% !important;
     }
     
-    /* Ajustar iconos */
     .fa-2x {
         font-size: 1.5rem !important;
     }
 }
 
-/* Ajuste para tablets */
 @media (min-width: 769px) and (max-width: 991px) {
     .col-md-8, .col-md-4 {
         width: 100% !important;

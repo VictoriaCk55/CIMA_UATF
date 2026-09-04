@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-main">
     <!-- Encabezado de página -->
     <div class="page-header">
@@ -16,24 +14,24 @@
             </div>
             
             <div class="d-flex gap-2 flex-wrap">
-                @auth
-                     @can('crear parametros')
-                        <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                <?php if(auth()->guard()->check()): ?>
+                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear parametros')): ?>
+                        <a href="<?php echo e(route('parametros.create')); ?>" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
                            onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
                            onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
                             <i class="fas fa-plus-circle"></i>
                             Nuevo Parámetro
                         </a>
-                    @else
+                    <?php else: ?>
                         <div class="alert alert-info mb-0 py-2 px-3">
                             <i class="fas fa-eye me-1"></i> Modo solo lectura
                         </div>
-                    @endcan
-                @endauth
+                    <?php endif; ?>
+                <?php endif; ?>
 
                 <!-- BOTÓN NUEVO PARA ACTUALIZAR PRECIOS CON ANIMACIÓN -->
-                @can('editar parametros')
-                    <a href="{{ route('parametros.precios.masivos') }}" 
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar parametros')): ?>
+                    <a href="<?php echo e(route('parametros.precios.masivos')); ?>" 
                        class="btn" 
                        style="background-color: #28a745; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
                        onmouseover="this.style.backgroundColor='#218838'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(40, 167, 69, 0.3)';"
@@ -41,7 +39,7 @@
                         <i class="fas fa-dollar-sign me-1"></i>
                         Actualizar Precios
                     </a>
-                @endcan
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -49,7 +47,7 @@
     <!-- BUSCADOR -->
     <div class="card mb-4">
         <div class="card-body">
-            <form action="{{ route('parametros.index') }}" method="GET" id="searchForm">
+            <form action="<?php echo e(route('parametros.index')); ?>" method="GET" id="searchForm">
                 <div class="row align-items-end">
                     <div class="col-md-8">
                         <label for="search" class="form-label fw-semibold">
@@ -64,17 +62,17 @@
                                    class="form-control" 
                                    id="search" 
                                    name="search" 
-                                   value="{{ request('search') }}" 
+                                   value="<?php echo e(request('search')); ?>" 
                                    placeholder="Buscar por ID, Nombre, Método o Categoría..."
                                    style="border-left: none;">
                             <button class="btn" type="submit" style="background-color: #A31800; color: white; border: none;">
                                 <i class="fas fa-filter me-1"></i> Filtrar
                             </button>
-                            @if(request('search'))
-                                <a href="{{ route('parametros.index') }}" class="btn btn-outline-secondary" style="border-radius: 0 30px 30px 0;">
+                            <?php if(request('search')): ?>
+                                <a href="<?php echo e(route('parametros.index')); ?>" class="btn btn-outline-secondary" style="border-radius: 0 30px 30px 0;">
                                     <i class="fas fa-times"></i> Limpiar
                                 </a>
-                            @endif
+                            <?php endif; ?>
                         </div>
                         <small class="text-muted mt-1 d-block">
                             <i class="fas fa-info-circle me-1"></i>
@@ -85,7 +83,7 @@
                     <div class="col-md-4 text-md-end mt-3 mt-md-0">
                         <div class="d-flex align-items-center justify-content-md-end">
                             <span class="badge" style="background-color: #A31800; color: white; padding: 8px 15px; border-radius: 20px; font-weight: 500;">
-                                <i class="fas fa-database me-1"></i> Total: {{ $parametros->total() }} parámetros
+                                <i class="fas fa-database me-1"></i> Total: <?php echo e($parametros->total()); ?> parámetros
                             </span>
                         </div>
                     </div>
@@ -102,11 +100,11 @@
                 Listado de Parámetros
             </h5>
             <span class="badge" style="background-color: #A31800; color: white; padding: 8px 15px; border-radius: 20px; font-weight: 500;">
-                {{ $parametros->count() }} registros mostrados
+                <?php echo e($parametros->count()); ?> registros mostrados
             </span>
         </div>
         <div class="card-body">
-            @if($parametros->count() > 0)
+            <?php if($parametros->count() > 0): ?>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
@@ -122,79 +120,84 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($parametros as $parametro)
-                                @php
+                            <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $parametro): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     $totalProformas = $parametro->proformas->count();
-                                @endphp
+                                ?>
                                 <tr>
                                     <td>
-                                        <span class="badge bg-secondary">#{{ $parametro->id }}</span>
+                                        <span class="badge bg-secondary">#<?php echo e($parametro->id); ?></span>
                                     </td>
                                     <td>
-                                        <strong>{{ $parametro->nombre }}</strong>
+                                        <strong><?php echo e($parametro->nombre); ?></strong>
                                     </td>
                                     <td>
                                         <small class="text-muted">
                                             <i class="fas fa-microscope me-1"></i>
-                                            {{ $parametro->metodo }}
+                                            <?php echo e($parametro->metodo); ?>
+
                                         </small>
                                     </td>
                                     <td class="text-end fw-semibold text-success">
                                         <i class="fas fa-dollar-sign me-1"></i>
-                                        {{ number_format($parametro->precio_unitario, 2) }}
+                                        <?php echo e(number_format($parametro->precio_unitario, 2)); ?>
+
                                     </td>
                                     <td>
                                         <span class="badge 
-                                            @if($parametro->tipo == 'AMBIENTAL') bg-warning text-dark
-                                            @elseif($parametro->tipo == 'AGUA') bg-info
-                                            @elseif($parametro->tipo == 'INVESTIGACION') bg-secondary
-                                            @else bg-secondary
-                                            @endif">
+                                            <?php if($parametro->tipo == 'AMBIENTAL'): ?> bg-warning text-dark
+                                            <?php elseif($parametro->tipo == 'AGUA'): ?> bg-info
+                                            <?php elseif($parametro->tipo == 'INVESTIGACION'): ?> bg-secondary
+                                            <?php else: ?> bg-secondary
+                                            <?php endif; ?>">
                                             <i class="fas 
-                                                @if($parametro->tipo == 'AMBIENTAL') fa-leaf
-                                                @elseif($parametro->tipo == 'AGUA') fa-tint
-                                                @elseif($parametro->tipo == 'INVESTIGACION') fa-flask
-                                                @else fa-tag
-                                                @endif me-1"></i>
-                                            {{ $parametro->tipo ?? 'N/A' }}
+                                                <?php if($parametro->tipo == 'AMBIENTAL'): ?> fa-leaf
+                                                <?php elseif($parametro->tipo == 'AGUA'): ?> fa-tint
+                                                <?php elseif($parametro->tipo == 'INVESTIGACION'): ?> fa-flask
+                                                <?php else: ?> fa-tag
+                                                <?php endif; ?> me-1"></i>
+                                            <?php echo e($parametro->tipo ?? 'N/A'); ?>
+
                                         </span>
                                     </td>
                                     <td>
                                         <span class="badge 
-                                            @if($parametro->categoria == 'AIRE') bg-warning text-dark
-                                            @elseif($parametro->categoria == 'RUIDO') bg-info
-                                            @elseif($parametro->categoria == 'GASES') bg-danger
-                                            @elseif($parametro->categoria == 'AGUA') bg-primary
-                                            @elseif($parametro->categoria == 'SUELO') bg-success
-                                            @else bg-secondary
-                                            @endif">
+                                            <?php if($parametro->categoria == 'AIRE'): ?> bg-warning text-dark
+                                            <?php elseif($parametro->categoria == 'RUIDO'): ?> bg-info
+                                            <?php elseif($parametro->categoria == 'GASES'): ?> bg-danger
+                                            <?php elseif($parametro->categoria == 'AGUA'): ?> bg-primary
+                                            <?php elseif($parametro->categoria == 'SUELO'): ?> bg-success
+                                            <?php else: ?> bg-secondary
+                                            <?php endif; ?>">
                                             <i class="fas 
-                                                @if($parametro->categoria == 'AIRE') fa-wind
-                                                @elseif($parametro->categoria == 'RUIDO') fa-volume-up
-                                                @elseif($parametro->categoria == 'GASES') fa-industry
-                                                @elseif($parametro->categoria == 'AGUA') fa-tint
-                                                @elseif($parametro->categoria == 'SUELO') fa-mountain
-                                                @else fa-tag
-                                                @endif me-1"></i>
-                                            {{ $parametro->categoria ?? 'N/A' }}
+                                                <?php if($parametro->categoria == 'AIRE'): ?> fa-wind
+                                                <?php elseif($parametro->categoria == 'RUIDO'): ?> fa-volume-up
+                                                <?php elseif($parametro->categoria == 'GASES'): ?> fa-industry
+                                                <?php elseif($parametro->categoria == 'AGUA'): ?> fa-tint
+                                                <?php elseif($parametro->categoria == 'SUELO'): ?> fa-mountain
+                                                <?php else: ?> fa-tag
+                                                <?php endif; ?> me-1"></i>
+                                            <?php echo e($parametro->categoria ?? 'N/A'); ?>
+
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        @if($totalProformas > 0)
+                                        <?php if($totalProformas > 0): ?>
                                             <span class="badge" style="background-color: #A31800; color: white; padding: 6px 12px; border-radius: 20px;">
                                                 <i class="fas fa-file-invoice me-1"></i>
-                                                {{ $totalProformas }}
+                                                <?php echo e($totalProformas); ?>
+
                                             </span>
-                                        @else
+                                        <?php else: ?>
                                             <span class="badge bg-secondary" style="padding: 6px 12px; border-radius: 20px;">
                                                 <i class="fas fa-file-invoice me-1"></i>
                                                 0
                                             </span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('parametros.show', $parametro) }}" 
+                                            <a href="<?php echo e(route('parametros.show', $parametro)); ?>" 
                                                class="btn btn-sm"
                                                style="color: #0dcaf0; border: 1px solid #0dcaf0; background: transparent; border-radius: 6px; padding: 0.5rem; width: 38px; height: 38px; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center;"
                                                data-bs-toggle="tooltip" 
@@ -205,58 +208,59 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
-                                            @auth
-                                                @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
-                                                    @can('editar parametros')
-                                                        <a href="{{ route('parametros.edit', $parametro) }}" 
+                                            <?php if(auth()->guard()->check()): ?>
+                                                <?php if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista'])): ?>
+                                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('editar parametros')): ?>
+                                                        <a href="<?php echo e(route('parametros.edit', $parametro)); ?>" 
                                                            class="btn btn-outline-warning btn-sm"
                                                            data-bs-toggle="tooltip" 
                                                            data-bs-placement="top"
                                                            title="Editar parámetro">
                                                             <i class="fas fa-edit"></i>
-                                                    @endcan
+                                                    <?php endif; ?>
                                                     </a>
-                                                    @can('eliminar parametros')
+                                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('eliminar parametros')): ?>
                                                     <button type="button" 
                                                             class="btn btn-outline-danger btn-sm"
                                                             data-bs-toggle="tooltip" 
                                                             data-bs-placement="top"
                                                             title="Eliminar parámetro"
-                                                            onclick="confirmarEliminacion({{ $parametro->id }}, '{{ $parametro->nombre }}', 'parámetro')">
+                                                            onclick="confirmarEliminacion(<?php echo e($parametro->id); ?>, '<?php echo e($parametro->nombre); ?>', 'parámetro')">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
-                                                    @endcan
-                                                @endif
-                                            @endauth
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         </div>
                                         
-                                        @auth
-                                            @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
-                                                <form id="delete-form-{{ $parametro->id }}" 
-                                                      action="{{ route('parametros.destroy', $parametro) }}" 
+                                        <?php if(auth()->guard()->check()): ?>
+                                            <?php if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista'])): ?>
+                                                <form id="delete-form-<?php echo e($parametro->id); ?>" 
+                                                      action="<?php echo e(route('parametros.destroy', $parametro)); ?>" 
                                                       method="POST" class="d-none">
-                                                    @csrf
-                                                    @method('DELETE')
+                                                    <?php echo csrf_field(); ?>
+                                                    <?php echo method_field('DELETE'); ?>
                                                 </form>
-                                            @endif
-                                        @endauth
+                                            <?php endif; ?>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                 </div>
 
-                @if($parametros->hasPages())
+                <?php if($parametros->hasPages()): ?>
                     <div class="d-flex justify-content-center mt-4">
-                        {{ $parametros->appends(request()->query())->links() }}
+                        <?php echo e($parametros->appends(request()->query())->links()); ?>
+
                     </div>
-                @endif
+                <?php endif; ?>
                 
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
-                    @auth
-                        @can('ver papelera parametros')
-                            <a href="{{ route('parametros.trash') }}" 
+                    <?php if(auth()->guard()->check()): ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver papelera parametros')): ?>
+                            <a href="<?php echo e(route('parametros.trash')); ?>" 
                                class="btn btn-icon-circle position-absolute start-0"
                                style="width: 35px; height: 35px; border-radius: 50%; background-color: #6c757d; color: white; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;"
                                data-bs-toggle="tooltip"
@@ -265,50 +269,50 @@
                                onmouseout="this.style.backgroundColor='#6c757d'; this.style.transform='scale(1)';">
                                 <i class="fas fa-trash-alt" style="font-size: 1rem;"></i>
                             </a>
-                        @endcan
-                    @endauth
+                        <?php endif; ?>
+                    <?php endif; ?>
                     
                     <div style="color: #A31800; font-weight: 500;">
                         <i class="fas fa-database me-1"></i> 
-                        Mostrando {{ $parametros->firstItem() }} a {{ $parametros->lastItem() }} de {{ $parametros->total() }} registros
+                        Mostrando <?php echo e($parametros->firstItem()); ?> a <?php echo e($parametros->lastItem()); ?> de <?php echo e($parametros->total()); ?> registros
                     </div>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="text-center py-5">
                     <i class="fas fa-flask fa-4x mb-4" style="color: #A31800;"></i>
                     <h4 class="mb-3" style="color: #334155;">No hay parámetros registrados</h4>
                     <p class="text-muted mb-4">
-                        @if(request('search'))
-                            No se encontraron parámetros con "{{ request('search') }}"
-                        @else
+                        <?php if(request('search')): ?>
+                            No se encontraron parámetros con "<?php echo e(request('search')); ?>"
+                        <?php else: ?>
                             Comience agregando parámetros de análisis al sistema.
-                        @endif
+                        <?php endif; ?>
                     </p>
                     
-                    @auth
-                        @if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista']))
-                            @if(request('search'))
-                                <a href="{{ route('parametros.index') }}" class="btn btn-outline-secondary" style="border-radius: 30px; padding: 10px 25px;">
+                    <?php if(auth()->guard()->check()): ?>
+                        <?php if(Auth::user()->hasAnyRole(['admin', 'tecnico', 'analista'])): ?>
+                            <?php if(request('search')): ?>
+                                <a href="<?php echo e(route('parametros.index')); ?>" class="btn btn-outline-secondary" style="border-radius: 30px; padding: 10px 25px;">
                                     <i class="fas fa-times me-2"></i>
                                     Limpiar búsqueda
                                 </a>
-                            @else
-                                <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
+                            <?php else: ?>
+                                <a href="<?php echo e(route('parametros.create')); ?>" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
                                    onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
                                    onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
                                     <i class="fas fa-plus-circle me-2"></i>
                                     Crear primer parámetro
                                 </a>
-                            @endif
-                        @else
+                            <?php endif; ?>
+                        <?php else: ?>
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
                                 Solo el administrador puede crear nuevos parámetros.
                             </div>
-                        @endif
-                    @endauth
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
         
         <div class="card-footer bg-light">
@@ -316,14 +320,14 @@
                 <div class="col-md-6">
                     <small class="text-muted">
                         <i class="fas fa-info-circle me-1"></i>
-                        Mostrando {{ $parametros->count() }} de {{ $parametros->total() }} parámetros
+                        Mostrando <?php echo e($parametros->count()); ?> de <?php echo e($parametros->total()); ?> parámetros
                     </small>
                 </div>
                 <div class="col-md-6 text-end">
                     <small class="text-muted">
                         <i class="fas fa-calculator me-1"></i>
                         Precio promedio: 
-                        <strong>Bs. {{ number_format($parametros->avg('precio_unitario'), 2) }}</strong>
+                        <strong>Bs. <?php echo e(number_format($parametros->avg('precio_unitario'), 2)); ?></strong>
                     </small>
                 </div>
             </div>
@@ -474,7 +478,7 @@ select.form-select:focus {
 }
 </style>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -509,5 +513,6 @@ select.form-select:focus {
         }
     }
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/parametros/index.blade.php ENDPATH**/ ?>

@@ -231,17 +231,17 @@
 
                 <div class="logo-container">
 
-                    @php
+                    <?php
                         $cfg = \App\Models\Documento::whereSlug('cadena-custodia')->first() ?? new \App\Models\Documento;
                         $logo = $cfg->config('logo_path');
-                    @endphp
-                    @if($logo && file_exists(storage_path('app/public/' . $logo)))
-                        <img src="{{ storage_path('app/public/' . $logo) }}" alt="Logo">
-                    @elseif(file_exists(public_path('images/logo-cima.jpg')))
-                        <img src="{{ public_path('images/logo-cima.jpg') }}" alt="Logo">
-                    @elseif(file_exists(public_path('images/logo-cima.png')))
-                        <img src="{{ public_path('images/logo-cima.png') }}" alt="Logo">
-                    @endif
+                    ?>
+                    <?php if($logo && file_exists(storage_path('app/public/' . $logo))): ?>
+                        <img src="<?php echo e(storage_path('app/public/' . $logo)); ?>" alt="Logo">
+                    <?php elseif(file_exists(public_path('images/logo-cima.jpg'))): ?>
+                        <img src="<?php echo e(public_path('images/logo-cima.jpg')); ?>" alt="Logo">
+                    <?php elseif(file_exists(public_path('images/logo-cima.png'))): ?>
+                        <img src="<?php echo e(public_path('images/logo-cima.png')); ?>" alt="Logo">
+                    <?php endif; ?>
 
                 </div>
 
@@ -258,7 +258,7 @@
 
             <!-- CODIGO -->
             <td class="codigo-cell" style="width:28mm;">
-                <strong>{{ $cfg->codigo_documento ?? 'PO01-FR02' }}</strong>
+                <strong><?php echo e($cfg->codigo_documento ?? 'PO01-FR02'); ?></strong>
             </td>
 
         </tr>
@@ -266,7 +266,8 @@
         <tr>
 
             <td class="codigo-cell">
-                VERSIÓN: {{ $cfg->version ?? '06' }}
+                VERSIÓN: <?php echo e($cfg->version ?? '06'); ?>
+
             </td>
 
         </tr>
@@ -274,7 +275,8 @@
         <tr>
 
             <td class="codigo-cell">
-                FECHA: {{ $cfg->fecha_documento ?? date('Y-m-d') }}
+                FECHA: <?php echo e($cfg->fecha_documento ?? date('Y-m-d')); ?>
+
             </td>
 
         </tr>
@@ -292,7 +294,8 @@
             <strong>PROFORMA</strong>
 
             <span class="checkbox-square">
-                {{ in_array('PROFORMA', $proforma->tipo_documento ?? []) ? '✔' : '' }}
+                <?php echo e(in_array('PROFORMA', $proforma->tipo_documento ?? []) ? '✔' : ''); ?>
+
             </span>
 
         </span>
@@ -302,7 +305,8 @@
             <strong>COTIZACION</strong>
 
             <span class="checkbox-square">
-                {{ in_array('COTIZACION', $proforma->tipo_documento ?? []) ? '✔' : '' }}
+                <?php echo e(in_array('COTIZACION', $proforma->tipo_documento ?? []) ? '✔' : ''); ?>
+
             </span>
 
         </span>
@@ -312,7 +316,8 @@
             <strong>CONTRATO</strong>
 
             <span class="checkbox-square">
-                {{ in_array('CONTRATO', $proforma->tipo_documento ?? []) ? '✔' : '' }}
+                <?php echo e(in_array('CONTRATO', $proforma->tipo_documento ?? []) ? '✔' : ''); ?>
+
             </span>
 
         </span>
@@ -322,7 +327,8 @@
             <strong>CONTRATO MODIFICADO</strong>
 
             <span class="checkbox-square">
-                {{ in_array('CONTRATO MODIFICADO', $proforma->tipo_documento ?? []) ? '✔' : '' }}
+                <?php echo e(in_array('CONTRATO MODIFICADO', $proforma->tipo_documento ?? []) ? '✔' : ''); ?>
+
             </span>
 
         </span>
@@ -349,7 +355,7 @@
             </td>
 
             <!-- ESPACIO GRANDE -->
-            <td colspan="2">{{ $proforma->tipo_muestra }}</td>
+            <td colspan="2"><?php echo e($proforma->tipo_muestra); ?></td>
 
             <!-- REQUERIMIENTO -->
             <td colspan="31" rowspan="3" class="text-center" style="font-size: 12pt; font-family: 'Times New Roman', Times, serif;">
@@ -374,7 +380,7 @@
             </td>
 
             <!-- ESPACIO GRANDE -->
-            <td colspan="2">{{ $proforma->fecha_muestreo ? $proforma->fecha_muestreo->format('Y-m-d') : 'N/A' }}</td>
+            <td colspan="2"><?php echo e($proforma->fecha_muestreo ? $proforma->fecha_muestreo->format('Y-m-d') : 'N/A'); ?></td>
 
         </tr>
 
@@ -392,7 +398,7 @@
             </td>
 
             <!-- ESPACIO GRANDE -->
-            <td colspan="2">{{ $proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : 'N/A' }}</td>
+            <td colspan="2"><?php echo e($proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : 'N/A'); ?></td>
 
         </tr>
 
@@ -433,9 +439,9 @@
                  28 COLUMNAS ANALISIS
             ================================================== -->
 
-            @for ($i = 0; $i < 28; $i++)
+            <?php for($i = 0; $i < 28; $i++): ?>
 
-                @php
+                <?php
                     $parametroMostrar = $proforma->parametros[$i] ?? null;
                     $nombreParam = $parametroMostrar ? $parametroMostrar->nombre : '';
                     if ($parametroMostrar && $parametroMostrar->categoria === 'RUIDO') {
@@ -443,17 +449,18 @@
                     } elseif ($parametroMostrar && $parametroMostrar->categoria === 'GASES') {
                         $nombreParam = 'GASES';
                     }
-                @endphp
+                ?>
 
                 <td class="w-small vertical">
 
                     <span class="vertical-text">
-                        {{ $nombreParam }}
+                        <?php echo e($nombreParam); ?>
+
                     </span>
 
                 </td>
 
-            @endfor
+            <?php endfor; ?>
 
         </tr>
 
@@ -507,26 +514,27 @@
                  28 COLUMNAS METODOS
             ================================================== -->
 
-            @for ($i = 0; $i < 28; $i++)
+            <?php for($i = 0; $i < 28; $i++): ?>
 
-                @php
+                <?php
                     $paramSub = $proforma->parametros[$i] ?? null;
                     if ($paramSub && $paramSub->categoria === 'GASES') {
                         $tecnicaSub = $paramSub->pivot->metodo ?? '';
                     } else {
                         $tecnicaSub = $paramSub ? ($paramSub->metodo ?? '') : '';
                     }
-                @endphp
+                ?>
 
                 <td class="w-small vertical">
 
                     <span class="vertical-text">
-                        {{ $tecnicaSub }}
+                        <?php echo e($tecnicaSub); ?>
+
                     </span>
 
                 </td>
 
-            @endfor
+            <?php endfor; ?>
 
         </tr>
 
@@ -534,7 +542,7 @@
              FILAS DE MUESTRAS POR PARAMETRO
         ================================================== -->
         
-        @php
+        <?php
             // Encontrar el número máximo de muestras entre todos los parámetros
             $maxMuestras = 0;
             foreach($proforma->parametros as $parametro) {
@@ -546,108 +554,110 @@
             
             // Si no hay parámetros, al menos mostrar 1 fila
             if($maxMuestras == 0) $maxMuestras = 1;
-        @endphp
+        ?>
 
-        @for ($fila = 0; $fila < $maxMuestras; $fila++)
+        <?php for($fila = 0; $fila < $maxMuestras; $fila++): ?>
         
-        @php
+        <?php
             // Número de muestra actual (1-indexed)
             $numMuestra = $fila + 1;
-        @endphp
+        ?>
 
         <tr class="fila-datos">
 
             <!-- IDENTIFICACION -->
             <td colspan="1" style="width: 10mm; font-size: 7px; text-align: center; overflow: hidden;">
-                @php
+                <?php
                     $codigos = $proforma->codigo_cliente ?? [];
                     $codigoIdx = $fila < count($codigos) ? $codigos[$fila] : (count($codigos) > 0 ? $codigos[count($codigos)-1] : '---');
-                @endphp
-                {{ $codigoIdx }}
+                ?>
+                <?php echo e($codigoIdx); ?>
+
             </td>
 
             <!-- CODIGO -->
             <td colspan="1" style="width: 10mm; font-size: 9pt; font-family: 'Times New Roman', Times, serif; text-align: center; overflow: hidden;">
-                @php
+                <?php
                     $numeroProforma = last(explode('-', $proforma->codigo));
                     $partesCodigoLab = explode('-', $proforma->generarCodigoLaboratorio($numMuestra));
                     $partesCodigoLab[2] = $numeroProforma;
-                @endphp
-                {{ implode('-', $partesCodigoLab) }}
+                ?>
+                <?php echo e(implode('-', $partesCodigoLab)); ?>
+
             </td>
 
             <!-- MATRIZ -->
-             @php
+             <?php
                 $tipo = strtoupper($proforma->tipo_muestra);
-            @endphp
+            ?>
 
             <!-- AGUA SUBTERRANEA -->
             <td style="width: 5mm;">
-                @if(str_contains($tipo, 'SUBTERRANEA'))
+                <?php if(str_contains($tipo, 'SUBTERRANEA')): ?>
                     X
-                @endif
+                <?php endif; ?>
             </td>
 
             <!-- AGUA SUPERFICIAL -->
             <td style="width: 5mm;">
-                @if(str_contains($tipo, 'SUPERFICIAL'))
+                <?php if(str_contains($tipo, 'SUPERFICIAL')): ?>
                     X
-                @endif
+                <?php endif; ?>
             </td>
 
             <!-- SUELO -->
             <td style="width: 5mm;">
-                @if(str_contains($tipo, 'SUELO'))
+                <?php if(str_contains($tipo, 'SUELO')): ?>
                     X
-                @endif
+                <?php endif; ?>
             </td>
 
             <!-- OTROS -->
             <td style="width: 5mm;">
-                @if(
+                <?php if(
                     !str_contains($tipo, 'SUBTERRANEA') &&
                     !str_contains($tipo, 'SUPERFICIAL') &&
                     !str_contains($tipo, 'SUELO')
-                )
+                ): ?>
                     X
-                @endif
+                <?php endif; ?>
             </td>
 
             <!-- =================================================
                  DINAMICA DE COLOR DE CANTIDAD DE MUESTRAS POR PARAMETRO
             ================================================== -->
-            @for ($i = 0; $i < 28; $i++)
+            <?php for($i = 0; $i < 28; $i++): ?>
                 
-                @php
+                <?php
                     $parametro = $proforma->parametros[$i] ?? null;
-                @endphp
+                ?>
                 
-                @if(!$parametro)
+                <?php if(!$parametro): ?>
                     <!-- Si NO existe el parámetro: fondo AZUL -->
                     <td class="w-small" style="background-color: #aed0ef;">
                     </td>
-                @else
-                    @php
+                <?php else: ?>
+                    <?php
                         $cantidadMuestrasParametro = $parametro->pivot->cantidad_muestras ?? 1;
                         $debePintarse = $numMuestra <= $cantidadMuestrasParametro;
-                    @endphp
+                    ?>
                     
-                    @if($debePintarse)
+                    <?php if($debePintarse): ?>
                         <!-- Si APPLICA para esta muestra: fondo blanco -->
                         <td class="w-small" style="background-color: #ffff; text-align: center; vertical-align: middle;">
                         </td>
-                    @else
+                    <?php else: ?>
                         <!-- Si NO APPLICA para esta muestra: fondo AZUL -->
                         <td class="w-small" style="background-color: #aed0ef;">
                         </td>
-                    @endif
-                @endif
+                    <?php endif; ?>
+                <?php endif; ?>
                 
-            @endfor
+            <?php endfor; ?>
 
         </tr>
 
-        @endfor
+        <?php endfor; ?>
         
 
     </table>
@@ -660,11 +670,12 @@
 
             <tr>
                 <td style="border:1px solid black; height:100px;">
-                    {{ $observacion ?? '' }}
+                    <?php echo e($observacion ?? ''); ?>
+
                 </td>
             </tr>
         </table>
 
 </body>
 
-</html>
+</html><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/proformas/cadena_custodia.blade.php ENDPATH**/ ?>

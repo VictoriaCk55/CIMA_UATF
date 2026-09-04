@@ -11,7 +11,7 @@
         /* ====================================================== */
         @page {
             size: A4;
-            margin: 32mm 10mm 50mm 10mm;
+            margin: 36mm 10mm 50mm 10mm;
         }
 
         body {
@@ -39,7 +39,7 @@
         /* ====================================================== */
         header {
             position: fixed;
-            top: -26mm;
+            top: -30mm;
             left: 0;
             right: 0;
             padding: 0;
@@ -142,6 +142,35 @@
             font-weight: bold;
             font-size: 9px;
         }
+
+        /* ====================================================== */
+        /* BADGE DE TIPO DE DOCUMENTO (PROFORMA/COTIZACIÓN/etc.)  */
+        /* Se repite en cada página porque vive dentro de header  */
+        /* ====================================================== */
+        .badge-tipo-documento-row td {
+            text-align: center;
+            padding-top: 2px;
+            padding-bottom: 0;
+        }
+
+        .badge-tipo-documento {
+            display: inline-block;
+            padding: 2px 10px;
+            margin: 0 3px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
+
+        .badge-proforma            { background-color: #2c5282; }
+        .badge-cotizacion          { background-color: #b7791f; }
+        .badge-contrato            { background-color: #276749; }
+        .badge-contrato-modificado { background-color: #9b2c2c; }
 
         .separator {
             border-top: 2px solid #1c3d6e;
@@ -503,10 +532,18 @@
         $cfg = \App\Models\Documento::whereSlug($docSlug)->first() ?? new \App\Models\Documento;
         $global = \App\Models\Configuracion::obtener();
         $logoPath = $cfg->config('logo_path') ?? $global->logo_path;
+
+        // Mapa de clase CSS por tipo de documento (PROFORMA, COTIZACION, CONTRATO, CONTRATO MODIFICADO)
+        $badgeClaseMap = [
+            'PROFORMA' => 'badge-proforma',
+            'COTIZACION' => 'badge-cotizacion',
+            'CONTRATO' => 'badge-contrato',
+            'CONTRATO MODIFICADO' => 'badge-contrato-modificado',
+        ];
     @endphp
 
     <!-- ====================================================== -->
-    <!-- HEADER -->
+    <!-- HEADER (se repite en cada página) -->
     <!-- ====================================================== -->
     <header>
         <table class="header-table">
@@ -551,13 +588,27 @@
                     <div class="codigo-box">
                         <div><span class="label">{{ $cfg->codigo_documento ?? 'PO01-FR02' }}</span></div>
                         <div><span class="label">VERSIÓN:</span> {{ $cfg->version ?? '06' }}</div>
-                        <div><span class="label">FECHA:</span> {{ $cfg->fecha_documento ?? $proforma->fecha_emision->format('Y-m-d') }}</div>
+                        <div><span class="label">FECHA:</span> {{ $cfg->fecha_documento ?? $proforma->fecha_recepcion->format('Y-m-d') }}</div>
                         <div class="codigo-proforma">
                             <span class="label">CÓDIGO:</span> {{ $proforma->codigo }}
                         </div>
                     </div>
                 </td>
             </tr>
+
+            <!-- BADGE(S) DE TIPO DE DOCUMENTO: PROFORMA / COTIZACIÓN / CONTRATO / CONTRATO MODIFICADO -->
+            @if(!empty($proforma->tipo_documento))
+            <tr class="badge-tipo-documento-row">
+                <td colspan="3">
+                    @foreach($proforma->tipo_documento as $td)
+                        @php
+                            $badgeClase = $badgeClaseMap[$td] ?? 'badge-proforma';
+                        @endphp
+                        <span class="badge-tipo-documento {{ $badgeClase }}">{{ $td }}</span>
+                    @endforeach
+                </td>
+            </tr>
+            @endif
         </table>
         <div class="separator"></div>
     </header>
@@ -568,13 +619,25 @@
     <div class="page-content">
 
         <!-- DATOS DE RECEPCIÓN -->
-        @php $numRecepcion = explode('-', $proforma->codigo)[2] ?? $proforma->numero_recepcion; @endphp
+        @php
+            $numRecepcion = explode('-', $proforma->codigo)[2] ?? $proforma->numero_recepcion;
+
+            $tipoProformaLabel = match($proforma->tipo) {
+                'AMBIENTAL' => 'AMBIENTAL',
+                'ANALISIS_QUIMICO' => 'ANÁLISIS QUÍMICO',
+                'INVESTIGACION' => 'INVESTIGACIÓN',
+                default => $proforma->tipo,
+            };
+        @endphp
         <table class="data-table" style="margin-bottom: 4px;">
             <tr>
-                <td style="width: 50%; text-align: left; border: 1px solid #999; padding: 3px 5px;">
-                    <strong>Fecha de recepción:</strong> {{ $proforma->fecha_recepcion->format('d/m/Y') }}
+                <td style="width: 34%; text-align: left; border: 1px solid #999; padding: 3px 5px;">
+                    <strong>Fecha de Recepción:</strong> {{ $proforma->fecha_recepcion->format('Y-m-d') }}
                 </td>
-                <td style="width: 50%; text-align: right; border: 1px solid #999; padding: 3px 5px;">
+                <td style="width: 33%; text-align: center; border: 1px solid #999; padding: 3px 5px;">
+                    <strong>Tipo:</strong> {{ $tipoProformaLabel }}
+                </td>
+                <td style="width: 33%; text-align: right; border: 1px solid #999; padding: 3px 5px;">
                     <strong>Nro. Recepción:</strong> {{ $numRecepcion }}
                 </td>
             </tr>
@@ -618,8 +681,8 @@
                     <td style="width: 25%;">{{ $proforma->muestreado_por ?? 'N/A' }}</td>
                 </tr>
                 <tr>
-                    <td class="label">Fecha de muestreo:</td>
-                    <td>{{ $proforma->fecha_emision->format('d/m/Y') }}</td>
+                    <td class="label">Fecha de Muestreo:</td>
+                    <td>{{ $proforma->fecha_muestreo ? $proforma->fecha_muestreo->format('Y-m-d') : $proforma->fecha_recepcion->format('Y-m-d') }}</td>
                     <td class="label">Hora recepción:</td>
                     <td>{{ $proforma->hora_recepcion ?? 'N/A' }}</td>
                 </tr>
@@ -757,7 +820,7 @@
             @if($proforma->usuarioModificacion)
             <div style="font-size: 7px; color: #856404; margin-top: 2px; border-top: 1px dashed #ffc107; padding-top: 2px;">
                 Modificado por: {{ $proforma->usuarioModificacion->name }} |
-                Fecha: {{ $proforma->updated_at->format('d/m/Y H:i:s') }}
+                Fecha: {{ $proforma->updated_at->format('Y-m-d H:i:s') }}
             </div>
             @endif
         </div>
@@ -872,9 +935,6 @@
             </tr>
             <tr>
                 <td colspan="3" class="pagina">
-                    {{-- $totalPaginas se calcula en el controlador con un pre-render      --}}
-                    {{-- y se pasa a esta vista. counter(pages) NO se usa: en dompdf       --}}
-                    {{-- siempre devuelve 0 (bug conocido del motor).                      --}}
                     Página <span class="pagenum"></span> de {{ $totalPaginas ?? '?' }}
                 </td>
             </tr>

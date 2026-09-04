@@ -20,8 +20,8 @@ class Proforma extends Model
         'numero_recepcion',
         'hora_recepcion',
         'unidad',
-        'fecha_emision',
         'fecha_recepcion',
+        'fecha_muestreo',  // <--- NUEVO
         'fecha_inicio_ensayo',
         'fecha_conclusion_ensayo',
         'persona_contacto',
@@ -48,8 +48,8 @@ class Proforma extends Model
     ];
 
     protected $casts = [
-        'fecha_emision' => 'date',
         'fecha_recepcion' => 'date',
+        'fecha_muestreo' => 'date',  // <--- NUEVO
         'fecha_inicio_ensayo' => 'date',
         'fecha_conclusion_ensayo' => 'date',
         'adelanto' => 'decimal:2',
@@ -114,17 +114,12 @@ class Proforma extends Model
 
     /**
      * Generar código de proforma en formato: {unidad}-{tipo}-{numero}
-     * Ejemplos: UIA-INV-001, UAQ-AQ-002, UAQ-AMB-003
      */
     public static function generarCodigo($unidad, $tipo)
     {
-        // Obtener el tipo abreviado
         $tipoAbr = self::TIPOS[$tipo] ?? 'GEN';
-
-        // Si no hay unidad, usar 'GEN'
         $unidadAbr = $unidad ?? 'GEN';
 
-        // Buscar el último número para esta combinación unidad-tipo
         $ultimo = self::withTrashed()->where('codigo', 'LIKE', $unidadAbr.'-'.$tipoAbr.'-%')
             ->orderBy('id', 'desc')
             ->first();
@@ -134,7 +129,6 @@ class Proforma extends Model
             $ultimoNumero = intval(end($partes));
             $nuevoNumero = $ultimoNumero + 1;
         } else {
-            // Si no hay códigos con el nuevo formato, buscar en formato antiguo
             $ultimoAntiguo = self::withTrashed()->where('codigo', 'LIKE', '%-'.$tipoAbr)
                 ->where('codigo', 'NOT LIKE', '%-%-%')
                 ->orderBy('id', 'desc')
@@ -153,12 +147,7 @@ class Proforma extends Model
     }
 
     /**
-     * =====================================================
      * GENERAR CODIGO DE LABORATORIO
-     * =====================================================
-     * FORMATO:
-     * UAQ-1-024-1
-     * [UNIDAD]-[TIPO]-[RECEPCION]-[MUESTRA]
      */
     public function generarCodigoLaboratorio($numeroMuestra = 1)
     {

@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Editar Proforma'); ?>
 
-@section('title', 'Editar Proforma')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
@@ -181,36 +179,6 @@
 .fa-file-invoice-dollar {
     color: #ffc107 !important;
 }
-
-/* Estilos para los inputs de fecha con ícono */
-.input-fecha {
-    position: relative;
-}
-
-.input-fecha .form-control {
-    padding-right: 40px !important;
-}
-
-.input-fecha .flatpickr-icon {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #adb5bd;
-    pointer-events: none;
-    font-size: 16px;
-    transition: color 0.3s ease;
-    z-index: 5;
-}
-
-.input-fecha .form-control:focus + .flatpickr-icon {
-    color: #ffc107 !important;
-}
-
-.input-fecha .form-control:hover + .flatpickr-icon {
-    color: #ffc107 !important;
-}
-
 @media (max-width: 768px) {
     .page-header .d-flex {
         flex-direction: column !important;
@@ -244,9 +212,9 @@
     }
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-main">
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
@@ -256,28 +224,29 @@
                     Editar Proforma
                 </h1>
                 <p class="page-subtitle">
-                    Actualice la información de la proforma: {{ $proforma->codigo }}
+                    Actualice la información de la proforma: <?php echo e($proforma->codigo); ?>
+
                 </p>
             </div>
-            <a href="{{ route('proformas.index') }}" class="btn btn-outline-secondary btn-volver" style="border-radius: 30px; padding: 8px 20px;">
+            <a href="<?php echo e(route('proformas.index')); ?>" class="btn btn-outline-secondary btn-volver" style="border-radius: 30px; padding: 8px 20px;">
                 <i class="fas fa-arrow-left me-2"></i>
                 Volver al listado
             </a>
         </div>
     </div>
 
-    @if($errors->any())
+    <?php if($errors->any()): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-triangle me-2"></i>
             <strong>Por favor corrija los siguientes errores:</strong>
             <ul class="mb-0 mt-2">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ul>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
     <div class="card">
         <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
@@ -287,9 +256,9 @@
             </h5>
         </div>
         <div class="card-body">
-            <form action="{{ route('proformas.update', $proforma) }}" method="POST" id="proformaForm">
-                @csrf
-                @method('PUT')
+            <form action="<?php echo e(route('proformas.update', $proforma)); ?>" method="POST" id="proformaForm">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
                 
                 <!-- SECCIÓN 1: DATOS CLIENTE -->
                 <div class="mb-4">
@@ -300,23 +269,38 @@
                     
                     <div class="mb-3">
                         <label for="cliente_id" class="form-label">Cliente *</label>
-                        <select class="form-select @error('cliente_id') is-invalid @enderror" 
+                        <select class="form-select <?php $__errorArgs = ['cliente_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                 id="cliente_id" name="cliente_id" required style="width: 100%;">
                             <option value="">Buscar cliente...</option>
-                            @if(old('cliente_id', $proforma->cliente_id))
-                                @php
+                            <?php if(old('cliente_id', $proforma->cliente_id)): ?>
+                                <?php
                                     $clienteSeleccionado = \App\Models\Cliente::find(old('cliente_id', $proforma->cliente_id));
-                                @endphp
-                                @if($clienteSeleccionado)
-                                    <option value="{{ $clienteSeleccionado->id }}" selected>
-                                        {{ $clienteSeleccionado->razon_social }} - {{ $clienteSeleccionado->persona_contacto }}
+                                ?>
+                                <?php if($clienteSeleccionado): ?>
+                                    <option value="<?php echo e($clienteSeleccionado->id); ?>" selected>
+                                        <?php echo e($clienteSeleccionado->razon_social); ?> - <?php echo e($clienteSeleccionado->persona_contacto); ?>
+
                                     </option>
-                                @endif
-                            @endif
+                                <?php endif; ?>
+                            <?php endif; ?>
                         </select>
-                        @error('cliente_id')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['cliente_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
 
@@ -330,75 +314,141 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="tipo" class="form-label">Tipo de Proforma *</label>
-                            <select class="form-select @error('tipo') is-invalid @enderror" 
+                            <select class="form-select <?php $__errorArgs = ['tipo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="tipo" name="tipo" required 
                                     onchange="calcularTotalesEstimados()">
-                                <option value="AMBIENTAL" {{ old('tipo', $proforma->tipo) == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
-                                <option value="ANALISIS_QUIMICO" {{ old('tipo', $proforma->tipo) == 'ANALISIS_QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
-                                <option value="INVESTIGACION" {{ old('tipo', $proforma->tipo) == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN (20% descuento)</option>
+                                <option value="AMBIENTAL" <?php echo e(old('tipo', $proforma->tipo) == 'AMBIENTAL' ? 'selected' : ''); ?>>AMBIENTAL</option>
+                                <option value="ANALISIS_QUIMICO" <?php echo e(old('tipo', $proforma->tipo) == 'ANALISIS_QUIMICO' ? 'selected' : ''); ?>>ANÁLISIS QUÍMICO</option>
+                                <option value="INVESTIGACION" <?php echo e(old('tipo', $proforma->tipo) == 'INVESTIGACION' ? 'selected' : ''); ?>>INVESTIGACIÓN (20% descuento)</option>
                             </select>
-                            @error('tipo')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['tipo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
                             <label for="tipo_muestra" class="form-label">Tipo de Muestra *</label>
                             <input type="text" 
-                                   class="form-control @error('tipo_muestra') is-invalid @enderror" 
+                                   class="form-control <?php $__errorArgs = ['tipo_muestra'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                    id="tipo_muestra" 
                                    name="tipo_muestra" 
-                                   value="{{ old('tipo_muestra', $proforma->tipo_muestra) }}"
+                                   value="<?php echo e(old('tipo_muestra', $proforma->tipo_muestra)); ?>"
                                    placeholder="Ej: AGUA RESIDUAL, SUELO, SEDIMENTO"
                                    required>
                             <small class="text-muted">Ingrese el tipo de muestra libremente</small>
-                            @error('tipo_muestra')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['tipo_muestra'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="unidad" class="form-label">Unidad (Opcional)</label>
-                            <select class="form-select @error('unidad') is-invalid @enderror" 
+                            <select class="form-select <?php $__errorArgs = ['unidad'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="unidad" name="unidad">
                                 <option value="">Seleccionar unidad...</option>
-                                <option value="UIA" {{ old('unidad', $proforma->unidad) == 'UIA' ? 'selected' : '' }}>UIA - Unidad de Investigación Ambiental</option>
-                                <option value="UAQ" {{ old('unidad', $proforma->unidad) == 'UAQ' ? 'selected' : '' }}>UAQ - Unidad de Análisis Químico</option>
+                                <option value="UIA" <?php echo e(old('unidad', $proforma->unidad) == 'UIA' ? 'selected' : ''); ?>>UIA - Unidad de Investigación Ambiental</option>
+                                <option value="UAQ" <?php echo e(old('unidad', $proforma->unidad) == 'UAQ' ? 'selected' : ''); ?>>UAQ - Unidad de Análisis Químico</option>
                             </select>
                             <small class="text-muted">Seleccione la unidad responsable de la proforma</small>
-                            @error('unidad')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['unidad'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
                             <label for="fecha_recepcion" class="form-label">Fecha de Recepción *</label>
-                            <div class="input-fecha">
-                                <input type="text" class="form-control @error('fecha_recepcion') is-invalid @enderror" 
-                                       id="fecha_recepcion" name="fecha_recepcion" 
-                                       value="{{ old('fecha_recepcion', $proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : date('Y-m-d')) }}" 
-                                       autocomplete="off" required>
-                            </div>
-                            @error('fecha_recepcion')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <input type="text" class="form-control <?php $__errorArgs = ['fecha_recepcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                   id="fecha_recepcion" name="fecha_recepcion" 
+                                   value="<?php echo e(old('fecha_recepcion', $proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : date('Y-m-d'))); ?>" 
+                                   autocomplete="off" required>
+                            <?php $__errorArgs = ['fecha_recepcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="fecha_muestreo" class="form-label">Fecha de Muestreo *</label>
-                            <div class="input-fecha">
-                                <input type="text" class="form-control @error('fecha_muestreo') is-invalid @enderror" 
-                                       id="fecha_muestreo" name="fecha_muestreo" 
-                                       value="{{ old('fecha_muestreo', $proforma->fecha_muestreo ? $proforma->fecha_muestreo->format('Y-m-d') : date('Y-m-d')) }}" 
-                                       autocomplete="off" required>
-                            </div>
-                            @error('fecha_muestreo')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <input type="text" class="form-control <?php $__errorArgs = ['fecha_muestreo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                   id="fecha_muestreo" name="fecha_muestreo" 
+                                   value="<?php echo e(old('fecha_muestreo', $proforma->fecha_muestreo ? $proforma->fecha_muestreo->format('Y-m-d') : date('Y-m-d'))); ?>" 
+                                   autocomplete="off" required>
+                            <?php $__errorArgs = ['fecha_muestreo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     
@@ -406,51 +456,72 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Códigos de Cliente</label>
                             <div id="codigos-cliente-container">
-                                @php $oldCodigos = old('codigo_cliente', $proforma->codigo_cliente ?? ['']); @endphp
-                                @foreach ($oldCodigos as $i => $codigo)
+                                <?php $oldCodigos = old('codigo_cliente', $proforma->codigo_cliente ?? ['']); ?>
+                                <?php $__currentLoopData = $oldCodigos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $codigo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="codigo-cliente-row d-flex gap-2 mb-2">
-                                        <input type="text" class="form-control @error('codigo_cliente.'.$i) is-invalid @enderror" 
-                                               name="codigo_cliente[]" value="{{ $codigo }}" placeholder="Ej: CL-001">
+                                        <input type="text" class="form-control <?php $__errorArgs = ['codigo_cliente.'.$i];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                               name="codigo_cliente[]" value="<?php echo e($codigo); ?>" placeholder="Ej: CL-001">
                                         <button type="button" class="btn btn-outline-danger btn-sm eliminar-codigo" 
-                                                style="{{ $loop->first ? 'display:none;' : '' }}">&times;</button>
+                                                style="<?php echo e($loop->first ? 'display:none;' : ''); ?>">&times;</button>
                                     </div>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                             <button type="button" class="btn btn-outline-primary btn-sm mt-1" id="agregar-codigo-cliente">
                                 <i class="fas fa-plus"></i> Agregar código
                             </button>
-                            @error('codigo_cliente')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['codigo_cliente'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tipo de Documento</label>
                             <div class="border rounded p-3" style="background: #f8f9fa;">
-                                @php $tds = old('tipo_documento', $proforma->tipo_documento ?? []); @endphp
+                                <?php $tds = old('tipo_documento', $proforma->tipo_documento ?? []); ?>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" name="tipo_documento[]" value="PROFORMA" 
-                                           id="td-proforma" {{ in_array('PROFORMA', $tds) ? 'checked' : '' }}>
+                                           id="td-proforma" <?php echo e(in_array('PROFORMA', $tds) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="td-proforma">PROFORMA</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" name="tipo_documento[]" value="COTIZACION" 
-                                           id="td-cotizacion" {{ in_array('COTIZACION', $tds) ? 'checked' : '' }}>
+                                           id="td-cotizacion" <?php echo e(in_array('COTIZACION', $tds) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="td-cotizacion">COTIZACIÓN</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" name="tipo_documento[]" value="CONTRATO" 
-                                           id="td-contrato" {{ in_array('CONTRATO', $tds) ? 'checked' : '' }}>
+                                           id="td-contrato" <?php echo e(in_array('CONTRATO', $tds) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="td-contrato">CONTRATO</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" name="tipo_documento[]" value="CONTRATO MODIFICADO" 
-                                           id="td-contrato-mod" {{ in_array('CONTRATO MODIFICADO', $tds) ? 'checked' : '' }}>
+                                           id="td-contrato-mod" <?php echo e(in_array('CONTRATO MODIFICADO', $tds) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="td-contrato-mod">CONTRATO MODIFICADO</label>
                                 </div>
                             </div>
-                            @error('tipo_documento')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['tipo_documento'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -465,22 +536,50 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="persona_contacto" class="form-label">Persona de Contacto</label>
-                            <input type="text" class="form-control @error('persona_contacto') is-invalid @enderror" 
+                            <input type="text" class="form-control <?php $__errorArgs = ['persona_contacto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                    id="persona_contacto" name="persona_contacto" 
-                                   value="{{ old('persona_contacto', $proforma->persona_contacto) }}">
-                            @error('persona_contacto')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                                   value="<?php echo e(old('persona_contacto', $proforma->persona_contacto)); ?>">
+                            <?php $__errorArgs = ['persona_contacto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
                             <label for="telefono_contacto" class="form-label">Teléfono de Contacto</label>
-                            <input type="text" class="form-control @error('telefono_contacto') is-invalid @enderror" 
+                            <input type="text" class="form-control <?php $__errorArgs = ['telefono_contacto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                    id="telefono_contacto" name="telefono_contacto" 
-                                   value="{{ old('telefono_contacto', $proforma->telefono_contacto) }}">
-                            @error('telefono_contacto')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                                   value="<?php echo e(old('telefono_contacto', $proforma->telefono_contacto)); ?>">
+                            <?php $__errorArgs = ['telefono_contacto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -495,12 +594,26 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="procedencia" class="form-label">Procedencia</label>
-                            <input type="text" class="form-control @error('procedencia') is-invalid @enderror" 
+                            <input type="text" class="form-control <?php $__errorArgs = ['procedencia'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                    id="procedencia" name="procedencia" 
-                                   value="{{ old('procedencia', $proforma->procedencia) }}">
-                            @error('procedencia')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                                   value="<?php echo e(old('procedencia', $proforma->procedencia)); ?>">
+                            <?php $__errorArgs = ['procedencia'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
@@ -511,14 +624,14 @@
                                     <div style="display: flex; gap: 8px;">
                                         <select id="puntoCardinal1" name="punto_cardinal_1" class="modern-input" style="width: auto; min-width: 80px;">
                                             <option value="">--</option>
-                                            <option value="E" {{ old('punto_cardinal_1', $proforma->punto_cardinal_1) == 'E' ? 'selected' : '' }}>Este (E)</option>
-                                            <option value="N" {{ old('punto_cardinal_1', $proforma->punto_cardinal_1) == 'N' ? 'selected' : '' }}>Norte (N)</option>
-                                            <option value="O" {{ old('punto_cardinal_1', $proforma->punto_cardinal_1) == 'O' ? 'selected' : '' }}>Oeste (O)</option>
-                                            <option value="S" {{ old('punto_cardinal_1', $proforma->punto_cardinal_1) == 'S' ? 'selected' : '' }}>Sur (S)</option>
+                                            <option value="E" <?php echo e(old('punto_cardinal_1', $proforma->punto_cardinal_1) == 'E' ? 'selected' : ''); ?>>Este (E)</option>
+                                            <option value="N" <?php echo e(old('punto_cardinal_1', $proforma->punto_cardinal_1) == 'N' ? 'selected' : ''); ?>>Norte (N)</option>
+                                            <option value="O" <?php echo e(old('punto_cardinal_1', $proforma->punto_cardinal_1) == 'O' ? 'selected' : ''); ?>>Oeste (O)</option>
+                                            <option value="S" <?php echo e(old('punto_cardinal_1', $proforma->punto_cardinal_1) == 'S' ? 'selected' : ''); ?>>Sur (S)</option>
                                         </select>
                                         <input type="text" id="valorCardinal1" name="valor_cardinal_1"
                                             class="modern-input" placeholder="Coord. 1" style="width: 100px;"
-                                            value="{{ old('valor_cardinal_1', $proforma->valor_cardinal_1) }}">
+                                            value="<?php echo e(old('valor_cardinal_1', $proforma->valor_cardinal_1)); ?>">
                                     </div>
                                 </div>
 
@@ -527,61 +640,118 @@
                                     <div style="display: flex; gap: 8px;">
                                         <select id="puntoCardinal2" name="punto_cardinal_2" class="modern-input" style="width: auto; min-width: 80px;">
                                             <option value="">--</option>
-                                            <option value="E" {{ old('punto_cardinal_2', $proforma->punto_cardinal_2) == 'E' ? 'selected' : '' }}>Este (E)</option>
-                                            <option value="N" {{ old('punto_cardinal_2', $proforma->punto_cardinal_2) == 'N' ? 'selected' : '' }}>Norte (N)</option>
-                                            <option value="O" {{ old('punto_cardinal_2', $proforma->punto_cardinal_2) == 'O' ? 'selected' : '' }}>Oeste (O)</option>
-                                            <option value="S" {{ old('punto_cardinal_2', $proforma->punto_cardinal_2) == 'S' ? 'selected' : '' }}>Sur (S)</option>
+                                            <option value="E" <?php echo e(old('punto_cardinal_2', $proforma->punto_cardinal_2) == 'E' ? 'selected' : ''); ?>>Este (E)</option>
+                                            <option value="N" <?php echo e(old('punto_cardinal_2', $proforma->punto_cardinal_2) == 'N' ? 'selected' : ''); ?>>Norte (N)</option>
+                                            <option value="O" <?php echo e(old('punto_cardinal_2', $proforma->punto_cardinal_2) == 'O' ? 'selected' : ''); ?>>Oeste (O)</option>
+                                            <option value="S" <?php echo e(old('punto_cardinal_2', $proforma->punto_cardinal_2) == 'S' ? 'selected' : ''); ?>>Sur (S)</option>
                                         </select>
                                         <input type="text" id="valorCardinal2" name="valor_cardinal_2"
                                             class="modern-input" placeholder="Coord. 2" style="width: 100px;"
-                                            value="{{ old('valor_cardinal_2', $proforma->valor_cardinal_2) }}">
+                                            value="<?php echo e(old('valor_cardinal_2', $proforma->valor_cardinal_2)); ?>">
                                     </div>
                                 </div>
                             </div>
-                            @error('punto_cardinal_1')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                            @error('valor_cardinal_1')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                            @error('punto_cardinal_2')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                            @error('valor_cardinal_2')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['punto_cardinal_1'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            <?php $__errorArgs = ['valor_cardinal_1'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            <?php $__errorArgs = ['punto_cardinal_2'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            <?php $__errorArgs = ['valor_cardinal_2'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="muestreado_por" class="form-label">Muestreado por</label>
-                            <select class="form-select @error('muestreado_por') is-invalid @enderror" 
+                            <select class="form-select <?php $__errorArgs = ['muestreado_por'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="muestreado_por" name="muestreado_por">
                                 <option value="">Seleccionar...</option>
-                                @foreach($muestreadoPorOpciones as $opcion)
-                                    <option value="{{ $opcion }}" {{ old('muestreado_por', $proforma->muestreado_por) == $opcion ? 'selected' : '' }}>
-                                        {{ $opcion }}
+                                <?php $__currentLoopData = $muestreadoPorOpciones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opcion): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($opcion); ?>" <?php echo e(old('muestreado_por', $proforma->muestreado_por) == $opcion ? 'selected' : ''); ?>>
+                                        <?php echo e($opcion); ?>
+
                                     </option>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
-                            @error('muestreado_por')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['muestreado_por'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
                             <label for="adelanto" class="form-label">Adelanto (Bs.)</label>
                             <div class="input-group">
                                 <span class="input-group-text">Bs.</span>
-                                <input type="number" class="form-control @error('adelanto') is-invalid @enderror" 
+                                <input type="number" class="form-control <?php $__errorArgs = ['adelanto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                        id="adelanto" name="adelanto" 
-                                       value="{{ old('adelanto', $proforma->adelanto) }}" min="0" step="0.01"
+                                       value="<?php echo e(old('adelanto', $proforma->adelanto)); ?>" min="0" step="0.01"
                                        oninput="calcularTotalesEstimados()">
                             </div>
-                            @error('adelanto')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['adelanto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -629,35 +799,36 @@
                     </div>
                     
                     <div id="parametros-container">
-                        @php $paramIndex = 0; @endphp
+                        <?php $paramIndex = 0; ?>
                         
-                        @foreach($proforma->parametros as $parametro)
-                        <div class="parametro-row mb-3 border p-3 rounded" id="parametro-row-{{ $paramIndex }}">
+                        <?php $__currentLoopData = $proforma->parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $parametro): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="parametro-row mb-3 border p-3 rounded" id="parametro-row-<?php echo e($paramIndex); ?>">
                             <div class="row align-items-center">
                                 <div class="col-md-5 mb-2 mb-md-0">
                                     <label class="form-label small">Parámetro *</label>
-                                    <select name="parametros[{{ $paramIndex }}][id]" 
+                                    <select name="parametros[<?php echo e($paramIndex); ?>][id]" 
                                             class="form-control parametro-select" 
-                                            id="parametro-select-{{ $paramIndex }}"
+                                            id="parametro-select-<?php echo e($paramIndex); ?>"
                                             style="width: 100%;"
-                                            data-row-id="{{ $paramIndex }}"
+                                            data-row-id="<?php echo e($paramIndex); ?>"
                                             required>
                                         <option value="">Buscar parámetro...</option>
-                                        @if($parametro)
-                                            <option value="{{ $parametro->id }}" selected
-                                                    data-precio="{{ $parametro->precio_unitario }}"
-                                                    data-metodo="{{ $parametro->metodo }}">
-                                                {{ $parametro->categoria === 'RUIDO' ? 'RUIDO' : ($parametro->categoria === 'GASES' ? 'GASES' : $parametro->nombre) }} ({{ $parametro->tipo }}) - Bs. {{ number_format($parametro->precio_unitario, 2) }}
+                                        <?php if($parametro): ?>
+                                            <option value="<?php echo e($parametro->id); ?>" selected
+                                                    data-precio="<?php echo e($parametro->precio_unitario); ?>"
+                                                    data-metodo="<?php echo e($parametro->metodo); ?>">
+                                                <?php echo e($parametro->categoria === 'RUIDO' ? 'RUIDO' : ($parametro->categoria === 'GASES' ? 'GASES' : $parametro->nombre)); ?> (<?php echo e($parametro->tipo); ?>) - Bs. <?php echo e(number_format($parametro->precio_unitario, 2)); ?>
+
                                             </option>
-                                        @endif
+                                        <?php endif; ?>
                                     </select>
                                 </div>
                                 
                                 <div class="col-md-3 mb-2 mb-md-0">
                                     <label class="form-label small">N° Muestras *</label>
                                     <input type="number" class="form-control muestra-input" 
-                                           name="parametros[{{ $paramIndex }}][cantidad]" 
-                                           value="{{ old('parametros.' . $paramIndex . '.cantidad', $parametro->pivot->cantidad_muestras) }}" 
+                                           name="parametros[<?php echo e($paramIndex); ?>][cantidad]" 
+                                           value="<?php echo e(old('parametros.' . $paramIndex . '.cantidad', $parametro->pivot->cantidad_muestras)); ?>" 
                                            min="1" 
                                            oninput="calcularTotalesEstimados()" required>
                                 </div>
@@ -667,8 +838,8 @@
                                     <div class="input-group">
                                         <span class="input-group-text">Bs.</span>
                                         <input type="text" class="form-control precio-unitario" 
-                                               id="precio-{{ $paramIndex }}" 
-                                               value="{{ number_format($parametro->pivot->precio_unitario, 2) }}" readonly>
+                                               id="precio-<?php echo e($paramIndex); ?>" 
+                                               value="<?php echo e(number_format($parametro->pivot->precio_unitario, 2)); ?>" readonly>
                                     </div>
                                 </div>
                                 
@@ -676,33 +847,33 @@
                                     <label class="form-label small">&nbsp;</label>
                                     <button type="button" class="btn btn-danger btn-sm remove-parametro" 
                                             onclick="eliminarParametro(this)"
-                                            {{ $proforma->parametros->count() <= 1 ? 'disabled' : '' }}>
+                                            <?php echo e($proforma->parametros->count() <= 1 ? 'disabled' : ''); ?>>
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                             </div>
                             
-                            <div class="row mt-2 metodo-container" id="metodo-{{ $paramIndex }}" style="display: {{ $parametro->categoria === 'GASES' ? 'none' : 'block' }};">
+                            <div class="row mt-2 metodo-container" id="metodo-<?php echo e($paramIndex); ?>" style="display: <?php echo e($parametro->categoria === 'GASES' ? 'none' : 'block'); ?>;">
                                 <div class="col-12">
                                     <small class="text-muted">
                                         <i class="fas fa-microscope me-1"></i> 
-                                        Método: <span class="metodo-text">{{ $parametro->categoria === 'GASES' ? ($parametro->pivot->metodo ?? '') : $parametro->metodo }}</span>
+                                        Método: <span class="metodo-text"><?php echo e($parametro->categoria === 'GASES' ? ($parametro->pivot->metodo ?? '') : $parametro->metodo); ?></span>
                                     </small>
                                 </div>
                             </div>
 
-                            <div class="row mt-2 metodo-gas-container" id="metodo-gas-{{ $paramIndex }}" style="display: {{ $parametro->categoria === 'GASES' ? 'block' : 'none' }};">
+                            <div class="row mt-2 metodo-gas-container" id="metodo-gas-<?php echo e($paramIndex); ?>" style="display: <?php echo e($parametro->categoria === 'GASES' ? 'block' : 'none'); ?>;">
                                 <div class="col-md-6">
                                     <label class="form-label small">Método (equipo utilizado) *</label>
                                     <input type="text" class="form-control metodo-gas-input"
-                                           name="parametros[{{ $paramIndex }}][metodo]"
-                                           value="{{ $parametro->pivot->metodo ?? '' }}"
+                                           name="parametros[<?php echo e($paramIndex); ?>][metodo]"
+                                           value="<?php echo e($parametro->pivot->metodo ?? ''); ?>"
                                            placeholder="Ej: CO, O₂, H₂S...">
                                 </div>
                             </div>
                         </div>
-                        @php $paramIndex++; @endphp
-                        @endforeach
+                        <?php $paramIndex++; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                     
                     <button type="button" id="add-parametro" class="btn" 
@@ -718,42 +889,43 @@
                         Logística de Muestreo
                     </h6>
                     <div id="logisticas-container">
-                        @php $logIndex = 0; @endphp
-                        @forelse($proforma->logisticasMuestreo as $log)
-                        <div class="logistica-row mb-3 border p-3 rounded" id="logistica-row-{{ $logIndex }}">
+                        <?php $logIndex = 0; ?>
+                        <?php $__empty_1 = true; $__currentLoopData = $proforma->logisticasMuestreo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <div class="logistica-row mb-3 border p-3 rounded" id="logistica-row-<?php echo e($logIndex); ?>">
                             <div class="row align-items-center">
                                 <div class="col-md-4 mb-2 mb-md-0">
                                     <label class="form-label small">Concepto Logístico *</label>
-                                    <select name="logisticas[{{ $logIndex }}][id]" class="form-select logistica-select" required>
+                                    <select name="logisticas[<?php echo e($logIndex); ?>][id]" class="form-select logistica-select" required>
                                         <option value="">Seleccionar concepto...</option>
-                                        @foreach($logisticasMuestreo as $opt)
-                                            <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}"
-                                                {{ $log->id == $opt->id ? 'selected' : '' }}>
-                                                {{ $opt->categoria }} - {{ $opt->descripcion }}
+                                        <?php $__currentLoopData = $logisticasMuestreo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($opt->id); ?>" data-costo="<?php echo e($opt->costo); ?>" data-categoria="<?php echo e($opt->categoria); ?>"
+                                                <?php echo e($log->id == $opt->id ? 'selected' : ''); ?>>
+                                                <?php echo e($opt->categoria); ?> - <?php echo e($opt->descripcion); ?>
+
                                             </option>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                                 <div class="col-md-3 mb-2 mb-md-0">
                                     <label class="form-label small">Descripción para la Proforma</label>
                                     <textarea class="form-control logistica-descripcion"
-                                              name="logisticas[{{ $logIndex }}][descripcion]"
+                                              name="logisticas[<?php echo e($logIndex); ?>][descripcion]"
                                               rows="2"
                                               style="resize: vertical; min-height: 38px; white-space: normal; overflow-wrap: break-word;"
-                                              placeholder="Logística de Muestreo de: ...">{{ old('logisticas.' . $logIndex . '.descripcion', $log->pivot->descripcion ?? '') }}</textarea>
+                                              placeholder="Logística de Muestreo de: ..."><?php echo e(old('logisticas.' . $logIndex . '.descripcion', $log->pivot->descripcion ?? '')); ?></textarea>
                                 </div>
                                 <div class="col-md-2 mb-2 mb-md-0">
                                     <label class="form-label small">Cantidad</label>
                                     <input type="number" class="form-control logistica-cantidad"
-                                           name="logisticas[{{ $logIndex }}][cantidad]" value="{{ $log->pivot->cantidad }}" min="1" required>
+                                           name="logisticas[<?php echo e($logIndex); ?>][cantidad]" value="<?php echo e($log->pivot->cantidad); ?>" min="1" required>
                                 </div>
                                 <div class="col-md-2 mb-2 mb-md-0">
                                     <label class="form-label small">Precio Unitario (Bs.)</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Bs.</span>
                                         <input type="number" class="form-control logistica-precio"
-                                               name="logisticas[{{ $logIndex }}][precio_unitario]"
-                                               value="{{ old('logisticas.' . $logIndex . '.precio_unitario', $log->pivot->precio_unitario ?? $log->costo) }}"
+                                               name="logisticas[<?php echo e($logIndex); ?>][precio_unitario]"
+                                               value="<?php echo e(old('logisticas.' . $logIndex . '.precio_unitario', $log->pivot->precio_unitario ?? $log->costo)); ?>"
                                                step="0.01"
                                                min="0"
                                                required>
@@ -768,19 +940,20 @@
                                 </div>
                             </div>
                         </div>
-                        @php $logIndex++; @endphp
-                        @empty
+                        <?php $logIndex++; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <div class="logistica-row mb-3 border p-3 rounded" id="logistica-row-0">
                             <div class="row align-items-center">
                                 <div class="col-md-4 mb-2 mb-md-0">
                                     <label class="form-label small">Concepto Logístico *</label>
                                     <select name="logisticas[0][id]" class="form-select logistica-select" required>
                                         <option value="">Seleccionar concepto...</option>
-                                        @foreach($logisticasMuestreo as $opt)
-                                            <option value="{{ $opt->id }}" data-costo="{{ $opt->costo }}" data-categoria="{{ $opt->categoria }}">
-                                                {{ $opt->categoria }} - {{ $opt->descripcion }}
+                                        <?php $__currentLoopData = $logisticasMuestreo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($opt->id); ?>" data-costo="<?php echo e($opt->costo); ?>" data-categoria="<?php echo e($opt->categoria); ?>">
+                                                <?php echo e($opt->categoria); ?> - <?php echo e($opt->descripcion); ?>
+
                                             </option>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                                 <div class="col-md-3 mb-2 mb-md-0">
@@ -816,7 +989,7 @@
                                 </div>
                             </div>
                         </div>
-                        @endforelse
+                        <?php endif; ?>
                     </div>
                     <button type="button" id="add-logistica" class="btn"
                             style="background-color: #ffc107; color: #000000; border: none; border-radius: 30px; padding: 8px 20px; font-weight: 500; transition: all 0.3s ease;">
@@ -833,11 +1006,25 @@
                     
                     <div class="mb-3">
                         <label for="observaciones" class="form-label">Observaciones</label>
-                        <textarea class="form-control @error('observaciones') is-invalid @enderror" 
-                                  id="observaciones" name="observaciones" rows="3">{{ old('observaciones', $proforma->observaciones) }}</textarea>
-                        @error('observaciones')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
+                        <textarea class="form-control <?php $__errorArgs = ['observaciones'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                  id="observaciones" name="observaciones" rows="3"><?php echo e(old('observaciones', $proforma->observaciones)); ?></textarea>
+                        <?php $__errorArgs = ['observaciones'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
 
@@ -853,15 +1040,29 @@
                         <label for="justificacion_modificacion" class="form-label">
                             Justificación de Modificación <span class="text-danger">*</span>
                         </label>
-                        <textarea class="form-control @error('justificacion_modificacion') is-invalid @enderror" 
+                        <textarea class="form-control <?php $__errorArgs = ['justificacion_modificacion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                   id="justificacion_modificacion" 
                                   name="justificacion_modificacion" 
                                   rows="3"
-                                  placeholder="Explique detalladamente por qué se están modificando los parámetros de esta proforma...">{{ old('justificacion_modificacion') }}</textarea>
+                                  placeholder="Explique detalladamente por qué se están modificando los parámetros de esta proforma..."><?php echo e(old('justificacion_modificacion')); ?></textarea>
                         <small class="text-muted">Esta justificación quedará registrada en el sistema y será visible en la vista de la proforma.</small>
-                        @error('justificacion_modificacion')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['justificacion_modificacion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
 
@@ -876,22 +1077,23 @@
                         <div class="row">
                             <div class="col-md-2 text-center">
                                 <p class="mb-1"><strong>Subtotal</strong></p>
-                                <h4 class="text-primary">Bs. <span id="subtotal-estimado">{{ number_format($proforma->subtotal, 2) }}</span></h4>
+                                <h4 class="text-primary">Bs. <span id="subtotal-estimado"><?php echo e(number_format($proforma->subtotal, 2)); ?></span></h4>
                             </div>
                             <div class="col-md-2 text-center">
                                 <p class="mb-1"><strong>Descuento</strong></p>
-                                <h4 class="text-danger">Bs. <span id="descuento-estimado">{{ number_format($proforma->descuento, 2) }}</span></h4>
+                                <h4 class="text-danger">Bs. <span id="descuento-estimado"><?php echo e(number_format($proforma->descuento, 2)); ?></span></h4>
                                 <small class="text-muted" id="descuento-nota">
-                                    {{ $proforma->tipo == 'INVESTIGACION' ? '(20% descuento aplicado)' : '(No aplica)' }}
+                                    <?php echo e($proforma->tipo == 'INVESTIGACION' ? '(20% descuento aplicado)' : '(No aplica)'); ?>
+
                                 </small>
                             </div>
                             <div class="col-md-3 text-center">
                                 <p class="mb-1"><strong>Total</strong></p>
-                                <h3 class="text-success">Bs. <span id="total-estimado">{{ number_format($proforma->total, 2) }}</span></h3>
+                                <h3 class="text-success">Bs. <span id="total-estimado"><?php echo e(number_format($proforma->total, 2)); ?></span></h3>
                             </div>
                             <div class="col-md-3 text-center">
                                 <p class="mb-1"><strong>Saldo</strong></p>
-                                <h4 class="text-info">Bs. <span id="saldo-estimado">{{ number_format($proforma->saldo, 2) }}</span></h4>
+                                <h4 class="text-info">Bs. <span id="saldo-estimado"><?php echo e(number_format($proforma->saldo, 2)); ?></span></h4>
                             </div>
                         </div>
                     </div>
@@ -899,7 +1101,7 @@
 
                 <!-- SECCIÓN 10: BOTONES -->
                 <div class="d-flex justify-content-between mt-4 pt-3 border-top">
-                    <a href="{{ route('proformas.show', $proforma) }}" class="btn btn-secondary" style="border-radius: 30px; padding: 10px 25px;">
+                    <a href="<?php echo e(route('proformas.show', $proforma)); ?>" class="btn btn-secondary" style="border-radius: 30px; padding: 10px 25px;">
                         <i class="fas fa-times me-2"></i> Cancelar
                     </a>
                     <button type="submit" class="btn" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000000; border: none; transition: all 0.3s ease;">
@@ -910,9 +1112,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -957,160 +1159,6 @@
     color: #6c757d !important;
     font-style: italic;
 }
-
-/* ===== ESTILOS PARA FLATPICKR ===== */
-.flatpickr-calendar {
-    border-radius: 12px !important;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
-    border: none !important;
-    font-family: "Segoe UI", Roboto, sans-serif !important;
-}
-
-.flatpickr-calendar .flatpickr-months {
-    background: #ffc107 !important;
-    border-radius: 12px 12px 0 0 !important;
-    padding: 8px 0 !important;
-}
-
-.flatpickr-calendar .flatpickr-months .flatpickr-prev-month,
-.flatpickr-calendar .flatpickr-months .flatpickr-next-month {
-    color: #000 !important;
-    fill: #000 !important;
-}
-
-.flatpickr-calendar .flatpickr-months .flatpickr-prev-month:hover,
-.flatpickr-calendar .flatpickr-months .flatpickr-next-month:hover {
-    background: rgba(0,0,0,0.1) !important;
-    border-radius: 50% !important;
-}
-
-.flatpickr-calendar .flatpickr-current-month {
-    color: #000 !important;
-    font-weight: 600 !important;
-    font-size: 16px !important;
-}
-
-.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
-    color: #000 !important;
-    font-weight: 600 !important;
-    background: transparent !important;
-}
-
-.flatpickr-calendar .flatpickr-current-month .numInputWrapper {
-    color: #000 !important;
-}
-
-.flatpickr-calendar .flatpickr-weekdays {
-    background: #f8f9fa !important;
-    border-bottom: 1px solid #e9ecef !important;
-}
-
-.flatpickr-calendar .flatpickr-weekday {
-    color: #495057 !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-}
-
-.flatpickr-calendar .flatpickr-day {
-    border-radius: 50% !important;
-    transition: all 0.2s ease !important;
-    color: #333 !important;
-    font-weight: 500 !important;
-    margin: 2px !important;
-    width: 36px !important;
-    height: 36px !important;
-    line-height: 36px !important;
-}
-
-.flatpickr-calendar .flatpickr-day:hover {
-    background: #ffc107 !important;
-    color: #000 !important;
-    transform: scale(1.05) !important;
-}
-
-.flatpickr-calendar .flatpickr-day.selected {
-    background: #ffc107 !important;
-    color: #000 !important;
-    border-color: #ffc107 !important;
-    font-weight: 700 !important;
-    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4) !important;
-}
-
-.flatpickr-calendar .flatpickr-day.selected:hover {
-    background: #e6a800 !important;
-    border-color: #e6a800 !important;
-}
-
-.flatpickr-calendar .flatpickr-day.today {
-    border-color: #ffc107 !important;
-    color: #ffc107 !important;
-}
-
-.flatpickr-calendar .flatpickr-day.today:hover {
-    background: #ffc107 !important;
-    color: #000 !important;
-}
-
-.flatpickr-calendar .flatpickr-day.inRange,
-.flatpickr-calendar .flatpickr-day.startRange,
-.flatpickr-calendar .flatpickr-day.endRange {
-    background: rgba(255, 193, 7, 0.2) !important;
-    border-color: #ffc107 !important;
-}
-
-.flatpickr-calendar .flatpickr-day.inRange.selected {
-    background: #ffc107 !important;
-    color: #000 !important;
-}
-
-.flatpickr-calendar .flatpickr-day.flatpickr-disabled {
-    color: #ccc !important;
-}
-
-.flatpickr-calendar .flatpickr-day.flatpickr-disabled:hover {
-    background: transparent !important;
-    transform: none !important;
-}
-
-.flatpickr-calendar .flatpickr-time {
-    border-top: 1px solid #e9ecef !important;
-    border-radius: 0 0 12px 12px !important;
-}
-
-.flatpickr-calendar .flatpickr-time input {
-    color: #333 !important;
-    font-weight: 500 !important;
-}
-
-.flatpickr-calendar .flatpickr-time input:hover {
-    background: #f8f9fa !important;
-}
-
-.flatpickr-calendar .flatpickr-time .flatpickr-time-separator {
-    color: #333 !important;
-    font-weight: 700 !important;
-}
-
-.flatpickr-calendar .flatpickr-am-pm {
-    color: #333 !important;
-    font-weight: 600 !important;
-}
-
-/* Animación del calendario */
-.flatpickr-calendar.open {
-    animation: flatpickrFadeIn 0.25s ease-out;
-}
-
-@keyframes flatpickrFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
 </style>
 
 <script>
@@ -1118,30 +1166,17 @@ $(document).ready(function() {
     console.log('Documento listo - iniciando Select2 en edición');
     
     // ===== FLATPICKR: formato AAAA-MM-DD =====
-    const flatpickrConfig = {
+    flatpickr("#fecha_recepcion", {
         dateFormat: "Y-m-d",
         locale: "es",
-        allowInput: true,
-        disableMobile: true,
-        placeholder: "YYYY-MM-DD",
-        monthSelectorType: "dropdown",
-        prevArrow: "<i class='fas fa-chevron-left'></i>",
-        nextArrow: "<i class='fas fa-chevron-right'></i>",
-        onReady: function(selectedDates, dateStr, instance) {
-            // Agregar ícono al input
-            const input = instance.input;
-            const wrapper = input.parentElement;
-            if (!wrapper.querySelector('.flatpickr-icon')) {
-                wrapper.classList.add('input-fecha');
-                const icon = document.createElement('i');
-                icon.className = 'fas fa-calendar-alt flatpickr-icon';
-                wrapper.appendChild(icon);
-            }
-        }
-    };
+        allowInput: true
+    });
 
-    flatpickr("#fecha_recepcion", flatpickrConfig);
-    flatpickr("#fecha_muestreo", flatpickrConfig);
+    flatpickr("#fecha_muestreo", {
+        dateFormat: "Y-m-d",
+        locale: "es",
+        allowInput: true
+    });
     
     let parametrosSeleccionados = [];
     
@@ -1172,7 +1207,7 @@ $(document).ready(function() {
             }
         },
         ajax: {
-            url: '{{ route("clientes.buscar") }}',
+            url: '<?php echo e(route("clientes.buscar")); ?>',
             dataType: 'json',
             delay: 300,
             data: function(params) {
@@ -1206,7 +1241,7 @@ $(document).ready(function() {
                 }
             },
             ajax: {
-                url: '{{ route("parametros.buscar") }}',
+                url: '<?php echo e(route("parametros.buscar")); ?>',
                 dataType: 'json',
                 delay: 300,
                 data: function(params) {
@@ -1371,9 +1406,9 @@ $(document).ready(function() {
     
     function detectarCambiosParametros() {
         let parametrosOriginales = [];
-        @foreach($proforma->parametros as $parametro)
-            parametrosOriginales.push({{ $parametro->id }});
-        @endforeach
+        <?php $__currentLoopData = $proforma->parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $parametro): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            parametrosOriginales.push(<?php echo e($parametro->id); ?>);
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         
         let parametrosNuevos = [];
         $('.parametro-select').each(function() {
@@ -1435,9 +1470,9 @@ $(document).ready(function() {
         }
         
         let parametrosOriginales = [];
-        @foreach($proforma->parametros as $parametro)
-            parametrosOriginales.push({{ $parametro->id }});
-        @endforeach
+        <?php $__currentLoopData = $proforma->parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $parametro): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            parametrosOriginales.push(<?php echo e($parametro->id); ?>);
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         
         let parametrosNuevos = [];
         $('.parametro-select').each(function() {
@@ -1593,7 +1628,7 @@ $(document).ready(function() {
     calcularTotalesEstimados();
     setTimeout(detectarCambiosParametros, 500);
 
-    const parametrosAmbientales = @json($parametrosAmbientales);
+    const parametrosAmbientales = <?php echo json_encode($parametrosAmbientales, 15, 512) ?>;
 
     let ambientCategoria = '';
 
@@ -1759,4 +1794,5 @@ $(document).ready(function() {
     toggleAmbientParamUI();
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/proformas/edit.blade.php ENDPATH**/ ?>

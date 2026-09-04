@@ -35,7 +35,8 @@ class ParametroController extends Controller
                     ->orWhere('unidad', 'LIKE', "%{$search}%")
                     ->orWhere('matriz', 'LIKE', "%{$search}%")
                     ->orWhere('tecnica', 'LIKE', "%{$search}%")
-                    ->orWhere('tipo', 'LIKE', "%{$search}%");
+                    ->orWhere('tipo', 'LIKE', "%{$search}%")
+                    ->orWhere('categoria', 'LIKE', "%{$search}%");
             });
         }
 
@@ -94,10 +95,10 @@ class ParametroController extends Controller
             'unidad' => 'nullable|string|max:255',
             'matriz' => 'nullable|string|max:255',
             'tecnica' => 'nullable|string|max:255',
-            'categoria' => 'nullable|string|max:255',
-            'tipo_medicion' => 'nullable|string|max:255',
             'precio_unitario' => 'required|numeric|min:0',
             'tipo' => 'required|in:AMBIENTAL,AGUA,INVESTIGACION',
+            'categoria' => 'nullable|string|max:255',
+            'tipo_medicion' => 'nullable|string|max:255',
         ]);
 
         $validated['unidad_default'] = $validated['unidad'] ?? null;
@@ -149,10 +150,10 @@ class ParametroController extends Controller
             'unidad' => 'nullable|string|max:255',
             'matriz' => 'nullable|string|max:255',
             'tecnica' => 'nullable|string|max:255',
-            'categoria' => 'nullable|string|max:255',
-            'tipo_medicion' => 'nullable|string|max:255',
             'precio_unitario' => 'required|numeric|min:0',
             'tipo' => 'required|in:AMBIENTAL,AGUA,INVESTIGACION',
+            'categoria' => 'nullable|string|max:255',
+            'tipo_medicion' => 'nullable|string|max:255',
         ]);
 
         $validated['unidad_default'] = $validated['unidad'] ?? null;
@@ -306,6 +307,7 @@ class ParametroController extends Controller
                     'matriz' => $parametro->matriz,
                     'tecnica' => $parametro->tecnica,
                     'tipo' => $parametro->tipo,
+                    'categoria' => $parametro->categoria,
                     'trashed' => $parametro->trashed(),
                 ];
             }

@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-main">
-    <!-- Encabezado de página -->
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -19,7 +18,6 @@
             
             <div class="d-flex gap-2">
                 @auth
-
                     @can('crear proformas')
                         <a href="{{ route('proformas.create') }}" class="btn btn-primary" style="background-color: #ffc107; border-radius: 30px; padding: 10px 25px; color: #000; border: none; transition: all 0.3s ease;">
                             <i class="fas fa-plus-circle"></i>
@@ -35,11 +33,9 @@
         </div>
     </div>
 
-    <!-- BUSCADOR Y FILTROS -->
     <div class="card mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('proformas.index') }}" class="row">
-                <!-- Buscador general -->
                 <div class="col-md-12 mb-3">
                     <label for="search" class="form-label fw-semibold">
                         <i class="fas fa-search me-2" style="color: #ffc107;"></i>
@@ -68,7 +64,6 @@
                     </small>
                 </div>
                 
-                <!-- Filtros existentes -->
                 <div class="col-md-3">
                     <label for="mes" class="form-label">
                         <i class="fas fa-calendar-alt me-1" style="color: #ffc107;"></i> Mes
@@ -168,7 +163,6 @@
         @endif
     </div>
 
-    <!-- Tabla de proformas -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
@@ -229,19 +223,19 @@
                                         </small>
                                     </td>
                                    <td>
-    <span class="badge rounded-pill 
-        @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
-        @elseif($proforma->tipo == 'ANALISIS_QUIMICO') bg-info text-white
-        @else bg-secondary
-        @endif">
-        <i class="fas 
-            @if($proforma->tipo == 'AMBIENTAL') fa-leaf
-            @elseif($proforma->tipo == 'ANALISIS_QUIMICO') fa-flask
-            @else fa-flask
-            @endif me-1"></i>
-        {{ $proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo }}
-    </span>
-</td>
+                                        <span class="badge rounded-pill 
+                                            @if($proforma->tipo == 'AMBIENTAL') bg-warning text-dark
+                                            @elseif($proforma->tipo == 'ANALISIS_QUIMICO') bg-info text-white
+                                            @else bg-secondary
+                                            @endif">
+                                            <i class="fas 
+                                                @if($proforma->tipo == 'AMBIENTAL') fa-leaf
+                                                @elseif($proforma->tipo == 'ANALISIS_QUIMICO') fa-flask
+                                                @else fa-flask
+                                                @endif me-1"></i>
+                                            {{ $proforma->tipo == 'ANALISIS_QUIMICO' ? 'ANÁLISIS QUÍMICO' : $proforma->tipo }}
+                                        </span>
+                                    </td>
                                     <td>
                                         @php
                                             $estado = $proforma->estado;
@@ -291,7 +285,7 @@
                                     </td>
                                     <td>
                                         <small>
-                                            {{ $proforma->fecha_emision->format('d/m/Y') }}
+                                            {{ $proforma->fecha_recepcion ? $proforma->fecha_recepcion->format('Y-m-d') : 'N/A' }}
                                         </small>
                                     </td>
                                     <td class="text-end fw-semibold text-success">
@@ -313,7 +307,6 @@
                                                 Opciones
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
-                                                <!-- Ver detalles -->
                                                 <li>
                                                     <a class="dropdown-item" 
                                                     href="{{ route('proformas.show', $proforma) }}"
@@ -323,7 +316,6 @@
                                                     </a>
                                                 </li>
                                                 
-                                                <!-- Editar (solo admin y borrador) -->
                                                 @canany(['editar proformas', 'eliminar proformas'])
                                                     @if($proforma->estado == 'BORRADOR')
                                                         <li>
@@ -337,7 +329,6 @@
                                                             @endcan
                                                         </li>
                                                         
-                                                        <!-- Eliminar -->
                                                         <li>
                                                             @can('eliminar proformas')
                                                             <form action="{{ route('proformas.destroy', $proforma) }}" 
@@ -359,7 +350,6 @@
                                                     @endif
                                                 @endcanany
                                                 
-                                                <!-- Generar PDF -->
                                                 <li>
                                                     <a class="dropdown-item" 
                                                     href="{{ route('proformas.pdf', $proforma) }}"
@@ -379,7 +369,6 @@
                                                 </li>
                                                 @endhasanyrole
                                                 @else
-                                                <!-- Cadena de Custodia (solo ANÁLISIS QUÍMICO / INVESTIGACIÓN) -->
                                                 @can('generar cadena custodia')
                                                 <li>
                                                     <a class="dropdown-item" 
@@ -392,7 +381,6 @@
                                                 </li>
                                                 @endcan
                                                 
-                                                <!-- Formulario de resultados (solo ANÁLISIS QUÍMICO / INVESTIGACIÓN) -->
                                                 @can('ver resultados')
                                                 <li>
                                                     <a class="dropdown-item" 
@@ -413,7 +401,6 @@
                     </table>
                 </div>
 
-                <!-- Botón de Papelera y texto de registros centrado -->
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
                     @auth
                         @can('ver papelera proformas')
@@ -486,16 +473,13 @@
     </div>
 </div>
 
-<!-- Estilos adicionales -->
 <style>
-/* Estilo para el botón de nueva proforma */
 .btn-primary[style*="background-color: #ffc107"]:hover {
     background-color: #e6a800 !important;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
 }
 
-/* Estilo para el botón de papelera en círculo */
 .btn-icon-circle {
     width: 35px !important;
     height: 35px !important;
@@ -511,7 +495,6 @@
     transform: scale(1.1) !important;
 }
 
-/* Estilos para la paginación */
 .pagination .page-link {
     color: #ffc107 !important;
     border-radius: 8px;
@@ -524,7 +507,6 @@
     color: #000 !important;
 }
 
-/* Estilo para los botones de acción */
 .btn-outline-warning,
 .btn-outline-danger,
 .btn-outline-success {
@@ -538,7 +520,6 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Estilo para el input de búsqueda */
 .input-group-text {
     border-radius: 30px 0 0 30px !important;
 }
@@ -547,7 +528,6 @@
     border-radius: 0 !important;
 }
 
-/* Estilo para el foco de inputs y selects en proformas */
 .form-control:focus,
 .form-select:focus,
 .input-group-text:focus,
@@ -557,30 +537,25 @@
     outline: none !important;
 }
 
-/* Específico para el input de búsqueda */
 #search:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
-/* Para los selects de filtros */
 select.form-select:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
-/* Para el botón de filtrar */
 button[type="submit"]:focus {
     border-color: #ffc107 !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
 }
 
-/* Reforzar color del icono de proformas */
 .fa-file-invoice-dollar {
     color: #ffc107 !important;
 }
 
-/* ========== CORRECCIÓN PARA MÓVIL ========== */
 @media (max-width: 768px) {
     .page-header .d-flex {
         flex-direction: column !important;
@@ -631,7 +606,6 @@ button[type="submit"]:focus {
         display: none !important;
     }
     
-    /* Ajuste para móvil - papelera y texto */
     .d-flex.align-items-center.justify-content-center.position-relative {
         flex-direction: column !important;
         padding-top: 40px !important;
@@ -648,7 +622,6 @@ button[type="submit"]:focus {
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar tooltips de Bootstrap
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl, {
@@ -659,7 +632,6 @@ button[type="submit"]:focus {
             });
         });
         
-        // Auto-submit del formulario de búsqueda al escribir
         let searchTimeout;
         const searchInput = document.getElementById('search');
         const searchForm = document.getElementById('searchForm');

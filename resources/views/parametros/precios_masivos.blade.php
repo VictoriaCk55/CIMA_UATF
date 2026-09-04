@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-main">
-    <!-- Encabezado -->
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -17,7 +16,6 @@
                 </p>
             </div>
             
-            <!-- BOTÓN VOLVER CON ANIMACIÓN -->
             <a href="{{ route('parametros.index') }}" 
                class="btn btn-outline-secondary btn-volver" 
                style="border-radius: 30px; padding: 8px 20px; color: #000000 !important; border: 2px solid #ffffff !important; background-color: #ffffff !important; transition: all 0.3s ease !important; font-weight: 500 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;"
@@ -29,7 +27,6 @@
         </div>
     </div>
 
-    <!-- Mensajes -->
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
@@ -46,7 +43,6 @@
         </div>
     @endif
 
-    <!-- Formulario Masivo -->
     <div class="card">
         <div class="card-header" style="background-color: #A31800; color: white; border-radius: 12px 12px 0 0;">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -70,8 +66,8 @@
                             <tr>
                                 <th width="50" data-sort="numeric">#</th>
                                 <th data-sort="string">Parámetro</th>
-                                <th data-sort="string">Tipo</th>
                                 <th data-sort="string">Categoría</th>
+                                <th data-sort="string">Tipo de Análisis</th>
                                 <th width="200" class="text-end" data-sort="numeric">Precio Actual (Bs.)</th>
                                 <th width="200" class="text-end">Nuevo Precio (Bs.)</th>
                             </tr>
@@ -92,12 +88,24 @@
                                     <span class="badge 
                                         @if($parametro->tipo == 'AMBIENTAL') bg-warning text-dark
                                         @elseif($parametro->tipo == 'AGUA') bg-info
+                                        @elseif($parametro->tipo == 'INVESTIGACION') bg-secondary
                                         @else bg-secondary
                                         @endif">
-                                        {{ $parametro->tipo }}
+                                        {{ $parametro->tipo ?? 'N/A' }}
                                     </span>
                                 </td>
-                                <td>{{ $parametro->categoria ?? 'N/A' }}</td>
+                                <td>
+                                    <span class="badge 
+                                        @if($parametro->categoria == 'AIRE') bg-warning text-dark
+                                        @elseif($parametro->categoria == 'RUIDO') bg-info
+                                        @elseif($parametro->categoria == 'GASES') bg-danger
+                                        @elseif($parametro->categoria == 'AGUA') bg-primary
+                                        @elseif($parametro->categoria == 'SUELO') bg-success
+                                        @else bg-secondary
+                                        @endif">
+                                        {{ $parametro->categoria ?? 'N/A' }}
+                                    </span>
+                                </td>
                                 <td class="text-end fw-bold text-success">
                                     {{ number_format($parametro->precio_unitario, 2) }}
                                 </td>
@@ -151,11 +159,9 @@
 </div>
 
 @push('scripts')
-<!-- Cargamos la librería sorttable desde CDN -->
 <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 
 <script>
-    // Función para restaurar los precios originales
     function resetPrecios() {
         if (confirm('¿Está seguro de que desea restaurar todos los precios a sus valores originales?')) {
             document.querySelectorAll('.precio-input').forEach(input => {
@@ -166,7 +172,6 @@
         }
     }
 
-    // Búsqueda en la tabla
     document.getElementById('buscarParametro').addEventListener('click', function() {
         const searchTerm = prompt('Ingrese el nombre del parámetro a buscar:');
         if (searchTerm) {
@@ -190,7 +195,6 @@
         }
     });
 
-    // Marcado visual cuando se cambia un precio
     document.querySelectorAll('.precio-input').forEach(input => {
         input.addEventListener('input', function() {
             const original = parseFloat(this.dataset.original);
@@ -212,12 +216,9 @@
     border-color: #A31800 !important;
     box-shadow: 0 0 0 3px rgba(163, 24, 0, 0.15) !important;
 }
-/* Animación global para los botones */
 .btn {
     transition: all 0.3s ease !important;
 }
-
-/* Estilos para el encabezado de la tabla ordenable (solo cursor, sin flechas) */
 .sortable th {
     cursor: pointer;
 }

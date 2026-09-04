@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Nueva Proforma'); ?>
 
-@section('title', 'Nueva Proforma')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
@@ -274,9 +272,9 @@
     }
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-main">
     <!-- Encabezado de página -->
     <div class="page-header">
@@ -290,25 +288,25 @@
                     Complete el formulario para crear una nueva proforma
                 </p>
             </div>
-            <a href="{{ route('proformas.index') }}" class="btn btn-outline-secondary btn-volver" style="border-radius: 30px; padding: 8px 20px;">
+            <a href="<?php echo e(route('proformas.index')); ?>" class="btn btn-outline-secondary btn-volver" style="border-radius: 30px; padding: 8px 20px;">
                 <i class="fas fa-arrow-left me-2"></i>
                 Volver al listado
             </a>
         </div>
     </div>
 
-    @if($errors->any())
+    <?php if($errors->any()): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-triangle me-2"></i>
             <strong>Por favor corrija los siguientes errores:</strong>
             <ul class="mb-0 mt-2">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ul>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
     <div class="card">
         <div class="card-header" style="background-color: #ffc107; border-bottom: none;">
@@ -318,8 +316,8 @@
             </h5>
         </div>
         <div class="card-body">
-            <form action="{{ route('proformas.store') }}" method="POST" id="proformaForm">
-                @csrf
+            <form action="<?php echo e(route('proformas.store')); ?>" method="POST" id="proformaForm">
+                <?php echo csrf_field(); ?>
                 
                 <!-- SECCIÓN 1: DATOS CLIENTE -->
                 <div class="mb-4">
@@ -331,27 +329,42 @@
                     <div class="mb-3">
                         <label for="cliente_id" class="form-label">Cliente *</label>
                         <div class="input-group">
-                            <select class="form-select @error('cliente_id') is-invalid @enderror" 
+                            <select class="form-select <?php $__errorArgs = ['cliente_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="cliente_id" name="cliente_id" required style="width: 100%;">
                                 <option value="">Buscar cliente...</option>
-                                @if(old('cliente_id'))
-                                    @php
+                                <?php if(old('cliente_id')): ?>
+                                    <?php
                                         $clienteSeleccionado = \App\Models\Cliente::find(old('cliente_id'));
-                                    @endphp
-                                    @if($clienteSeleccionado)
-                                        <option value="{{ $clienteSeleccionado->id }}" selected>
-                                            {{ $clienteSeleccionado->razon_social }} - {{ $clienteSeleccionado->persona_contacto }}
+                                    ?>
+                                    <?php if($clienteSeleccionado): ?>
+                                        <option value="<?php echo e($clienteSeleccionado->id); ?>" selected>
+                                            <?php echo e($clienteSeleccionado->razon_social); ?> - <?php echo e($clienteSeleccionado->persona_contacto); ?>
+
                                         </option>
-                                    @endif
-                                @endif
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             </select>
                             <button type="button" class="btn btn-nuevo-cliente" onclick="abrirModalCliente()">
                                 <i class="fas fa-user-plus"></i> Nuevo
                             </button>
                         </div>
-                        @error('cliente_id')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['cliente_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
 
@@ -365,59 +378,115 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="tipo" class="form-label">Tipo de Proforma *</label>
-                            <select class="form-select @error('tipo') is-invalid @enderror" 
+                            <select class="form-select <?php $__errorArgs = ['tipo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="tipo" name="tipo" required onchange="calcularTotalesEstimados()">
                                 <option value="">Seleccionar tipo...</option>
-                                <option value="AMBIENTAL" {{ old('tipo') == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
-                                <option value="ANALISIS_QUIMICO" {{ old('tipo') == 'ANALISIS_QUIMICO' ? 'selected' : '' }}>ANÁLISIS QUÍMICO</option>
-                                <option value="INVESTIGACION" {{ old('tipo') == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN (20% descuento)</option>
+                                <option value="AMBIENTAL" <?php echo e(old('tipo') == 'AMBIENTAL' ? 'selected' : ''); ?>>AMBIENTAL</option>
+                                <option value="ANALISIS_QUIMICO" <?php echo e(old('tipo') == 'ANALISIS_QUIMICO' ? 'selected' : ''); ?>>ANÁLISIS QUÍMICO</option>
+                                <option value="INVESTIGACION" <?php echo e(old('tipo') == 'INVESTIGACION' ? 'selected' : ''); ?>>INVESTIGACIÓN (20% descuento)</option>
                             </select>
-                            @error('tipo')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['tipo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
                             <label for="tipo_muestra" class="form-label">Tipo de Muestra *</label>
                             <input type="text" 
-                                   class="form-control @error('tipo_muestra') is-invalid @enderror" 
+                                   class="form-control <?php $__errorArgs = ['tipo_muestra'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                    id="tipo_muestra" 
                                    name="tipo_muestra" 
-                                   value="{{ old('tipo_muestra') }}"
+                                   value="<?php echo e(old('tipo_muestra')); ?>"
                                    placeholder="Ej: AGUA RESIDUAL, SUELO, SEDIMENTO"
                                    required>
                             <small class="text-muted">Ingrese el tipo de muestra libremente</small>
-                            @error('tipo_muestra')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['tipo_muestra'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="unidad" class="form-label">Unidad (Opcional)</label>
-                            <select class="form-select @error('unidad') is-invalid @enderror" 
+                            <select class="form-select <?php $__errorArgs = ['unidad'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="unidad" name="unidad">
                                 <option value="">Seleccionar unidad...</option>
-                                <option value="UIA" {{ old('unidad') == 'UIA' ? 'selected' : '' }}>UIA - Unidad de Investigación Ambiental</option>
-                                <option value="UAQ" {{ old('unidad') == 'UAQ' ? 'selected' : '' }}>UAQ - Unidad de Análisis Químico</option>
+                                <option value="UIA" <?php echo e(old('unidad') == 'UIA' ? 'selected' : ''); ?>>UIA - Unidad de Investigación Ambiental</option>
+                                <option value="UAQ" <?php echo e(old('unidad') == 'UAQ' ? 'selected' : ''); ?>>UAQ - Unidad de Análisis Químico</option>
                             </select>
                             <small class="text-muted">Seleccione la unidad responsable de la proforma</small>
-                            @error('unidad')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['unidad'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
                             <label for="fecha_recepcion" class="form-label">Fecha de Recepción *</label>
                             <div class="input-fecha">
-                                <input type="text" class="form-control @error('fecha_recepcion') is-invalid @enderror" 
+                                <input type="text" class="form-control <?php $__errorArgs = ['fecha_recepcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                        id="fecha_recepcion" name="fecha_recepcion" 
-                                       value="{{ old('fecha_recepcion', date('Y-m-d')) }}" autocomplete="off" required>
+                                       value="<?php echo e(old('fecha_recepcion', date('Y-m-d'))); ?>" autocomplete="off" required>
                             </div>
-                            @error('fecha_recepcion')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['fecha_recepcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     
@@ -425,13 +494,27 @@
                         <div class="col-md-4 mb-3">
                             <label for="fecha_muestreo" class="form-label">Fecha de Muestreo *</label>
                             <div class="input-fecha">
-                                <input type="text" class="form-control @error('fecha_muestreo') is-invalid @enderror" 
+                                <input type="text" class="form-control <?php $__errorArgs = ['fecha_muestreo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                        id="fecha_muestreo" name="fecha_muestreo" 
-                                       value="{{ old('fecha_muestreo', date('Y-m-d')) }}" autocomplete="off" required>
+                                       value="<?php echo e(old('fecha_muestreo', date('Y-m-d'))); ?>" autocomplete="off" required>
                             </div>
-                            @error('fecha_muestreo')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['fecha_muestreo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     
@@ -439,50 +522,71 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Códigos de Cliente</label>
                             <div id="codigos-cliente-container">
-                                @php $oldCodigos = old('codigo_cliente', ['']); @endphp
-                                @foreach ($oldCodigos as $i => $codigo)
+                                <?php $oldCodigos = old('codigo_cliente', ['']); ?>
+                                <?php $__currentLoopData = $oldCodigos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $codigo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="codigo-cliente-row d-flex gap-2 mb-2">
-                                        <input type="text" class="form-control @error('codigo_cliente.'.$i) is-invalid @enderror" 
-                                               name="codigo_cliente[]" value="{{ $codigo }}" placeholder="Ej: CL-001">
+                                        <input type="text" class="form-control <?php $__errorArgs = ['codigo_cliente.'.$i];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                               name="codigo_cliente[]" value="<?php echo e($codigo); ?>" placeholder="Ej: CL-001">
                                         <button type="button" class="btn btn-outline-danger btn-sm eliminar-codigo" 
-                                                style="{{ $loop->first ? 'display:none;' : '' }}">&times;</button>
+                                                style="<?php echo e($loop->first ? 'display:none;' : ''); ?>">&times;</button>
                                     </div>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                             <button type="button" class="btn btn-outline-primary btn-sm mt-1" id="agregar-codigo-cliente">
                                 <i class="fas fa-plus"></i> Agregar código
                             </button>
-                            @error('codigo_cliente')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['codigo_cliente'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tipo de Documento</label>
                             <div class="border rounded p-3" style="background: #f8f9fa;">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" name="tipo_documento[]" value="PROFORMA" 
-                                           id="td-proforma" {{ in_array('PROFORMA', old('tipo_documento', [])) ? 'checked' : '' }}>
+                                           id="td-proforma" <?php echo e(in_array('PROFORMA', old('tipo_documento', [])) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="td-proforma">PROFORMA</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" name="tipo_documento[]" value="COTIZACION" 
-                                           id="td-cotizacion" {{ in_array('COTIZACION', old('tipo_documento', [])) ? 'checked' : '' }}>
+                                           id="td-cotizacion" <?php echo e(in_array('COTIZACION', old('tipo_documento', [])) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="td-cotizacion">COTIZACIÓN</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" name="tipo_documento[]" value="CONTRATO" 
-                                           id="td-contrato" {{ in_array('CONTRATO', old('tipo_documento', [])) ? 'checked' : '' }}>
+                                           id="td-contrato" <?php echo e(in_array('CONTRATO', old('tipo_documento', [])) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="td-contrato">CONTRATO</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" name="tipo_documento[]" value="CONTRATO MODIFICADO" 
-                                           id="td-contrato-mod" {{ in_array('CONTRATO MODIFICADO', old('tipo_documento', [])) ? 'checked' : '' }}>
+                                           id="td-contrato-mod" <?php echo e(in_array('CONTRATO MODIFICADO', old('tipo_documento', [])) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="td-contrato-mod">CONTRATO MODIFICADO</label>
                                 </div>
                             </div>
-                            @error('tipo_documento')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['tipo_documento'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -497,24 +601,52 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="persona_contacto" class="form-label">Persona de Contacto</label>
-                            <input type="text" class="form-control @error('persona_contacto') is-invalid @enderror" 
+                            <input type="text" class="form-control <?php $__errorArgs = ['persona_contacto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                    id="persona_contacto" name="persona_contacto" 
                                    placeholder="Ej: ING. JORGE LUIS MAMANI"
-                                   value="{{ old('persona_contacto') }}">
-                            @error('persona_contacto')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                                   value="<?php echo e(old('persona_contacto')); ?>">
+                            <?php $__errorArgs = ['persona_contacto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
                             <label for="telefono_contacto" class="form-label">Teléfono de Contacto</label>
-                            <input type="text" class="form-control @error('telefono_contacto') is-invalid @enderror" 
+                            <input type="text" class="form-control <?php $__errorArgs = ['telefono_contacto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                    id="telefono_contacto" name="telefono_contacto" 
                                    placeholder="Ej: 72377218"
-                                   value="{{ old('telefono_contacto') }}">
-                            @error('telefono_contacto')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                                   value="<?php echo e(old('telefono_contacto')); ?>">
+                            <?php $__errorArgs = ['telefono_contacto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -529,13 +661,27 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="procedencia" class="form-label">Procedencia</label>
-                            <input type="text" class="form-control @error('procedencia') is-invalid @enderror" 
+                            <input type="text" class="form-control <?php $__errorArgs = ['procedencia'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                    id="procedencia" name="procedencia" 
                                    placeholder="Ej: TUPIZA - TOROPALCA"
-                                   value="{{ old('procedencia') }}">
-                            @error('procedencia')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                                   value="<?php echo e(old('procedencia')); ?>">
+                            <?php $__errorArgs = ['procedencia'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
@@ -546,14 +692,14 @@
                                     <div style="display: flex; gap: 8px;">
                                         <select id="puntoCardinal1" name="punto_cardinal_1" class="modern-input" style="width: auto; min-width: 80px;">
                                             <option value="">---</option>
-                                            <option value="E" {{ old('punto_cardinal_1') == 'E' ? 'selected' : '' }}>Este (E)</option>
-                                            <option value="N" {{ old('punto_cardinal_1') == 'N' ? 'selected' : '' }}>Norte (N)</option>
-                                            <option value="O" {{ old('punto_cardinal_1') == 'O' ? 'selected' : '' }}>Oeste (O)</option>
-                                            <option value="S" {{ old('punto_cardinal_1') == 'S' ? 'selected' : '' }}>Sur (S)</option>
+                                            <option value="E" <?php echo e(old('punto_cardinal_1') == 'E' ? 'selected' : ''); ?>>Este (E)</option>
+                                            <option value="N" <?php echo e(old('punto_cardinal_1') == 'N' ? 'selected' : ''); ?>>Norte (N)</option>
+                                            <option value="O" <?php echo e(old('punto_cardinal_1') == 'O' ? 'selected' : ''); ?>>Oeste (O)</option>
+                                            <option value="S" <?php echo e(old('punto_cardinal_1') == 'S' ? 'selected' : ''); ?>>Sur (S)</option>
                                         </select>
                                         <input type="text" id="valorCardinal1" name="valor_cardinal_1"
                                             class="modern-input" placeholder="Coord. 1" style="width: 100px;"
-                                            value="{{ old('valor_cardinal_1') }}">
+                                            value="<?php echo e(old('valor_cardinal_1')); ?>">
                                     </div>
                                 </div>
 
@@ -562,61 +708,118 @@
                                     <div style="display: flex; gap: 8px;">
                                         <select id="puntoCardinal2" name="punto_cardinal_2" class="modern-input" style="width: auto; min-width: 80px;">
                                             <option value="">---</option>
-                                            <option value="E" {{ old('punto_cardinal_2') == 'E' ? 'selected' : '' }}>Este (E)</option>
-                                            <option value="N" {{ old('punto_cardinal_2') == 'N' ? 'selected' : '' }}>Norte (N)</option>
-                                            <option value="O" {{ old('punto_cardinal_2') == 'O' ? 'selected' : '' }}>Oeste (O)</option>
-                                            <option value="S" {{ old('punto_cardinal_2') == 'S' ? 'selected' : '' }}>Sur (S)</option>
+                                            <option value="E" <?php echo e(old('punto_cardinal_2') == 'E' ? 'selected' : ''); ?>>Este (E)</option>
+                                            <option value="N" <?php echo e(old('punto_cardinal_2') == 'N' ? 'selected' : ''); ?>>Norte (N)</option>
+                                            <option value="O" <?php echo e(old('punto_cardinal_2') == 'O' ? 'selected' : ''); ?>>Oeste (O)</option>
+                                            <option value="S" <?php echo e(old('punto_cardinal_2') == 'S' ? 'selected' : ''); ?>>Sur (S)</option>
                                         </select>
                                         <input type="text" id="valorCardinal2" name="valor_cardinal_2"
                                             class="modern-input" placeholder="Coord. 2" style="width: 100px;"
-                                            value="{{ old('valor_cardinal_2') }}">
+                                            value="<?php echo e(old('valor_cardinal_2')); ?>">
                                     </div>
                                 </div>
                             </div>
-                            @error('punto_cardinal_1')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                            @error('valor_cardinal_1')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                            @error('punto_cardinal_2')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                            @error('valor_cardinal_2')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['punto_cardinal_1'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            <?php $__errorArgs = ['valor_cardinal_1'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            <?php $__errorArgs = ['punto_cardinal_2'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            <?php $__errorArgs = ['valor_cardinal_2'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="muestreado_por" class="form-label">Muestreado por</label>
-                            <select class="form-select @error('muestreado_por') is-invalid @enderror" 
+                            <select class="form-select <?php $__errorArgs = ['muestreado_por'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     id="muestreado_por" name="muestreado_por">
                                 <option value="">Seleccionar...</option>
-                                @foreach($muestreadoPorOpciones as $opcion)
-                                    <option value="{{ $opcion }}" {{ old('muestreado_por') == $opcion ? 'selected' : '' }}>
-                                        {{ $opcion }}
+                                <?php $__currentLoopData = $muestreadoPorOpciones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opcion): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($opcion); ?>" <?php echo e(old('muestreado_por') == $opcion ? 'selected' : ''); ?>>
+                                        <?php echo e($opcion); ?>
+
                                     </option>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
-                            @error('muestreado_por')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['muestreado_por'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                         
                         <div class="col-md-6 mb-3">
                             <label for="adelanto" class="form-label">Adelanto (Bs.)</label>
                             <div class="input-group">
                                 <span class="input-group-text">Bs.</span>
-                                <input type="number" class="form-control @error('adelanto') is-invalid @enderror" 
+                                <input type="number" class="form-control <?php $__errorArgs = ['adelanto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                        id="adelanto" name="adelanto" 
-                                       value="{{ old('adelanto', 0) }}" min="0" step="0.01"
+                                       value="<?php echo e(old('adelanto', 0)); ?>" min="0" step="0.01"
                                        oninput="calcularTotalesEstimados()">
                             </div>
-                            @error('adelanto')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['adelanto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -737,11 +940,12 @@
                                     <label class="form-label small">Concepto Logístico *</label>
                                     <select name="logisticas[0][id]" class="form-select logistica-select" required>
                                         <option value="">Seleccionar concepto...</option>
-                                        @foreach($logisticasMuestreo as $log)
-                                            <option value="{{ $log->id }}" data-costo="{{ $log->costo }}" data-categoria="{{ $log->categoria }}">
-                                                {{ $log->categoria }} - {{ $log->descripcion }}
+                                        <?php $__currentLoopData = $logisticasMuestreo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($log->id); ?>" data-costo="<?php echo e($log->costo); ?>" data-categoria="<?php echo e($log->categoria); ?>">
+                                                <?php echo e($log->categoria); ?> - <?php echo e($log->descripcion); ?>
+
                                             </option>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                                 <div class="col-md-3 mb-2 mb-md-0">
@@ -793,12 +997,26 @@
                     
                     <div class="mb-3">
                         <label for="observaciones" class="form-label">Observaciones</label>
-                        <textarea class="form-control @error('observaciones') is-invalid @enderror" 
+                        <textarea class="form-control <?php $__errorArgs = ['observaciones'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                   id="observaciones" name="observaciones" rows="3"
-                                  placeholder="Observaciones importantes...">{{ old('observaciones') }}</textarea>
-                        @error('observaciones')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
+                                  placeholder="Observaciones importantes..."><?php echo e(old('observaciones')); ?></textarea>
+                        <?php $__errorArgs = ['observaciones'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
 
@@ -834,7 +1052,7 @@
 
                 <!-- SECCIÓN 9: BOTONES -->
                 <div class="d-flex justify-content-between mt-4 pt-3 border-top">
-                    <a href="{{ route('proformas.index') }}" class="btn btn-secondary" style="border-radius: 30px; padding: 10px 25px;">
+                    <a href="<?php echo e(route('proformas.index')); ?>" class="btn btn-secondary" style="border-radius: 30px; padding: 10px 25px;">
                         <i class="fas fa-times me-2"></i> Cancelar
                     </a>
                     <button type="submit" class="btn" 
@@ -892,9 +1110,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <!-- jQuery y Select2 desde CDN -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -1148,7 +1366,7 @@ $(document).ready(function() {
             }
         },
         ajax: {
-            url: '{{ route("clientes.buscar") }}',
+            url: '<?php echo e(route("clientes.buscar")); ?>',
             dataType: 'json',
             delay: 300,
             data: function(params) {
@@ -1182,7 +1400,7 @@ $(document).ready(function() {
                 }
             },
             ajax: {
-                url: '{{ route("parametros.buscar") }}',
+                url: '<?php echo e(route("parametros.buscar")); ?>',
                 dataType: 'json',
                 delay: 300,
                 data: function(params) {
@@ -1487,7 +1705,7 @@ $(document).ready(function() {
             telefono: $('#nueva_telefono').val(),
             nit: $('#nueva_nit').val(),
             direccion: $('#nueva_direccion').val(),
-            _token: '{{ csrf_token() }}'
+            _token: '<?php echo e(csrf_token()); ?>'
         }, function(data) {
             if (data.success) {
                 const newOption = new Option(
@@ -1509,8 +1727,8 @@ $(document).ready(function() {
     };
 
     // ===== AMBIENTAL: DATOS DE PARÁMETROS POR CATEGORÍA =====
-    const parametrosAmbientales = @json($parametrosAmbientales);
-    const oldParametros = (@json(old('parametros'))) || [];
+    const parametrosAmbientales = <?php echo json_encode($parametrosAmbientales, 15, 512) ?>;
+    const oldParametros = (<?php echo json_encode(old('parametros'), 15, 512) ?>) || [];
 
     let ambientCategoria = '';
 
@@ -1743,4 +1961,5 @@ $(document).ready(function() {
     }
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\CORE I7\OneDrive\Escritorio\CIMA_v3_Local\resources\views/proformas/create.blade.php ENDPATH**/ ?>

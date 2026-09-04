@@ -52,15 +52,15 @@ class ProformaController extends Controller
             });
         }
 
-        // Filtros por mes y año
+        // Filtros por mes y año (basado en fecha_recepcion)
         if ($request->filled('mes') && $request->filled('anio')) {
-            $query->whereMonth('fecha_emision', $request->mes)
-                ->whereYear('fecha_emision', $request->anio);
+            $query->whereMonth('fecha_recepcion', $request->mes)
+                ->whereYear('fecha_recepcion', $request->anio);
         } elseif ($request->filled('mes')) {
-            $query->whereMonth('fecha_emision', $request->mes)
-                ->whereYear('fecha_emision', date('Y'));
+            $query->whereMonth('fecha_recepcion', $request->mes)
+                ->whereYear('fecha_recepcion', date('Y'));
         } elseif ($request->filled('anio')) {
-            $query->whereYear('fecha_emision', $request->anio);
+            $query->whereYear('fecha_recepcion', $request->anio);
         }
 
         // Filtro por estado
@@ -69,7 +69,7 @@ class ProformaController extends Controller
         }
 
         // Obtener años disponibles para el filtro
-        $añosDisponibles = Proforma::selectRaw('DISTINCT EXTRACT(YEAR FROM fecha_emision) as año')
+        $añosDisponibles = Proforma::selectRaw('DISTINCT EXTRACT(YEAR FROM fecha_recepcion) as año')
             ->orderBy('año', 'desc')
             ->pluck('año')
             ->toArray();
@@ -197,8 +197,8 @@ class ProformaController extends Controller
             'tipo' => 'required|in:AMBIENTAL,ANALISIS_QUIMICO,INVESTIGACION',
             'tipo_muestra' => 'required|string|max:255',
             'unidad' => 'nullable|string|in:UIA,UAQ',
-            'fecha_emision' => 'required|date',
             'fecha_recepcion' => 'required|date',
+            'fecha_muestreo' => 'required|date',
             'codigo_cliente' => 'nullable|array',
             'codigo_cliente.*' => 'nullable|string|max:100',
             'numero_recepcion' => 'nullable|string|max:50',
@@ -266,8 +266,8 @@ class ProformaController extends Controller
                 'tipo_muestra' => $request->tipo_muestra,
                 'numero_recepcion' => $request->numero_recepcion,
                 'unidad' => $request->unidad,
-                'fecha_emision' => $request->fecha_emision,
                 'fecha_recepcion' => $request->fecha_recepcion,
+                'fecha_muestreo' => $request->fecha_muestreo,
                 'hora_recepcion' => now()->format('H:i'),
                 'persona_contacto' => $request->persona_contacto,
                 'telefono_contacto' => $request->telefono_contacto,
@@ -428,8 +428,8 @@ class ProformaController extends Controller
             'tipo' => 'required|in:AMBIENTAL,ANALISIS_QUIMICO,INVESTIGACION',
             'tipo_muestra' => 'required|string|max:255',
             'unidad' => 'nullable|string|in:UIA,UAQ',
-            'fecha_emision' => 'required|date',
             'fecha_recepcion' => 'required|date',
+            'fecha_muestreo' => 'required|date',
             'codigo_cliente' => 'nullable|array',
             'codigo_cliente.*' => 'nullable|string|max:100',
             'numero_recepcion' => 'nullable|string|max:50',
@@ -500,8 +500,8 @@ class ProformaController extends Controller
                 'tipo' => $request->tipo,
                 'tipo_muestra' => $request->tipo_muestra,
                 'unidad' => $request->unidad,
-                'fecha_emision' => $request->fecha_emision,
                 'fecha_recepcion' => $request->fecha_recepcion,
+                'fecha_muestreo' => $request->fecha_muestreo,
                 'codigo_cliente' => $request->codigo_cliente,
                 'numero_recepcion' => $request->numero_recepcion,
                 'hora_recepcion' => now()->format('H:i'),
@@ -632,7 +632,7 @@ class ProformaController extends Controller
         try {
             DB::beginTransaction();
 
-            $proforma->delete(); // Soft delete (conserva la relación con parámetros)
+            $proforma->delete();
 
             DB::commit();
 
@@ -692,16 +692,6 @@ class ProformaController extends Controller
     /**
      * Convierte un número entero (0 a 999,999,999) a su representación
      * en letras, en español, en mayúsculas.
-     *
-     * Reemplaza la antigua tabla $mapaNumeros que solo cubría valores
-     * sueltos (0-9, decenas y centenas exactas) y no sabía combinar
-     * miles ni unidades intermedias — por eso números como 2107
-     * terminaban mostrándose tal cual en number_format() en vez de en
-     * letras.
-     *
-     * Usa "UN" (no "UNO") de forma consistente, ya que el resultado
-     * siempre antecede a "BOLIVIANOS" (apócope estándar en documentos
-     * legales/financieros: "VEINTIUN BOLIVIANOS", no "VEINTIUNO").
      */
     private function numeroALetras(int $numero): string
     {
@@ -740,7 +730,6 @@ class ProformaController extends Controller
             800 => 'OCHOCIENTOS', 900 => 'NOVECIENTOS',
         ];
 
-        // Convierte un número de 0 a 999
         $convertirGrupo = function (int $n) use ($unidades, $especiales10a19, $especiales20a29, $decenas, $centenas) {
             if ($n === 0) {
                 return '';
@@ -752,7 +741,6 @@ class ProformaController extends Controller
 
             if ($c > 0) {
                 if ($c === 100) {
-                    // CIEN exacto, pero CIENTO cuando le sigue algo (CIENTO SIETE, CIENTO UNO...)
                     $texto .= ($resto === 0) ? 'CIEN' : 'CIENTO';
                 } else {
                     $texto .= $centenas[$c];
@@ -811,14 +799,6 @@ class ProformaController extends Controller
 
     /**
      * Genera PDF de la proforma - DESCARGA DIRECTA
-     *
-     * NOTA SOBRE EL NÚMERO TOTAL DE PÁGINAS:
-     * dompdf soporta counter(page) de forma nativa (número de página actual),
-     * pero counter(pages) (total de páginas) tiene un bug conocido y devuelve
-     * siempre 0. Por eso aquí se renderiza el PDF dos veces:
-     *   1) Un render "silencioso" solo para obtener el total real de páginas.
-     *   2) El render final, pasando ese total ya calculado a la vista como
-     *      la variable $totalPaginas, que el Blade usa en el footer.
      */
     public function pdf(Proforma $proforma)
     {
@@ -835,13 +815,11 @@ class ProformaController extends Controller
                 'totalEnLetras' => $totalEnLetras,
             ];
 
-            // 1) Render "silencioso" solo para calcular el total real de páginas
             $pdfConteo = Pdf::loadView('proformas.pdf', $data);
             $pdfConteo->setPaper('a4', 'portrait');
             $pdfConteo->render();
             $totalPaginas = $pdfConteo->getDomPDF()->getCanvas()->get_page_count();
 
-            // 2) Render final, ahora con el total de páginas ya incluido
             $pdf = Pdf::loadView('proformas.pdf', array_merge($data, [
                 'totalPaginas' => $totalPaginas,
             ]));
@@ -889,7 +867,6 @@ class ProformaController extends Controller
                 ->with('error', '⛔ Acceso denegado. Solo el administrador puede actualizar proformas.');
         }
 
-        // Permitir solo en estados ENVIADA y APROBADA
         if (! in_array($proforma->estado, ['ENVIADA', 'APROBADA'])) {
             return redirect()->route('proformas.show', $proforma)
                 ->with('error', "❌ Solo se puede actualizar el adelanto en proformas ENVIADA o APROBADA. Estado actual: {$proforma->estado}");
@@ -905,18 +882,12 @@ class ProformaController extends Controller
             $adelantoAnterior = $proforma->adelanto;
             $nuevoAdelanto = $request->adelanto;
 
-            // Calcular el monto pagado (si aumentó el adelanto)
             $montoPagado = $nuevoAdelanto - $adelantoAnterior;
 
-            // Actualizar adelanto
             $proforma->adelanto = $nuevoAdelanto;
-
-            // Recalcular saldo
             $proforma->saldo = $proforma->total - $proforma->adelanto;
-
             $proforma->save();
 
-            // ===== REGISTRAR MOVIMIENTO FINANCIERO SI HUBO PAGO =====
             if ($montoPagado > 0) {
                 $this->registrarMovimiento(
                     $proforma,
@@ -928,12 +899,11 @@ class ProformaController extends Controller
                     "Nuevo adelanto: Bs. {$nuevoAdelanto} (anterior: Bs. {$adelantoAnterior})"
                 );
             } elseif ($montoPagado < 0) {
-                // Si se redujo el adelanto (reembolso), registrar como ajuste
                 $this->registrarMovimiento(
                     $proforma,
                     $proforma->cliente_id,
                     'AJUSTE',
-                    $montoPagado, // Valor negativo
+                    $montoPagado,
                     "Reducción de adelanto para proforma {$proforma->codigo}",
                     $proforma->codigo,
                     "Nuevo adelanto: Bs. {$nuevoAdelanto} (anterior: Bs. {$adelantoAnterior})"

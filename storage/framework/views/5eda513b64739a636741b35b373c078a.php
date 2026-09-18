@@ -374,13 +374,13 @@
                                                 </li>
 
                                                 <?php if($proforma->tipo === 'AMBIENTAL'): ?>
-                                                <?php if (\Illuminate\Support\Facades\Blade::check('hasanyrole', 'admin|tecnico')): ?>
-                                                <li>
-                                                    <a class="dropdown-item" href="<?php echo e(route('reportes.ambiental.index', $proforma)); ?>" title="Reporte Ambiental">
-                                                        <i class="fas fa-file-signature me-2" style="color: #6f42c1;"></i>Reporte Ambiental
-                                                    </a>
-                                                </li>
-                                                <?php endif; ?>
+                                                    <?php if (\Illuminate\Support\Facades\Blade::check('hasanyrole', 'admin|tecnico')): ?>
+                                                    <li>
+                                                        <a class="dropdown-item" href="<?php echo e(route('reportes.ambiental.index', $proforma)); ?>" title="Reporte Ambiental">
+                                                            <i class="fas fa-file-signature me-2" style="color: #6f42c1;"></i>Reporte Ambiental
+                                                        </a>
+                                                    </li>
+                                                    <?php endif; ?>
                                                 <?php else: ?>
                                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('generar cadena custodia')): ?>
                                                 <li>
@@ -628,6 +628,13 @@ button[type="submit"]:focus {
         position: relative !important;
         left: auto !important;
         margin-bottom: 10px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .col-md-4.d-flex.align-items-end {
+        margin-top: 20px !important;
+        gap: 12px !important;
     }
 }
 </style>

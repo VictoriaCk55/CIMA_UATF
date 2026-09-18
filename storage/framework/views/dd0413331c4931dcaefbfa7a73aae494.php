@@ -1,21 +1,25 @@
+<?php $__env->startSection('title', 'Gestión de Parámetros'); ?>
+
 <?php $__env->startSection('content'); ?>
 <div class="container-main">
-    <!-- Encabezado de página -->
+    <!-- ============================================ -->
+    <!-- ENCABEZADO DE PÁGINA                         -->
+    <!-- ============================================ -->
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <h1>
-                    <i class="fas fa-microscope me-2" style="color: #A31800;"></i>
+                    <i class="fas fa-microscope" style="color: #A31800;"></i>
                     Gestión de Parámetros
                 </h1>
                 <p class="page-subtitle">
-                    Catálogo de parámetros de análisis para proformas CIMA
+                    Listado de parámetros de análisis registrados en el sistema CIMA
                 </p>
             </div>
             
             <div class="d-flex gap-2 flex-wrap">
                 <?php if(auth()->guard()->check()): ?>
-                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear parametros')): ?>
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('crear parametros')): ?>
                         <a href="<?php echo e(route('parametros.create')); ?>" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
                            onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
                            onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
@@ -44,7 +48,9 @@
         </div>
     </div>
 
-    <!-- BUSCADOR -->
+    <!-- ============================================ -->
+    <!-- BUSCADOR Y FILTROS                           -->
+    <!-- ============================================ -->
     <div class="card mb-4">
         <div class="card-body">
             <form action="<?php echo e(route('parametros.index')); ?>" method="GET" id="searchForm">
@@ -90,20 +96,50 @@
                 </div>
             </form>
         </div>
+        
+        <!-- Footer informativo -->
+        <?php if(request()->has('search')): ?>
+            <div class="card-footer bg-light py-2">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1" style="color: #A31800;"></i>
+                    Mostrando resultados para búsqueda "<strong><?php echo e(request('search')); ?></strong>"
+                </small>
+            </div>
+        <?php endif; ?>
     </div>
 
-    <!-- Tabla de parámetros -->
+    <!-- ============================================ -->
+    <!-- TABLA DE PARÁMETROS                          -->
+    <!-- ============================================ -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
                 <i class="fas fa-list me-2" style="color: #A31800;"></i>
                 Listado de Parámetros
             </h5>
-            <span class="badge" style="background-color: #A31800; color: white; padding: 8px 15px; border-radius: 20px; font-weight: 500;">
-                <?php echo e($parametros->count()); ?> registros mostrados
+            <span class="badge" 
+                  style="background-color: #A31800; color: white; padding: 8px 15px; border-radius: 20px; font-weight: 500;">
+                <?php echo e($parametros->total()); ?> registros
             </span>
         </div>
+        
         <div class="card-body">
+            <?php if(session('success')): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> <?php echo e(session('success')); ?>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+
+            <?php if(session('error')): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e(session('error')); ?>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+
             <?php if($parametros->count() > 0): ?>
                 <div class="table-responsive">
                     <table class="table table-hover">
@@ -115,15 +151,11 @@
                                 <th width="140" class="text-end" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Precio Unitario</th>
                                 <th width="120" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Categoría</th>
                                 <th width="120" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Tipo de Análisis</th>
-                                <th width="100" class="text-center" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Proformas</th>
                                 <th width="140" class="text-center" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php $__currentLoopData = $parametros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $parametro): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <?php
-                                    $totalProformas = $parametro->proformas->count();
-                                ?>
                                 <tr>
                                     <td>
                                         <span class="badge bg-secondary">#<?php echo e($parametro->id); ?></span>
@@ -181,27 +213,13 @@
 
                                         </span>
                                     </td>
-                                    <td class="text-center">
-                                        <?php if($totalProformas > 0): ?>
-                                            <span class="badge" style="background-color: #A31800; color: white; padding: 6px 12px; border-radius: 20px;">
-                                                <i class="fas fa-file-invoice me-1"></i>
-                                                <?php echo e($totalProformas); ?>
-
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="badge bg-secondary" style="padding: 6px 12px; border-radius: 20px;">
-                                                <i class="fas fa-file-invoice me-1"></i>
-                                                0
-                                            </span>
-                                        <?php endif; ?>
-                                    </td>
+                                    
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
                                             <a href="<?php echo e(route('parametros.show', $parametro)); ?>" 
                                                class="btn btn-sm"
                                                style="color: #0dcaf0; border: 1px solid #0dcaf0; background: transparent; border-radius: 6px; padding: 0.5rem; width: 38px; height: 38px; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center;"
-                                               data-bs-toggle="tooltip" 
-                                               data-bs-placement="top"
+                                               data-bs-toggle="tooltip"
                                                title="Ver detalles del parámetro"
                                                onmouseover="this.style.backgroundColor='#0dcaf0'; this.style.color='white';"
                                                onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0dcaf0';">
@@ -217,8 +235,8 @@
                                                            data-bs-placement="top"
                                                            title="Editar parámetro">
                                                             <i class="fas fa-edit"></i>
+                                                        </a>
                                                     <?php endif; ?>
-                                                    </a>
                                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('eliminar parametros')): ?>
                                                     <button type="button" 
                                                             class="btn btn-outline-danger btn-sm"
@@ -259,7 +277,7 @@
                 
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
                     <?php if(auth()->guard()->check()): ?>
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver papelera parametros')): ?>
+                        <?php if(Auth::user()->hasAnyRole(['admin', 'tecnico'])): ?>
                             <a href="<?php echo e(route('parametros.trash')); ?>" 
                                class="btn btn-icon-circle position-absolute start-0"
                                style="width: 35px; height: 35px; border-radius: 50%; background-color: #6c757d; color: white; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;"
@@ -277,15 +295,17 @@
                         Mostrando <?php echo e($parametros->firstItem()); ?> a <?php echo e($parametros->lastItem()); ?> de <?php echo e($parametros->total()); ?> registros
                     </div>
                 </div>
+                
             <?php else: ?>
                 <div class="text-center py-5">
-                    <i class="fas fa-flask fa-4x mb-4" style="color: #A31800;"></i>
+                    <i class="fas fa-microscope fa-4x mb-4" style="color: #A31800;"></i>
                     <h4 class="mb-3" style="color: #334155;">No hay parámetros registrados</h4>
                     <p class="text-muted mb-4">
-                        <?php if(request('search')): ?>
-                            No se encontraron parámetros con "<?php echo e(request('search')); ?>"
+                        <?php if(request()->has('search')): ?>
+                            No hay parámetros para los filtros seleccionados.
+                            <a href="<?php echo e(route('parametros.index')); ?>" style="color: #A31800;">Ver todos</a>
                         <?php else: ?>
-                            Comience agregando parámetros de análisis al sistema.
+                            Comience creando su primer parámetro de análisis.
                         <?php endif; ?>
                     </p>
                     
@@ -315,23 +335,24 @@
             <?php endif; ?>
         </div>
         
+        <?php if($parametros->count() > 0): ?>
         <div class="card-footer bg-light">
             <div class="row">
                 <div class="col-md-6">
                     <small class="text-muted">
-                        <i class="fas fa-info-circle me-1"></i>
+                        <i class="fas fa-info-circle me-1" style="color: #A31800;"></i>
                         Mostrando <?php echo e($parametros->count()); ?> de <?php echo e($parametros->total()); ?> parámetros
                     </small>
                 </div>
                 <div class="col-md-6 text-end">
                     <small class="text-muted">
-                        <i class="fas fa-calculator me-1"></i>
-                        Precio promedio: 
-                        <strong>Bs. <?php echo e(number_format($parametros->avg('precio_unitario'), 2)); ?></strong>
+                        <i class="fas fa-calculator me-1" style="color: #A31800;"></i>
+                        Total: <strong><?php echo e($parametros->total()); ?> registros</strong>
                     </small>
                 </div>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -339,7 +360,7 @@
 .btn[style*="background-color: #A31800"]:hover {
     background-color: #7a1200 !important;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(163, 24, 0, 0.3);
+    box-shadow: 0 5px 15px rgba(194, 245, 39, 0.3);
 }
 
 .btn-icon-circle {
@@ -366,7 +387,7 @@
 .pagination .page-item.active .page-link {
     background-color: #A31800 !important;
     border-color: #A31800 !important;
-    color: white !important;
+    color: #fff !important;
 }
 
 .btn-outline-warning,
@@ -413,6 +434,15 @@
 select.form-select:focus {
     border-color: #A31800 !important;
     box-shadow: 0 0 0 3px rgba(163, 24, 0, 0.25) !important;
+}
+
+button[type="submit"]:focus {
+    border-color: #A31800 !important;
+    box-shadow: 0 0 0 3px rgba(163, 24, 0, 0.25) !important;
+}
+
+.fa-file-alt {
+    color: #A31800 !important;
 }
 
 @media (max-width: 768px) {

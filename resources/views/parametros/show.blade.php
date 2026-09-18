@@ -315,21 +315,6 @@
         margin-top: 10px !important;
     }
     
-    .d-flex.align-items-center.gap-3 {
-        flex-wrap: wrap !important;
-        gap: 10px !important;
-    }
-    
-    .d-flex.align-items-center.gap-3 h1 {
-        font-size: 1.5rem !important;
-        width: 100% !important;
-    }
-    
-    .badge.fs-6 {
-        font-size: 0.85rem !important;
-        padding: 5px 12px !important;
-    }
-    
     .col-md-8, .col-md-4 {
         width: 100% !important;
     }
@@ -337,24 +322,6 @@
     .d-grid.gap-2 .btn {
         width: 100% !important;
         margin-bottom: 5px !important;
-    }
-    
-    .table-responsive {
-        overflow-x: auto !important;
-    }
-    
-    .card-body .row .col-md-6 {
-        width: 100% !important;
-    }
-    
-    .fa-2x {
-        font-size: 1.5rem !important;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 991px) {
-    .col-md-8, .col-md-4 {
-        width: 100% !important;
     }
 }
 </style>

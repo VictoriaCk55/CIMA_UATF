@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Gestión de Informes')
+@section('title', 'Gestión de Parámetros')
 
 @section('content')
 <div class="container-main">
@@ -11,28 +11,28 @@
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <h1>
-                    <i class="fas fa-file-alt" style="color: #C2F527;"></i>
-                    Gestión de Informes Técnicos
+                    <i class="fas fa-microscope" style="color: #A31800;"></i>
+                    Gestión de Parámetros
                 </h1>
                 <p class="page-subtitle">
-                    Listado de informes técnicos generados en el sistema CIMA
+                    Listado de parámetros de análisis registrados en el sistema CIMA
                 </p>
             </div>
             
             <div class="d-flex gap-2 flex-wrap">
                 @auth
-                     @can('crear parametros')
+                    @can('crear parametros')
                         <a href="{{ route('parametros.create') }}" class="btn" style="background-color: #A31800; border-radius: 30px; padding: 10px 25px; color: white; border: none; transition: all 0.3s ease;"
                            onmouseover="this.style.backgroundColor='#7a1200'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(163, 24, 0, 0.3)';"
                            onmouseout="this.style.backgroundColor='#A31800'; this.style.transform='translateY(0px)'; this.style.boxShadow='none';">
                             <i class="fas fa-plus-circle"></i>
-                            Nuevo Informe
+                            Nuevo Parámetro
                         </a>
                     @else
                         <div class="alert alert-info mb-0 py-2 px-3">
                             <i class="fas fa-eye me-1"></i> Modo solo lectura
                         </div>
-                    @endif
+                    @endcan
                 @endauth
 
                 <!-- BOTÓN NUEVO PARA ACTUALIZAR PRECIOS CON ANIMACIÓN -->
@@ -95,191 +95,33 @@
                             </span>
                         </div>
                     </div>
-                    <small class="text-muted mt-1 d-block">
-                        <i class="fas fa-info-circle me-1"></i>
-                        Puede buscar por código de informe (formato INF-XXX).
-                    </small>
-                </div>
-                
-                <!-- Filtros existentes -->
-                <div class="col-md-3">
-                    <label for="mes" class="form-label">
-                        <i class="fas fa-calendar-alt me-1" style="color: #C2F527;"></i> Mes
-                    </label>
-                    <select name="mes" id="mes" class="form-select">
-                        <option value="">Todos los meses</option>
-                        @foreach(range(1, 12) as $m)
-                            <option value="{{ $m }}" {{ request('mes') == $m ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::create()->month($m)->locale('es')->monthName }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                
-                <div class="col-md-2">
-                    <label for="anio" class="form-label">
-                        <i class="fas fa-calendar me-1" style="color: #C2F527;"></i> Año
-                    </label>
-                    <select name="anio" id="anio" class="form-select">
-                        <option value="">Todos los años</option>
-                        @if(isset($añosDisponibles) && count($añosDisponibles) > 0)
-                            @foreach($añosDisponibles as $año)
-                                <option value="{{ $año }}" {{ request('anio') == $año ? 'selected' : '' }}>
-                                    {{ $año }}
-                                </option>
-                            @endforeach
-                        @else
-                            @for($a = date('Y'); $a >= date('Y')-5; $a--)
-                                <option value="{{ $a }}" {{ request('anio') == $a ? 'selected' : '' }}>
-                                    {{ $a }}
-                                </option>
-                            @endfor
-                        @endif
-                    </select>
-                </div>
-                
-                <div class="col-md-3">
-                    <label for="estado" class="form-label">
-                        <i class="fas fa-flag me-1" style="color: #C2F527;"></i> Estado
-                    </label>
-                    <select name="estado" id="estado" class="form-select">
-                        <option value="">Todos los estados</option>
-                        <option value="BORRADOR" {{ request('estado') == 'BORRADOR' ? 'selected' : '' }}>📝 Borrador</option>
-                        <option value="EN_PROCESO" {{ request('estado') == 'EN_PROCESO' ? 'selected' : '' }}>⏳ En Proceso</option>
-                        <option value="REVISADO" {{ request('estado') == 'REVISADO' ? 'selected' : '' }}>👁️ Revisado</option>
-                        <option value="APROBADO" {{ request('estado') == 'APROBADO' ? 'selected' : '' }}>✅ Aprobado</option>
-                        <option value="ENTREGADO" {{ request('estado') == 'ENTREGADO' ? 'selected' : '' }}>📤 Entregado</option>
-                    </select>
-                </div>
-                
-                <div class="col-md-4 d-flex align-items-end">
-                    <button type="submit" 
-                            class="btn me-2" 
-                            style="background-color: #C2F527; border-radius: 30px; padding: 8px 20px; color: #000000; border: none; transition: all 0.3s ease;"
-                            onmouseover="this.style.backgroundColor='#a8d420'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(194, 245, 39, 0.3)';"
-                            onmouseout="this.style.backgroundColor='#C2F527'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                        <i class="fas fa-filter"></i> Filtrar
-                    </button>
-                    <a href="{{ route('informes.index') }}" 
-                       class="btn btn-secondary" 
-                       style="border-radius: 30px; padding: 8px 20px;">
-                        <i class="fas fa-eraser"></i> Limpiar
-                    </a>
                 </div>
             </form>
         </div>
         
         <!-- Footer informativo -->
-        @if(request()->has('search') || request()->has('mes') || request()->has('anio') || request()->has('estado'))
+        @if(request()->has('search'))
             <div class="card-footer bg-light py-2">
                 <small class="text-muted">
-                    <i class="fas fa-info-circle me-1" style="color: #C2F527;"></i>
-                    Mostrando resultados para:
-                    @if(request('search'))
-                        búsqueda "<strong>{{ request('search') }}</strong>"
-                    @endif
-                    @if(request('mes') && request('anio'))
-                        @php
-                            $mesNumerico = (int)request('mes');
-                            $anioNumerico = (int)request('anio');
-                            $nombreMes = \Carbon\Carbon::createFromDate($anioNumerico, $mesNumerico, 1)->locale('es')->monthName;
-                        @endphp
-                        de {{ $nombreMes }} de {{ request('anio') }}
-                    @elseif(request('mes'))
-                        @php
-                            $mesNumerico = (int)request('mes');
-                            $nombreMes = \Carbon\Carbon::create()->month($mesNumerico)->locale('es')->monthName;
-                        @endphp
-                        de {{ $nombreMes }}
-                    @elseif(request('anio'))
-                        del año {{ request('anio') }}
-                    @endif
-                    
-                    @if(request('estado'))
-                        @php
-                            $estados = [
-                                'BORRADOR' => 'Borrador', 
-                                'EN_PROCESO' => 'En Proceso', 
-                                'REVISADO' => 'Revisado', 
-                                'APROBADO' => 'Aprobado',
-                                'ENTREGADO' => 'Entregado'
-                            ];
-                        @endphp
-                        con estado <strong>{{ $estados[request('estado')] ?? request('estado') }}</strong>
-                    @endif
+                    <i class="fas fa-info-circle me-1" style="color: #A31800;"></i>
+                    Mostrando resultados para búsqueda "<strong>{{ request('search') }}</strong>"
                 </small>
             </div>
         @endif
     </div>
 
     <!-- ============================================ -->
-    <!-- ESTADÍSTICAS                                 -->
-    <!-- ============================================ -->
-    @if(isset($estadisticas) && count($estadisticas) > 0)
-    <div class="row mb-4">
-        <div class="col-md-2 col-6">
-            <div class="card text-white h-100" style="background-color: #C2F527; border: none;">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-1" style="color: #000;">{{ $estadisticas['total'] ?? 0 }}</h5>
-                    <p class="card-text small mb-0" style="color: #000;">Total</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-6">
-            <div class="card text-white h-100" style="background-color: #6c757d; border: none;">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-1 text-white">{{ $estadisticas['borrador'] ?? 0 }}</h5>
-                    <p class="card-text small mb-0 text-white">Borrador</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-6">
-            <div class="card text-white h-100" style="background-color: #ffc107; border: none;">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-1" style="color: #000;">{{ $estadisticas['en_proceso'] ?? 0 }}</h5>
-                    <p class="card-text small mb-0" style="color: #000;">En Proceso</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-6">
-            <div class="card text-white h-100" style="background-color: #0dcaf0; border: none;">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-1 text-white">{{ $estadisticas['revisado'] ?? 0 }}</h5>
-                    <p class="card-text small mb-0 text-white">Revisado</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-6">
-            <div class="card text-white h-100" style="background-color: #198754; border: none;">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-1 text-white">{{ $estadisticas['aprobado'] ?? 0 }}</h5>
-                    <p class="card-text small mb-0 text-white">Aprobado</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-6">
-            <div class="card text-white h-100" style="background-color: #212529; border: none;">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-1 text-white">{{ $estadisticas['entregado'] ?? 0 }}</h5>
-                    <p class="card-text small mb-0 text-white">Entregado</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-
-    <!-- ============================================ -->
-    <!-- TABLA DE INFORMES                            -->
+    <!-- TABLA DE PARÁMETROS                          -->
     <!-- ============================================ -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
-                <i class="fas fa-list me-2" style="color: #C2F527;"></i>
-                Listado de Informes
+                <i class="fas fa-list me-2" style="color: #A31800;"></i>
+                Listado de Parámetros
             </h5>
             <span class="badge" 
-                  style="background-color: #C2F527; color: #000; padding: 8px 15px; border-radius: 20px; font-weight: 500;">
-                {{ $informes->total() }} registros
+                  style="background-color: #A31800; color: white; padding: 8px 15px; border-radius: 20px; font-weight: 500;">
+                {{ $parametros->total() }} registros
             </span>
         </div>
         
@@ -298,7 +140,7 @@
                 </div>
             @endif
 
-            @if($informes->count() > 0)
+            @if($parametros->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
@@ -309,12 +151,11 @@
                                 <th width="140" class="text-end" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Precio Unitario</th>
                                 <th width="120" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Categoría</th>
                                 <th width="120" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Tipo de Análisis</th>
-                                <th width="100" class="text-center" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Proformas</th>
                                 <th width="140" class="text-center" style="background-color: #A31800; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; padding: 12px 15px;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($informes as $informe)
+                            @foreach($parametros as $parametro)
                                 <tr>
                                     <td>
                                         <span class="badge bg-secondary">#{{ $parametro->id }}</span>
@@ -369,71 +210,13 @@
                                         </span>
                                     </td>
                                     
-                                    <td>
-                                        @if($informe->proforma)
-                                            <strong>
-                                                <a href="{{ route('proformas.show', $informe->proforma_id) }}" 
-                                                   class="text-decoration-none">
-                                                    <span style="color: #000000; font-weight: 600;">
-                                                        {{ $informe->proforma->codigo ?? 'N/A' }}
-                                                    </span>
-                                                </a>
-                                            </strong>
-                                            <br>
-                                            <small class="text-muted">
-                                                <i class="fas fa-user-tie me-1"></i>
-                                                {{ $informe->proforma->cliente->razon_social ?? 'Cliente no disponible' }}
-                                            </small>
-                                        @else
-                                            <span class="text-muted">Sin proforma asociada</span>
-                                        @endif
-                                        <br>
-                                        <small class="text-muted">
-                                            <i class="fas fa-user me-1"></i>
-                                            {{ $informe->creador->name ?? 'Usuario no disponible' }}
-                                        </small>
-                                    </td>
-                                    
-                                    <td>
-                                        <span class="badge bg-{{ $informe->estado_color ?? 'secondary' }}">
-                                            <i class="fas 
-                                                @if($informe->estado == 'BORRADOR') fa-edit
-                                                @elseif($informe->estado == 'EN_PROCESO') fa-spinner
-                                                @elseif($informe->estado == 'REVISADO') fa-eye
-                                                @elseif($informe->estado == 'APROBADO') fa-check
-                                                @elseif($informe->estado == 'ENTREGADO') fa-check-double
-                                                @else fa-file
-                                                @endif me-1"></i>
-                                            {{ $informe->estado_texto ?? $informe->estado }}
-                                        </span>
-                                    </td>
-                                    
-                                    <td>
-                                        <span class="badge bg-{{ $informe->prioridad_color ?? 'light' }}">
-                                            <i class="fas 
-                                                @if($informe->prioridad == 'URGENTE') fa-exclamation-triangle
-                                                @elseif($informe->prioridad == 'ALTA') fa-arrow-up
-                                                @elseif($informe->prioridad == 'MEDIA') fa-equals
-                                                @else fa-arrow-down
-                                                @endif me-1"></i>
-                                            {{ $informe->prioridad_texto ?? $informe->prioridad }}
-                                        </span>
-                                    </td>
-                                    
-                                    <td>
-                                        <small>
-                                            <i class="far fa-calendar me-1" style="color: #C2F527;"></i>
-                                            {{ $informe->fecha_emision->format('d/m/Y') }}
-                                        </small>
-                                    </td>
-                                    
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('parametros.show', $parametro) }}" 
                                                class="btn btn-sm"
                                                style="color: #0dcaf0; border: 1px solid #0dcaf0; background: transparent; border-radius: 6px; padding: 0.5rem; width: 38px; height: 38px; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center;"
                                                data-bs-toggle="tooltip"
-                                               title="Ver detalles del informe"
+                                               title="Ver detalles del parámetro"
                                                onmouseover="this.style.backgroundColor='#0dcaf0'; this.style.color='white';"
                                                onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0dcaf0';">
                                                 <i class="fas fa-eye"></i>
@@ -448,8 +231,8 @@
                                                            data-bs-placement="top"
                                                            title="Editar parámetro">
                                                             <i class="fas fa-edit"></i>
+                                                        </a>
                                                     @endcan
-                                                    </a>
                                                     @can('eliminar parametros')
                                                     <button type="button" 
                                                             class="btn btn-outline-danger btn-sm"
@@ -490,11 +273,11 @@
                 <div class="d-flex align-items-center justify-content-center position-relative mt-3">
                     @auth
                         @if(Auth::user()->hasAnyRole(['admin', 'tecnico']))
-                            <a href="{{ route('informes.trash') }}" 
+                            <a href="{{ route('parametros.trash') }}" 
                                class="btn btn-icon-circle position-absolute start-0"
                                style="width: 35px; height: 35px; border-radius: 50%; background-color: #6c757d; color: white; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;"
                                data-bs-toggle="tooltip"
-                               title="Ver informes eliminados"
+                               title="Ver parámetros eliminados"
                                onmouseover="this.style.backgroundColor='#5a6268'; this.style.transform='scale(1.1)';"
                                onmouseout="this.style.backgroundColor='#6c757d'; this.style.transform='scale(1)';">
                                 <i class="fas fa-trash-alt" style="font-size: 1rem;"></i>
@@ -502,22 +285,22 @@
                         @endif
                     @endauth
                     
-                    <div style="color: #C2F527; font-weight: 500;">
+                    <div style="color: #A31800; font-weight: 500;">
                         <i class="fas fa-database me-1"></i> 
-                        Mostrando {{ $informes->firstItem() }} a {{ $informes->lastItem() }} de {{ $informes->total() }} registros
+                        Mostrando {{ $parametros->firstItem() }} a {{ $parametros->lastItem() }} de {{ $parametros->total() }} registros
                     </div>
                 </div>
                 
             @else
                 <div class="text-center py-5">
-                    <i class="fas fa-file-alt fa-4x mb-4" style="color: #C2F527;"></i>
-                    <h4 class="mb-3" style="color: #334155;">No hay informes registrados</h4>
+                    <i class="fas fa-microscope fa-4x mb-4" style="color: #A31800;"></i>
+                    <h4 class="mb-3" style="color: #334155;">No hay parámetros registrados</h4>
                     <p class="text-muted mb-4">
-                        @if(request()->has('search') || request()->has('mes') || request()->has('anio') || request()->has('estado'))
-                            No hay informes para los filtros seleccionados.
-                            <a href="{{ route('informes.index') }}" style="color: #C2F527;">Ver todos</a>
+                        @if(request()->has('search'))
+                            No hay parámetros para los filtros seleccionados.
+                            <a href="{{ route('parametros.index') }}" style="color: #A31800;">Ver todos</a>
                         @else
-                            Comience creando su primer informe técnico.
+                            Comience creando su primer parámetro de análisis.
                         @endif
                     </p>
                     
@@ -547,18 +330,19 @@
             @endif
         </div>
         
+        @if($parametros->count() > 0)
         <div class="card-footer bg-light">
             <div class="row">
                 <div class="col-md-6">
                     <small class="text-muted">
-                        <i class="fas fa-info-circle me-1" style="color: #C2F527;"></i>
-                        Mostrando {{ $informes->count() }} de {{ $informes->total() }} informes
+                        <i class="fas fa-info-circle me-1" style="color: #A31800;"></i>
+                        Mostrando {{ $parametros->count() }} de {{ $parametros->total() }} parámetros
                     </small>
                 </div>
                 <div class="col-md-6 text-end">
                     <small class="text-muted">
-                        <i class="fas fa-calculator me-1" style="color: #C2F527;"></i>
-                        Total: <strong>{{ $informes->total() }} registros</strong>
+                        <i class="fas fa-calculator me-1" style="color: #A31800;"></i>
+                        Total: <strong>{{ $parametros->total() }} registros</strong>
                     </small>
                 </div>
             </div>
@@ -590,15 +374,15 @@
 }
 
 .pagination .page-link {
-    color: #C2F527 !important;
+    color: #A31800 !important;
     border-radius: 8px;
     margin: 0 3px;
 }
 
 .pagination .page-item.active .page-link {
-    background-color: #C2F527 !important;
-    border-color: #C2F527 !important;
-    color: #000 !important;
+    background-color: #A31800 !important;
+    border-color: #A31800 !important;
+    color: #fff !important;
 }
 
 .btn-outline-warning,
@@ -632,28 +416,28 @@
 .form-select:focus,
 .input-group-text:focus,
 .btn:focus {
-    border-color: #C2F527 !important;
-    box-shadow: 0 0 0 3px rgba(194, 245, 39, 0.25) !important;
+    border-color: #A31800 !important;
+    box-shadow: 0 0 0 3px rgba(163, 24, 0, 0.25) !important;
     outline: none !important;
 }
 
 #search:focus {
-    border-color: #C2F527 !important;
-    box-shadow: 0 0 0 3px rgba(194, 245, 39, 0.25) !important;
+    border-color: #A31800 !important;
+    box-shadow: 0 0 0 3px rgba(163, 24, 0, 0.25) !important;
 }
 
 select.form-select:focus {
-    border-color: #C2F527 !important;
-    box-shadow: 0 0 0 3px rgba(194, 245, 39, 0.25) !important;
+    border-color: #A31800 !important;
+    box-shadow: 0 0 0 3px rgba(163, 24, 0, 0.25) !important;
 }
 
 button[type="submit"]:focus {
-    border-color: #C2F527 !important;
-    box-shadow: 0 0 0 3px rgba(194, 245, 39, 0.25) !important;
+    border-color: #A31800 !important;
+    box-shadow: 0 0 0 3px rgba(163, 24, 0, 0.25) !important;
 }
 
 .fa-file-alt {
-    color: #C2F527 !important;
+    color: #A31800 !important;
 }
 
 @media (max-width: 768px) {

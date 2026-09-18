@@ -126,9 +126,8 @@
                         @enderror
                     </div>
 
-                    <!-- CATEGORÍA (antes Tipo de Análisis) - campo: tipo -->
+                    <!-- CATEGORÍA (campo: tipo) -->
                     <div class="col-md-4 mb-3">
-<<<<<<< HEAD
                         <label for="tipo" class="form-label">
                             Categoría *
                         </label>
@@ -147,10 +146,8 @@
                         <small class="text-muted">Categoría del análisis según formato CIMA</small>
                     </div>
 
-                    <!-- TIPO DE ANÁLISIS (antes Categoría) - campo: categoria -->
+                    <!-- TIPO DE ANÁLISIS (campo: categoria) -->
                     <div class="col-md-4 mb-3">
-=======
->>>>>>> actualizacion
                         <label for="categoria" class="form-label">
                             Tipo de Análisis
                         </label>
@@ -174,28 +171,6 @@
                         <small class="text-muted">Ej: AIRE, RUIDO, GASES, AGUA, SUELO, OTROS</small>
                     </div>
 
-<<<<<<< HEAD
-=======
-                    <div class="col-md-4 mb-3">
-                        <label for="tipo" class="form-label">
-                            Tipo de Análisis *
-                        </label>
-                        <select class="form-select @error('tipo') is-invalid @enderror" 
-                                id="tipo" 
-                                name="tipo" 
-                                required>
-                            <option value="">Seleccionar tipo...</option>
-                            <option value="AMBIENTAL" {{ old('tipo', $parametro->tipo) == 'AMBIENTAL' ? 'selected' : '' }}>AMBIENTAL</option>
-                            <option value="AGUA" {{ old('tipo', $parametro->tipo) == 'AGUA' ? 'selected' : '' }}>AGUA</option>
-                            <option value="INVESTIGACION" {{ old('tipo', $parametro->tipo) == 'INVESTIGACION' ? 'selected' : '' }}>INVESTIGACIÓN</option>
-                        </select>
-                        @error('tipo')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">Categoría del análisis según formato CIMA</small>
-                    </div>
-
->>>>>>> actualizacion
                     <div class="col-md-6 mb-3">
                         <label for="unidad" class="form-label">
                             Unidad
@@ -328,7 +303,6 @@
     </div>
 </div>
 
-<!-- Estilos adicionales específicos para la página de edición -->
 <style>
 button[type="submit"][style*="background-color: #A31800"]:hover {
     background-color: #7a1200 !important;
@@ -391,50 +365,10 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
         margin-top: 10px !important;
     }
     
-    .d-flex.align-items-center.gap-3 {
-        flex-wrap: wrap !important;
-        gap: 10px !important;
-    }
-    
-    .d-flex.align-items-center.gap-3 h1 {
-        font-size: 1.5rem !important;
-        width: 100% !important;
-    }
-    
-    .badge.fs-6 {
-        font-size: 0.85rem !important;
-        padding: 5px 12px !important;
-    }
-    
     .col-md-8, .col-md-4 {
         width: 100% !important;
     }
     
-    .d-grid.gap-2 .btn {
-        width: 100% !important;
-        margin-bottom: 5px !important;
-    }
-    
-    .table-responsive {
-        overflow-x: auto !important;
-    }
-    
-    .card-body .row .col-md-6 {
-        width: 100% !important;
-    }
-    
-    .fa-2x {
-        font-size: 1.5rem !important;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 991px) {
-    .col-md-8, .col-md-4 {
-        width: 100% !important;
-    }
-}
-
-@media (max-width: 768px) {
     .d-flex.justify-content-between.pt-3.border-top,
     .d-flex.justify-content-between.mt-4.pt-3.border-top {
         flex-direction: column !important;
@@ -447,17 +381,6 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
         padding: 12px 20px !important;
         font-size: 1rem !important;
         margin: 0 !important;
-    }
-    
-    .btn-group {
-        width: 100% !important;
-        display: flex !important;
-        gap: 8px !important;
-    }
-    
-    .btn-group .btn {
-        flex: 1 !important;
-        padding: 12px 15px !important;
     }
     
     .card-body {
@@ -478,11 +401,6 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
         font-size: 0.8rem !important;
     }
     
-    h6.border-bottom {
-        font-size: 1rem !important;
-        padding-bottom: 0.5rem !important;
-    }
-    
     .input-group {
         flex-wrap: nowrap !important;
     }
@@ -493,12 +411,6 @@ button[type="submit"][style*="background-color: #A31800"]:hover {
     
     .input-group-text {
         padding: 12px !important;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 991px) {
-    .btn {
-        padding: 10px 20px !important;
     }
 }
 </style>
